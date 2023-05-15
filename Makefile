@@ -12,13 +12,20 @@ CC = g++
 SRC	=	src
 
 FILE	=	$(SRC)/main.cpp	\
+			$(SRC)/bootstrap.cpp	\
 
 FILE_OBJ	= $(FILE:.cpp=.o)
+
+CPPFLAGS += -Wall -Wextra
+
+CPPFLAGS += -iquote include/
+
+LDFLAGS += -lpthread
 
 all: $(NAME)
 
 $(NAME): $(FILE_OBJ)
-	$(CC) -o $(NAME) $(FILE_OBJ)
+	$(CC) -o $(NAME) $(FILE_OBJ) $(CPPFLAGS) $(LDFLAGS)
 
 clean:
 	$(RM) -f $(FILE_OBJ)
@@ -26,6 +33,6 @@ clean:
 fclean: clean
 	$(RM) -f $(NAME)
 
-re: fclean re
+re: fclean all
 
 .PHONY: all clean fclean re
