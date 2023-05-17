@@ -6,11 +6,3 @@
 */
 
 #include "plazza.hpp"
-
-void incrementCounter(int *counter, int n)
-{
-    for (int i = 0; i != n; i++)
-    {
-        *counter += 1;
-    }
-}

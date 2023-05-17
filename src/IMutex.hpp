@@ -5,13 +5,17 @@
 ** IMutex
 */
 
+#include <iostream>
+
 #include "plazza.hpp"
-    #include "pthread.h"
+#include "pthread.h"
+#include <memory>
+#include <thread>
+#include <mutex>
 
 class IMutex {
     public:
         virtual ~IMutex() = default;
-        //  ~Imutex() = default;
         virtual void lock() = 0;
         virtual void unlock() = 0;
         virtual void trylock() = 0;
@@ -29,15 +33,30 @@ class Pthread_Mutex : public IMutex
         void lock() {
             pthread_mutex_lock(&_mutex);
         };
-    
+
         void unlock() {
             pthread_mutex_unlock(&_mutex);
         }
-    
+
         void trylock() {
             pthread_mutex_trylock(&_mutex);
         }
 
 private:
     pthread_mutex_t _mutex;
+    int i = 0;
 };
+
+class ScopedLock {
+    public:
+    ScopedLock(std::shared_ptr<IMutex> mutex) : _mutex(mutex){
+        _mutex->lock();
+    }
+    ~ScopedLock() {
+        _mutex->unlock();
+    }
+
+private:
+    std::shared_ptr<IMutex> _mutex;
+};
+

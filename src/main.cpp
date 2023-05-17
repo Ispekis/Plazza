@@ -13,23 +13,45 @@
     #include "semaphore.h"
     #include "pthread.h"
 #include "plazza.hpp"
+#include <memory>
+#include "SafeQueue.hpp"
+#include <condition_variable>
+
 #include "IMutex.hpp"
 
-typedef struct data_s {
-    pthread_t thread;
-    int *countervalue;
-    IMutex *mutex;
+std::mutex mutex;
+
+typedef struct data_s
+{
+    std::thread thread;
+    std::shared_ptr<SafeQueue> queue;
     int t;
+    int id;
 } data_t;
 
-void *call_incrementation(void *arg)
+void *call_producer(void *arg)
 {
     data_t *info = (data_t *)arg;
+    for (int i = -3; i != 10; i++)
+    {
+        int a = 5 * info->id;
+        info->queue->push(a);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    return (void *)info;
+}
 
-    info->mutex->lock();
-    incrementCounter(info->countervalue, info->t);
-    info->mutex->unlock();
-
+void *call_consumer(void *arg)
+{
+    data_t *info = (data_t *)arg;
+    for (int tmp = 0; tmp != 30;tmp++)
+    {
+        {
+            int value = info->queue->pop();
+            // std::cout << "Consumer " << info->id << " " << value << std::endl;
+        }
+    }
+    return (void *)info;
 }
 
 int main(int ac __attribute__((unused)), char **av)
@@ -37,22 +59,34 @@ int main(int ac __attribute__((unused)), char **av)
     int a = std::stoi(av[1]);
     int b = std::stoi(av[2]);
 
-    data_t info[a];
-    int inc = 0;
+    data_t producer[a];
+    data_t consumer[b];
+    std::shared_ptr<SafeQueue> queue = std::make_shared<SafeQueue>();
+    std::cout << "Producer: " << a;
+    std::cout << " Consumer: " << b << std::endl;
+    // INIT PRODUCER
+    for (int i = 0; i != a; i++) {
+        producer[i].t = b;
+        producer[i].queue = queue;
+        producer[i].id = i;
+    }
+// INIT CONSUMER
+    for (int i = 0; i != b; i++) {
+        consumer[i].t = b;
+        consumer[i].queue = queue;
+        consumer[i].id = i;
 
-    IMutex *mutext = new Pthread_Mutex();
-    // pthread_mutex_t mutex;
-    for (int i = 0; i != a; i++)
-    {
-        info[i].countervalue = &inc;
-        info[i].t = b;
-        info[i].mutex = mutext;
+    }
+        for (int i = 0; i != a; i++) {
+        producer[i].thread = std::thread(call_producer, (void *)&producer[i]);
+    }
+    for (int i = 0; i != b; i++) {
+        consumer[i].thread = std::thread(call_consumer, (void *)&consumer[i]);
     }
     for (int i = 0; i != a; i++) {
-        pthread_create(&info[i].thread, NULL, call_incrementation, (void *)&info[i]);
+        consumer[i].thread.join();
     }
-    for (int i = 0; i != a; i++) {
-        pthread_join(info[i].thread, NULL);
+    for (int i = 0; i != b; i++) {
+        producer[i].thread.join();
     }
-    std::cout << "Got:" << *info[0].countervalue << " Expected:" << a * b << std::endl;
 }

@@ -18,7 +18,7 @@ FILE_OBJ	= $(FILE:.cpp=.o)
 
 CPPFLAGS += -Wall -Wextra
 
-CPPFLAGS += -iquote include/
+CPPFLAGS += -iquote include/ -g3
 
 LDFLAGS += -lpthread
 
