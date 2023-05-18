@@ -19,6 +19,13 @@ void Plazza::runPlazza()
 {
     std::string line;
 
-    while (std::getline(std::cin, line))
+    while (std::getline(std::cin, line)) {
         std::cout << line << std::endl;
+        parsingInput(line);
+    }
+}
+
+void Plazza::parsingInput(std::string &line)
+{
+    
 }
