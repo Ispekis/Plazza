@@ -18,6 +18,7 @@
 #include "SafeQueue.hpp"
 #include "Parsing.hpp"
 #include "IMutex.hpp"
+#include "Plazza.hpp"
 
 std::mutex mutex;
 
@@ -93,9 +94,12 @@ void *call_consumer(void *arg)
 int main (int ac, char **av)
 {
     try {
-    Parsing data(ac, av);
-    } catch (const Error &error) {
-    std::cout << error.what() << ": " << error.message() << "." << std::endl;
+        Parsing data(ac, av);
+        Plazza plazza(data);
+        plazza.runPlazza();
+    }
+    catch (const Error &error) {
+        std::cout << error.what() << ": " << error.message() << "." << std::endl;
     }
     return 0;
 }

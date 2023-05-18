@@ -5,16 +5,21 @@
 ** Plazza
 */
 
+#include "Parsing.hpp"
+
 #ifndef PLAZZA_HPP_
 #define PLAZZA_HPP_
 
 class Plazza {
     public:
-        Plazza();
+        Plazza(Parsing &data);
         ~Plazza();
+
+        void runPlazza();
 
     protected:
     private:
+        Parsing _data;
 };
 
 #endif /* !PLAZZA_HPP_ */
