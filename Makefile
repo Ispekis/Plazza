@@ -13,6 +13,8 @@ SRC	=	src
 
 FILE	=	$(SRC)/main.cpp	\
 			$(SRC)/bootstrap.cpp	\
+			$(SRC)/Parsing.cpp	\
+			$(SRC)/Error.cpp	\
 
 FILE_OBJ	= $(FILE:.cpp=.o)
 

@@ -37,11 +37,11 @@ class SafeQueue : public ISafeQueue {
         int pop() {
             std::unique_lock<std::mutex> lock(_mutex, std::defer_lock);
             lock.lock();
-            // if (_queue.empty()) {
-                // std::cout << "Waiting until refill" << std::endl;
-            auto a = _queue;
-            cv.wait(lock, [std::queue<T> _queue]{ a.empty() });
-            // }
+            if (_queue.empty()) {
+                std::cout << "Waiting until refill" << std::endl;
+            // auto a = _queue;
+            cv.wait(lock);
+            }
             T value = _queue.front();
             _queue.pop();
             std::cout << "\tPop value: " << value << std::endl;
