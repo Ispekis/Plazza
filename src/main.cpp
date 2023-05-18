@@ -24,20 +24,20 @@ std::mutex mutex;
 typedef struct data_s
 {
     std::thread thread;
-    std::shared_ptr<SafeQueue> queue;
+    std::shared_ptr<SafeQueue<int>> queue;
     int t;
     int id;
 } data_t;
 
-void *call_producer(void *arg)
+void *call_producer(data_t *info)
 {
-    data_t *info = (data_t *)arg;
     for (int i = -3; i != 10; i++)
     {
         int a = 5 * info->id;
         info->queue->push(a);
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
+    std::cout << "Producer "<< info->id << " left" << std::endl;
     return (void *)info;
 }
 
@@ -47,8 +47,8 @@ void *call_consumer(void *arg)
     for (int tmp = 0; tmp != 30;tmp++)
     {
         {
-            int value = info->queue->pop();
-            // std::cout << "Consumer " << info->id << " " << value << std::endl;
+            auto a = info->queue->pop();
+            std::cout << "consumer" << info->id << ": " << a << std::endl;
         }
     }
     return (void *)info;
@@ -61,7 +61,7 @@ int main(int ac __attribute__((unused)), char **av)
 
     data_t producer[a];
     data_t consumer[b];
-    std::shared_ptr<SafeQueue> queue = std::make_shared<SafeQueue>();
+    std::shared_ptr<SafeQueue<int>> queue = std::make_shared<SafeQueue<int>>();
     std::cout << "Producer: " << a;
     std::cout << " Consumer: " << b << std::endl;
     // INIT PRODUCER
@@ -75,10 +75,9 @@ int main(int ac __attribute__((unused)), char **av)
         consumer[i].t = b;
         consumer[i].queue = queue;
         consumer[i].id = i;
-
     }
         for (int i = 0; i != a; i++) {
-        producer[i].thread = std::thread(call_producer, (void *)&producer[i]);
+        producer[i].thread = std::thread(call_producer, &producer[i]);
     }
     for (int i = 0; i != b; i++) {
         consumer[i].thread = std::thread(call_consumer, (void *)&consumer[i]);
