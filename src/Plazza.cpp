@@ -20,12 +20,47 @@ void Plazza::runPlazza()
     std::string line;
 
     while (std::getline(std::cin, line)) {
-        std::cout << line << std::endl;
         parsingInput(line);
+    }
+}
+
+void Plazza::splitInput(std::string &line)
+{
+    std::istringstream iss(line);
+    std::vector<std::string> words;
+    std::string word;
+    std::string tmp;
+    std::vector<std::vector<std::string>> list;
+
+    while (std::getline(iss, word, ';')) {
+        std::istringstream iss1(word);
+        while (std::getline(iss1, word, ' '))
+            words.push_back(word);
+        _CheckError.checkVectorLength(3, words);
+        if (words.size() != 3)
+            throw Error("Reception", "Need 3 arguments");
+        list.push_back(words);
+        words.clear();
+    }
+}
+
+static void printVector(std::vector<std::vector<std::string>> &vector)
+{
+    for (auto& row : vector) {
+        for (auto& element : row) {
+            std::cout << "[ " << element << " ] ";
+        }
+        std::cout << std::endl;
     }
 }
 
 void Plazza::parsingInput(std::string &line)
 {
-    
+    std::vector<std::vector<std::string>> list;
+    try {
+        splitInput(line);
+    } catch (const Error &error) {
+        std::cout << error.what() << ": " << error.message() << "." << std::endl;
+    } 
+    printVector(list);
 }

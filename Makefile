@@ -16,6 +16,7 @@ FILE	=	$(SRC)/main.cpp	\
 			$(SRC)/Parsing.cpp	\
 			$(SRC)/Error.cpp	\
 			$(SRC)/Plazza.cpp	\
+			$(SRC)/ErrorHandling.cpp	\
 
 FILE_OBJ	= $(FILE:.cpp=.o)
 

@@ -27,6 +27,7 @@ class Parsing {
         float _multiplier;
         int _nbCooks;
         int _refillTimer;
+        
 };
 
 #endif /* !PARSING_HPP_ */

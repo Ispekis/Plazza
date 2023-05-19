@@ -6,7 +6,10 @@
 */
 
 #include "Parsing.hpp"
-
+#include "ErrorHandling.hpp"
+#include <sstream>
+#include <iostream>
+#include <vector>
 #ifndef PLAZZA_HPP_
 #define PLAZZA_HPP_
 
@@ -17,9 +20,12 @@ class Plazza {
 
         void runPlazza();
         void parsingInput(std::string &line);
+        void splitInput(std::string &line);
+
     protected:
     private:
         Parsing _data;
+        ErrorHandling _CheckError;
 };
 
 enum PizzaType
