@@ -9,6 +9,7 @@
 #define ERRORHANDLING_HPP_
 #include <iostream>
 #include "Error.hpp"
+#include <algorithm>
 #include <vector>
 
 class ErrorHandling {
@@ -17,6 +18,7 @@ class ErrorHandling {
         ~ErrorHandling();
         template<typename U>
         void checkVectorLength(std::size_t size, std::vector<U>&);
+        void checkReceiptArg(std::vector<std::string> words);
 
     private:
 };

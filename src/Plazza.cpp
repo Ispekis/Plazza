@@ -37,8 +37,7 @@ void Plazza::splitInput(std::string &line)
         while (std::getline(iss1, word, ' '))
             words.push_back(word);
         _CheckError.checkVectorLength(3, words);
-        if (words.size() != 3)
-            throw Error("Reception", "Need 3 arguments");
+        _CheckError.checkReceiptArg(words);
         list.push_back(words);
         words.clear();
     }
