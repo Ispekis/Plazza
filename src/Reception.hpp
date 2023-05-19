@@ -5,15 +5,15 @@
 ** Plazza
 */
 
-#include "Parsing.hpp"
-#include "ErrorHandling.hpp"
-#include "PizzaEnum.hpp"
-#include <sstream>
-#include <iostream>
-#include <tuple>
-#include <vector>
 #ifndef RECEPTION_HPP_
     #define RECEPTION_HPP_
+    #include "Order.hpp"
+    #include "Parsing.hpp"
+    #include "ErrorHandling.hpp"
+    #include <sstream>
+    #include <iostream>
+    #include <tuple>
+    #include <vector>
 
 namespace Plazza {
     class Reception {
@@ -31,7 +31,7 @@ namespace Plazza {
             Parsing _data;
             ErrorHandling _CheckError;
             std::vector<std::vector<std::string>> _receiptList;
-            std::vector<std::tuple<PizzaType, PizzaSize, int>> _receiptEnum;
+            std::vector<Order> _orderList;
     };
 }
 #endif /* !PLAZZA_HPP_ */

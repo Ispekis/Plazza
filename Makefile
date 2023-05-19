@@ -12,6 +12,7 @@ SRC	=	src/main.cpp			\
 		src/Error.cpp			\
 		src/Reception.cpp		\
 		src/ErrorHandling.cpp	\
+		src/Order.cpp
 
 OBJ	= $(SRC:.cpp=.o)
 

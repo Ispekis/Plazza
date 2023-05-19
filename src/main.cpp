@@ -18,6 +18,7 @@
 #include "Parsing.hpp"
 #include "IMutex.hpp"
 #include "Reception.hpp"
+#include "Usage.hpp"
 
 std::mutex mutex;
 
@@ -93,6 +94,12 @@ void *call_consumer(void *arg)
 int main (int ac, char **av)
 {
     try {
+        std::string av1(av[1]);
+        if (ac == 2 && av1.compare("-h") == 0) {
+            Usage::display_usage(std::cout);
+            return 0;
+        }
+
         Parsing data(ac, av);
         Plazza::Reception reception(data);
         reception.start();
