@@ -8,13 +8,7 @@
 #ifndef PARSING_HPP_
 #define PARSING_HPP_
 
-#include <string>
-#include <iostream>
-#include <unordered_map>
 #include "Error.hpp"
-
-#define ERR 1
-#define NO_ERR 0
 
 class Parsing {
     public:
@@ -23,11 +17,9 @@ class Parsing {
 
     protected:
     private:
-        // std::unordered_map<> args;
         float _multiplier;
         int _nbCooks;
         int _refillTimer;
-        
 };
 
 #endif /* !PARSING_HPP_ */

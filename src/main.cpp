@@ -14,7 +14,6 @@
 #include <pthread.h>
 #include <memory>
 #include <condition_variable>
-#include "plazza.hpp"
 #include "SafeQueue.hpp"
 #include "Parsing.hpp"
 #include "IMutex.hpp"
@@ -100,6 +99,7 @@ int main (int ac, char **av)
     }
     catch (const Error &error) {
         std::cout << error.what() << ": " << error.message() << "." << std::endl;
+        return 84;
     }
     return 0;
 }
