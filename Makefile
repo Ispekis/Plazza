@@ -10,7 +10,7 @@ NAME = plazza
 SRC	=	src/main.cpp			\
 		src/Parsing.cpp			\
 		src/Error.cpp			\
-		src/Plazza.cpp			\
+		src/Reception.cpp		\
 		src/ErrorHandling.cpp	\
 
 OBJ	= $(SRC:.cpp=.o)

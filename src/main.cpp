@@ -17,7 +17,7 @@
 #include "SafeQueue.hpp"
 #include "Parsing.hpp"
 #include "IMutex.hpp"
-#include "Plazza.hpp"
+#include "Reception.hpp"
 
 std::mutex mutex;
 
@@ -94,8 +94,8 @@ int main (int ac, char **av)
 {
     try {
         Parsing data(ac, av);
-        Plazza plazza(data);
-        plazza.runPlazza();
+        Plazza::Reception reception(data);
+        reception.start();
     }
     catch (const Error &error) {
         std::cout << error.what() << ": " << error.message() << "." << std::endl;

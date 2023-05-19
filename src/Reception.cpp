@@ -5,17 +5,17 @@
 ** Plazza
 */
 
-#include "Plazza.hpp"
+#include "Reception.hpp"
 
-Plazza::Plazza(Parsing &data) : _data(data)
+Plazza::Reception::Reception(Parsing &data) : _data(data)
 {
 }
 
-Plazza::~Plazza()
+Plazza::Reception::~Reception()
 {
 }
 
-void Plazza::runPlazza()
+void Plazza::Reception::start()
 {
     std::string line;
 
@@ -24,10 +24,10 @@ void Plazza::runPlazza()
     }
 }
 
-static PizzaType getPizzaType(std::string &pizza)
+static Plazza::PizzaType getPizzaType(std::string &pizza)
 {
     std::vector<std::string> pizzaType = {"regina", "margarita", "america", "fantasia"};
-    std::vector<PizzaType> pizzaEnum = { PizzaType::Regina, PizzaType::Margarita, PizzaType::Americana, PizzaType::Fantasia};
+    std::vector<Plazza::PizzaType> pizzaEnum = { Plazza::PizzaType::Regina, Plazza::PizzaType::Margarita, Plazza::PizzaType::Americana, Plazza::PizzaType::Fantasia};
 
     for (std::size_t i = 0; i != (pizzaType.size() - 1); i++) {
         if (pizzaType[i] == pizza)
@@ -36,10 +36,10 @@ static PizzaType getPizzaType(std::string &pizza)
     throw Error("Pizza Enum Not Found", pizza);
 }
 
-static PizzaSize getPizzaSize(std::string &size)
+static Plazza::PizzaSize getPizzaSize(std::string &size)
 {
     std::vector<std::string> pizzaSize = {"s", "m", "l", "xl", "xxl"};
-    std::vector<PizzaSize> sizeEnum = { PizzaSize::S, PizzaSize::M, PizzaSize::L, PizzaSize::XL, PizzaSize::XXL};
+    std::vector<Plazza::PizzaSize> sizeEnum = { Plazza::PizzaSize::S, Plazza::PizzaSize::M, Plazza::PizzaSize::L, Plazza::PizzaSize::XL, Plazza::PizzaSize::XXL};
 
     for (std::size_t i = 0; i != (pizzaSize.size() - 1); i++) {
         if (pizzaSize[i] == size)
@@ -54,9 +54,9 @@ static int getPizzaNumber(std::string &number)
     return std::stoi(number);
 }
 
-void Plazza::parseEnum()
+void Plazza::Reception::parseEnum()
 {
-    
+
     for (auto a : _receiptList) {
         PizzaType type = getPizzaType(a[0]);
         PizzaSize size = getPizzaSize(a[1]);
@@ -66,7 +66,7 @@ void Plazza::parseEnum()
     }
 }
 
-void Plazza::splitInput(std::string &line)
+void Plazza::Reception::splitInput(std::string &line)
 {
     std::istringstream iss(line);
     std::vector<std::string> words;
@@ -99,12 +99,12 @@ static void printVector(std::vector<std::vector<std::string>> &vector)
     }
 }
 
-void Plazza::parsingInput(std::string &line)
+void Plazza::Reception::parsingInput(std::string &line)
 {
     try {
         splitInput(line);
     } catch (const Error &error) {
         std::cout << error.what() << ": " << error.message() << "." << std::endl;
-    } 
+    }
     printVector(_receiptList);
 }
