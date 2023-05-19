@@ -7,36 +7,35 @@
 
 NAME = plazza
 
-CC = g++
+SRC	=	src/main.cpp			\
+		src/Parsing.cpp			\
+		src/Error.cpp			\
+		src/Reception.cpp		\
+		src/ErrorHandling.cpp	\
+		src/Order.cpp
 
-SRC	=	src
+OBJ	= $(SRC:.cpp=.o)
 
-FILE	=	$(SRC)/main.cpp	\
-			$(SRC)/bootstrap.cpp	\
-			$(SRC)/Parsing.cpp	\
-			$(SRC)/Error.cpp	\
-			$(SRC)/Plazza.cpp	\
-			$(SRC)/ErrorHandling.cpp	\
+CFLAGS += -Wall -Wextra
 
-FILE_OBJ	= $(FILE:.cpp=.o)
-
-CPPFLAGS += -Wall -Wextra
-
-CPPFLAGS += -iquote include/ -g3
+CPPFLAGS += -I./include/
 
 LDFLAGS += -lpthread
 
 all: $(NAME)
 
-$(NAME): $(FILE_OBJ)
-	$(CC) -o $(NAME) $(FILE_OBJ) $(CPPFLAGS) $(LDFLAGS)
+$(NAME): $(OBJ)
+	$(CXX) -o $(NAME) $(OBJ) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS)
 
 clean:
-	$(RM) -f $(FILE_OBJ)
+	$(RM) -f $(OBJ)
 
 fclean: clean
 	$(RM) -f $(NAME)
 
 re: fclean all
+
+debug: CPPFLAGS += -g3
+debug: re
 
 .PHONY: all clean fclean re

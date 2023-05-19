@@ -7,7 +7,6 @@
 
 #include <iostream>
 
-#include "plazza.hpp"
 #include "pthread.h"
 #include <memory>
 #include <thread>

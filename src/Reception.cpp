@@ -5,17 +5,17 @@
 ** Plazza
 */
 
-#include "Plazza.hpp"
+#include "Reception.hpp"
 
-Plazza::Plazza(Parsing &data) : _data(data)
+Plazza::Reception::Reception(Parsing &data) : _data(data)
 {
 }
 
-Plazza::~Plazza()
+Plazza::Reception::~Reception()
 {
 }
 
-void Plazza::runPlazza()
+void Plazza::Reception::start()
 {
     std::string line;
 
@@ -24,25 +24,25 @@ void Plazza::runPlazza()
     }
 }
 
-static PizzaType getPizzaType(std::string &pizza)
+static Plazza::PizzaType getPizzaType(std::string &pizza)
 {
     std::vector<std::string> pizzaType = {"regina", "margarita", "america", "fantasia"};
-    std::vector<PizzaType> pizzaEnum = { PizzaType::Regina, PizzaType::Margarita, PizzaType::Americana, PizzaType::Fantasia};
+    std::vector<Plazza::PizzaType> pizzaEnum = { Plazza::PizzaType::Regina, Plazza::PizzaType::Margarita, Plazza::PizzaType::Americana, Plazza::PizzaType::Fantasia};
 
-    for (std::size_t i = 0; i != (pizzaType.size() - 1); i++) {
-        if (pizzaType[i] == pizza)
+    for (std::size_t i = 0; i != pizzaType.size(); i++) {
+        if (pizzaType[i].compare(pizza))
             return pizzaEnum[i];
     }
     throw Error("Pizza Enum Not Found", pizza);
 }
 
-static PizzaSize getPizzaSize(std::string &size)
+static Plazza::PizzaSize getPizzaSize(std::string &size)
 {
-    std::vector<std::string> pizzaSize = {"s", "m", "l", "xl", "xxl"};
-    std::vector<PizzaSize> sizeEnum = { PizzaSize::S, PizzaSize::M, PizzaSize::L, PizzaSize::XL, PizzaSize::XXL};
+    std::array<std::string, 5> pizzaSize = {"S", "M", "L", "XL", "XXL"};
+    std::array<Plazza::PizzaSize, 5> sizeEnum = { Plazza::PizzaSize::S, Plazza::PizzaSize::M, Plazza::PizzaSize::L, Plazza::PizzaSize::XL, Plazza::PizzaSize::XXL};
 
-    for (std::size_t i = 0; i != (pizzaSize.size() - 1); i++) {
-        if (pizzaSize[i] == size)
+    for (std::size_t i = 0; i != pizzaSize.size(); i++) {
+        if (pizzaSize[i].compare(size) == 0)
             return sizeEnum[i];
     }
     throw Error("Pizza Size Not Found", size);
@@ -54,19 +54,18 @@ static int getPizzaNumber(std::string &number)
     return std::stoi(number);
 }
 
-void Plazza::parseEnum()
+void Plazza::Reception::parseEnum()
 {
-    
     for (auto a : _receiptList) {
         PizzaType type = getPizzaType(a[0]);
         PizzaSize size = getPizzaSize(a[1]);
         int number = getPizzaNumber(a[2]);
-        std::tuple<PizzaType, PizzaSize, int> tmp(type, size, number);
-        _receiptEnum.push_back(tmp);
+        Plazza::Order new_order(type, size, number);
+        _orderList.push_back(new_order);
     }
 }
 
-void Plazza::splitInput(std::string &line)
+void Plazza::Reception::splitInput(std::string &line)
 {
     std::istringstream iss(line);
     std::vector<std::string> words;
@@ -84,8 +83,9 @@ void Plazza::splitInput(std::string &line)
         words.clear();
     }
     parseEnum();
-    for (auto e : _receiptEnum) {
-        std::cout << std::get<0>(e) << std::get<1>(e) << std::get<2>(e) << std::endl;
+    for (auto order : _orderList) {
+        std::cout << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |" << std::endl;
+        // std::cout << order << std::endl;
     }
 }
 
@@ -99,12 +99,12 @@ static void printVector(std::vector<std::vector<std::string>> &vector)
     }
 }
 
-void Plazza::parsingInput(std::string &line)
+void Plazza::Reception::parsingInput(std::string &line)
 {
     try {
         splitInput(line);
     } catch (const Error &error) {
         std::cout << error.what() << ": " << error.message() << "." << std::endl;
-    } 
-    printVector(_receiptList);
+    }
+    // printVector(_receiptList);
 }

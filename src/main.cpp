@@ -14,11 +14,11 @@
 #include <pthread.h>
 #include <memory>
 #include <condition_variable>
-#include "plazza.hpp"
 #include "SafeQueue.hpp"
 #include "Parsing.hpp"
 #include "IMutex.hpp"
-#include "Plazza.hpp"
+#include "Reception.hpp"
+#include "Usage.hpp"
 
 std::mutex mutex;
 
@@ -94,12 +94,19 @@ void *call_consumer(void *arg)
 int main (int ac, char **av)
 {
     try {
+        std::string av1(av[1]);
+        if (ac == 2 && av1.compare("-h") == 0) {
+            Usage::display_usage(std::cout);
+            return 0;
+        }
+
         Parsing data(ac, av);
-        Plazza plazza(data);
-        plazza.runPlazza();
+        Plazza::Reception reception(data);
+        reception.start();
     }
     catch (const Error &error) {
         std::cout << error.what() << ": " << error.message() << "." << std::endl;
+        return 84;
     }
     return 0;
 }
