@@ -7,28 +7,24 @@
 
 NAME = plazza
 
-CC = g++
+SRC	=	src/main.cpp	\
+		src/SafeQueue.cpp
 
-SRC	=	src
+OBJ	= $(SRC:.cpp=.o)
 
-FILE	=	$(SRC)/main.cpp	\
-			$(SRC)/bootstrap.cpp	\
+CFLAGS = -Wall -Wextra
 
-FILE_OBJ	= $(FILE:.cpp=.o)
+CPPFLAGS = -iquote ./include/
 
-CPPFLAGS += -Wall -Wextra
-
-CPPFLAGS += -iquote include/ -g3
-
-LDFLAGS += -lpthread
+LDFLAGS = -lpthread
 
 all: $(NAME)
 
-$(NAME): $(FILE_OBJ)
-	$(CC) -o $(NAME) $(FILE_OBJ) $(CPPFLAGS) $(LDFLAGS)
+$(NAME): $(OBJ)
+	$(CXX) -o $(NAME) $(OBJ) $(CPPFLAGS) $(LDFLAGS)
 
 clean:
-	$(RM) -f $(FILE_OBJ)
+	$(RM) -f $(OBJ)
 
 fclean: clean
 	$(RM) -f $(NAME)
