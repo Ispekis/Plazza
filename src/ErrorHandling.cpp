@@ -51,7 +51,7 @@ static void findSize(std::string word, std::vector<std::string>wordList)
 
 static void findNumber(std::string word)
 {
-    if (word[0] != 'x')
+    if (word[0] != 'x' || word.size() == 1)
         throw Error("Invalid Number", word);
     for (std::size_t i = 1; i != word.size() - 1; i++)
     {
@@ -62,6 +62,7 @@ static void findNumber(std::string word)
         else 
             throw Error("Invalid Number", word);
     }
+
 }
 
 void ErrorHandling::checkReceiptArg(std::vector<std::string> words)

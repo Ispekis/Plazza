@@ -7,12 +7,13 @@
 
 #include "Parsing.hpp"
 #include "ErrorHandling.hpp"
+#include "PizzaEnum.hpp"
 #include <sstream>
 #include <iostream>
+#include <tuple>
 #include <vector>
 #ifndef PLAZZA_HPP_
 #define PLAZZA_HPP_
-
 class Plazza {
     public:
         Plazza(Parsing &data);
@@ -20,28 +21,14 @@ class Plazza {
 
         void runPlazza();
         void parsingInput(std::string &line);
+        void parseEnum();
         void splitInput(std::string &line);
 
     protected:
     private:
         Parsing _data;
         ErrorHandling _CheckError;
-};
-
-enum PizzaType
-{
-    Regina = 1,
-    Margarita = 2,
-    Americana = 4,
-    Fantasia = 8
-};
-
-enum PizzaSize
-{
-    S = 1,
-    M = 2,
-    L = 4,
-    XL = 8,
-    XXL = 16
+        std::vector<std::vector<std::string>> _receiptList;
+        std::vector<std::tuple<PizzaType, PizzaSize, int>> _receiptEnum;
 };
 #endif /* !PLAZZA_HPP_ */

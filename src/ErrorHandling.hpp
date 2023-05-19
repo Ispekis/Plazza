@@ -19,8 +19,6 @@ class ErrorHandling {
         template<typename U>
         void checkVectorLength(std::size_t size, std::vector<U>&);
         void checkReceiptArg(std::vector<std::string> words);
-
-    private:
 };
 
 #endif /* !ERRORHANDLING_HPP_ */
