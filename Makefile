@@ -5,10 +5,15 @@
 ## Makefile
 ##
 
+TEST_FILES = tests/test_project.cpp
+
 NAME = plazza
 
-SRC	=	src/main.cpp			\
-		src/Parsing.cpp			\
+TEST_NAME = unit_tests
+
+MAIN_SRC = src/main.cpp
+
+SRC	=	src/Parsing.cpp			\
 		src/Error.cpp			\
 		src/Reception.cpp		\
 		src/ErrorHandling.cpp	\
@@ -30,11 +35,20 @@ LDFLAGS += -lpthread
 
 all: $(NAME)
 
+$(NAME): OBJ += $(MAIN_SRC:.cpp=.o)
 $(NAME): $(OBJ)
 	$(CXX) -o $(NAME) $(OBJ) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS)
 
+tests_run:
+	$(CXX) $(SRC) $(TEST_FILES) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS) -o $(TEST_NAME) -lcriterion --coverage
+	./${TEST_NAME}
+	gcovr --exclude tests/
+	gcovr --exclude tests/ --branches
+
 clean:
 	$(RM) -f $(OBJ)
+	$(RM) *.gcda
+	$(RM) *.gcno
 
 fclean: clean
 	$(RM) -f $(NAME)
