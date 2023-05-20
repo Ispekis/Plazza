@@ -29,3 +29,19 @@ Parsing::Parsing(int ac, char **av)
 Parsing::~Parsing()
 {
 }
+
+int Parsing::getNbCooks()
+{
+    return _nbCooks;
+}
+
+float Parsing::getMultiplier()
+{
+    return _multiplier;
+}
+
+int Parsing::getRefillTime()
+{
+    return _refillTimer;
+}
+

@@ -14,6 +14,7 @@
     #include <iostream>
     #include <tuple>
     #include <vector>
+    #include "Kitchen.hpp"
 
 namespace Plazza {
     class Reception {
@@ -25,6 +26,7 @@ namespace Plazza {
             void parsingInput(std::string &line);
             void parseEnum();
             void splitInput(std::string &line);
+            void create_kitchen();
 
         protected:
         private:
@@ -32,6 +34,7 @@ namespace Plazza {
             ErrorHandling _CheckError;
             std::vector<std::vector<std::string>> _receiptList;
             std::vector<Order> _orderList;
+            std::vector<Kitchen> _kitchens;
     };
 }
 #endif /* !PLAZZA_HPP_ */

@@ -21,6 +21,10 @@ void Plazza::Reception::start()
 
     while (std::getline(std::cin, line)) {
         parsingInput(line);
+        for (auto order : _orderList) {
+            std::cout << order << std::endl;
+        }
+        create_kitchen();
     }
 }
 
@@ -65,6 +69,13 @@ void Plazza::Reception::parseEnum()
     }
 }
 
+void Plazza::Reception::create_kitchen()
+{
+    Plazza::Kitchen kitchen;
+    kitchen.run();
+    _kitchens.push_back(kitchen);
+}
+
 void Plazza::Reception::splitInput(std::string &line)
 {
     std::istringstream iss(line);
@@ -83,10 +94,6 @@ void Plazza::Reception::splitInput(std::string &line)
         words.clear();
     }
     parseEnum();
-    for (auto order : _orderList) {
-        // std::cout << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |" << std::endl;
-        std::cout << order << std::endl;
-    }
 }
 
 static void printVector(std::vector<std::vector<std::string>> &vector)
