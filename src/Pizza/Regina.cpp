@@ -7,13 +7,13 @@
 
 #include "Regina.hpp"
 
-Plazza::Regina::Regina()
+Plazza::ReginaPizza::ReginaPizza()
 {
     _name = "regina";
     _ingredients = {"dough", "tomato", "gruyere"};
     _bakeTime = 1;
 }
 
-Plazza::Regina::~Regina()
+Plazza::ReginaPizza::~ReginaPizza()
 {
 }

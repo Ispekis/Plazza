@@ -7,13 +7,13 @@
 
 #include "Margarita.hpp"
 
-Plazza::Margarita::Margarita()
+Plazza::MargaritaPizza::MargaritaPizza()
 {
     _name = "margarita";
     _ingredients = {"dough", "tomato", "gruyere", "ham", "mushrooms"};
     _bakeTime = 2;
 }
 
-Plazza::Margarita::~Margarita()
+Plazza::MargaritaPizza::~MargaritaPizza()
 {
 }

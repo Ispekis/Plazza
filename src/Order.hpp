@@ -11,6 +11,12 @@
     #include <iostream>
     #include <map>
     #include "PizzaEnum.hpp"
+    #include "IPizza.hpp"
+    #include "Pizza/Regina.hpp"
+    #include "Pizza/Americana.hpp"
+    #include "Pizza/Fantasia.hpp"
+    #include "Pizza/Margarita.hpp"
+    #include <memory>
 
 namespace Plazza {
     class Order {
@@ -38,6 +44,7 @@ namespace Plazza {
             std::size_t _pizzaNumber;
             std::string _pizzaName;
             std::string _pizzaSizeName;
+            std::shared_ptr<Plazza::IPizza> _pizzas;
             // TODO Make it generic to use
             std::map<Plazza::PizzaType, std::string> pizzaNamesMap = {
                 {Plazza::PizzaType::Regina, "regina"},

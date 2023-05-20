@@ -7,13 +7,13 @@
 
 #include "Fantasia.hpp"
 
-Plazza::Fantasia::Fantasia()
+Plazza::FantasiaPizza::FantasiaPizza()
 {
     _name = "fantasia";
     _ingredients = {"dough", "tomato", "gruyere", "steak"};
     _bakeTime = 2;
 }
 
-Plazza::Fantasia::~Fantasia()
+Plazza::FantasiaPizza::~FantasiaPizza()
 {
 }

@@ -10,10 +10,10 @@
     #include "Pizza.hpp"
 
 namespace Plazza {
-    class Margarita : public Plazza::Pizza {
+    class MargaritaPizza : public Plazza::Pizza {
         public:
-            Margarita();
-            ~Margarita();
+            MargaritaPizza();
+            ~MargaritaPizza();
 
         protected:
         private:
