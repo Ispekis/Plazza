@@ -84,8 +84,8 @@ void Plazza::Reception::splitInput(std::string &line)
     }
     parseEnum();
     for (auto order : _orderList) {
-        std::cout << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |" << std::endl;
-        // std::cout << order << std::endl;
+        // std::cout << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |" << std::endl;
+        std::cout << order << std::endl;
     }
 }
 

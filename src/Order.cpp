@@ -53,10 +53,25 @@ void Plazza::Order::setType(Plazza::PizzaType type)
     _pizzaType = type;
     auto iter = pizzaNamesMap.find(type);
 
-    std::cout << iter->second << std::endl;
     _pizzaName = iter->second;
     // std::cout << pizzaNamesMap[type] << std::endl;
     // _pizzaName = pizzaNamesMap[type];
+
+    // set pizza class
+    switch (_pizzaType) {
+        case Regina:
+            _pizzas = std::make_shared<Plazza::ReginaPizza>();
+            break;
+        case Fantasia:
+            _pizzas = std::make_shared<Plazza::FantasiaPizza>();
+            break;
+        case Americana:
+            _pizzas = std::make_shared<Plazza::AmericanaPizza>();
+            break;
+        case Margarita:
+            _pizzas = std::make_shared<Plazza::MargaritaPizza>();
+            break;
+    }
 }
 
 void Plazza::Order::setSize(Plazza::PizzaSize size)
@@ -72,6 +87,6 @@ void Plazza::Order::setNumber(std::size_t number)
 
 std::ostream &operator<<(std::ostream &os, const Plazza::Order &order)
 {
-    os << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |" << std::endl;
-
+    os << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |";
+    return os;
 }
