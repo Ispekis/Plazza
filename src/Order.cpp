@@ -12,11 +12,10 @@ Plazza::Order::Order()
 
 }
 
-Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t number)
+Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size)
 {
     this->setType(type);
     this->setSize(size);
-    this->setNumber(number);
 }
 
 Plazza::Order::~Order()
@@ -42,10 +41,9 @@ std::string Plazza::Order::getSizeName() const
 {
     return _pizzaSizeName;
 }
-
-std::size_t Plazza::Order::getNumber() const
+std::shared_ptr<Plazza::IPizza> Plazza::Order::getPizza() const
 {
-    return _pizzaNumber;
+    return _pizzas;
 }
 
 void Plazza::Order::setType(Plazza::PizzaType type)
@@ -80,13 +78,8 @@ void Plazza::Order::setSize(Plazza::PizzaSize size)
     _pizzaSizeName = pizzaSizesMap[size];
 }
 
-void Plazza::Order::setNumber(std::size_t number)
-{
-    _pizzaNumber = number;
-}
-
 std::ostream &operator<<(std::ostream &os, const Plazza::Order &order)
 {
-    os << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |";
+    os << "Order : | " << order.getName() << "\t | " << order.getSizeName() << " |";
     return os;
 }

@@ -64,16 +64,18 @@ void Plazza::Reception::parseEnum()
         PizzaType type = getPizzaType(a[0]);
         PizzaSize size = getPizzaSize(a[1]);
         int number = getPizzaNumber(a[2]);
-        Plazza::Order new_order(type, size, number);
-        _orderList.push_back(new_order);
+        for (int i = 0; i < number; i++) {
+            Plazza::Order new_order(type, size);
+            _orderList.push_back(new_order);
+        }
     }
 }
 
 void Plazza::Reception::create_kitchen()
 {
-    Plazza::Kitchen kitchen;
-    kitchen.run();
-    _kitchens.push_back(kitchen);
+    // Plazza::Kitchen kitchen;
+    // kitchen.run();
+    // _kitchens.push_back(kitchen);
 }
 
 void Plazza::Reception::splitInput(std::string &line)
