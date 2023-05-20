@@ -12,7 +12,13 @@ SRC	=	src/main.cpp			\
 		src/Error.cpp			\
 		src/Reception.cpp		\
 		src/ErrorHandling.cpp	\
-		src/Order.cpp
+		src/Order.cpp			\
+
+SRC +=	src/Pizza/Pizza.cpp			\
+		src/Pizza/Regina.cpp		\
+		src/Pizza/Americana.cpp		\
+		src/Pizza/Fantasia.cpp		\
+		src/Pizza/Margarita.cpp		\
 
 OBJ	= $(SRC:.cpp=.o)
 

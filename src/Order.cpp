@@ -72,6 +72,6 @@ void Plazza::Order::setNumber(std::size_t number)
 
 std::ostream &operator<<(std::ostream &os, const Plazza::Order &order)
 {
-    os << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |" << std::endl;
-
+    os << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |";
+    return os;
 }
