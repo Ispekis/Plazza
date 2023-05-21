@@ -27,7 +27,11 @@ SRC +=	src/Pizza/Pizza.cpp			\
 		src/Pizza/Fantasia.cpp		\
 		src/Pizza/Margarita.cpp		\
 
-OBJ	= $(SRC:.cpp=.o)
+ALL_SRC += $(SRC)
+
+ALL_SRC += $(MAIN_SRC)
+
+OBJ	= $(ALL_SRC:.cpp=.o)
 
 CFLAGS += -Wall -Wextra
 
@@ -37,7 +41,7 @@ LDFLAGS += -lpthread
 
 all: $(NAME)
 
-$(NAME): OBJ += $(MAIN_SRC:.cpp=.o)
+# $(NAME): OBJ += $(MAIN_SRC:.cpp=.o)
 $(NAME): $(OBJ)
 	$(CXX) -o $(NAME) $(OBJ) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS)
 
