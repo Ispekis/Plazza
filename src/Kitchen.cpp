@@ -7,11 +7,10 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int, 2> pipefd) : _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int, 2> pipefd) : _workDuration(5), _ingredient(time)
 {
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
-    _refillTime = time;
     availableCooks = _nbCooks;
     for (int i = 0; i < _nbCooks; i++) {
         _cooks.push_back(Plazza::Cook());

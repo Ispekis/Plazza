@@ -19,6 +19,7 @@ SRC	=	src/Parsing.cpp			\
 		src/ErrorHandling.cpp	\
 		src/Order.cpp			\
 		src/Kitchen.cpp			\
+		src/Ingredient.cpp			\
 		src/Cook.cpp
 
 SRC +=	src/Pizza/Pizza.cpp			\
