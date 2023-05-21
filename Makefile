@@ -41,7 +41,7 @@ $(NAME): OBJ += $(MAIN_SRC:.cpp=.o)
 $(NAME): $(OBJ)
 	$(CXX) -o $(NAME) $(OBJ) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS)
 
-tests_run:
+tests_run: clean
 	$(CXX) $(SRC) $(TEST_FILES) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS) -o $(TEST_NAME) -lcriterion --coverage
 	./${TEST_NAME}
 	gcovr --exclude tests/

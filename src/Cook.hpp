@@ -40,7 +40,7 @@ namespace Plazza {
 
         protected:
         private:
-            std::size_t _orderCapacity = 2;
+            std::size_t _orderCapacity;
             std::vector<Plazza::Order> _orderList;
     };
 }

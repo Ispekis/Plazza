@@ -50,10 +50,10 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> &orderList)
 {
     if (_pid != 0) {
         for (auto cook : _cooks) {
-            for (int i = 0; i < cook.availableOrderCapacity(); i++) {
+            while (!cook.isOverwhelmed()) {
                 if (!orderList.empty()) {
-                    // cook.addOrder(orderList.front());
-                    // orderList.erase(orderList.begin());
+                    cook.addOrder(orderList.front());
+                    orderList.erase(orderList.begin());
                     std::cout << "ok receive" << std::endl;
                 }
             }

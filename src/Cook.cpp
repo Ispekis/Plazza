@@ -9,6 +9,7 @@
 
 Plazza::Cook::Cook()
 {
+    _orderCapacity = 2;
 }
 
 Plazza::Cook::~Cook()
