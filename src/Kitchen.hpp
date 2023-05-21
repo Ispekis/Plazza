@@ -47,7 +47,6 @@ namespace Plazza {
         private:
             float _mutiplier;
             int _nbCooks;
-            // int _refillTime;
             size_t availableCooks;
             std::vector<Plazza::Cook> _cooks;
             std::chrono::seconds _workDuration;

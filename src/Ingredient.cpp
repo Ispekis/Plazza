@@ -9,18 +9,28 @@
 
 Ingredient::Ingredient(int refillTime) : _refillTime(refillTime)
 {
-    _dough = 5;
-    _tomato = 5;
-    _gruyere = 5;
-    _ham = 5;
-    _mushrooms = 5;
-    _steak = 5;
-    _eggplant = 5;
-    _goatCheese = 5;
-    _chiefLove = 5;
+    // "dough", = 5;
+    // "tomato", = 5;
+    // "gruyere", = 5;
+    // "ham", = 5;
+    // "mushrooms", = 5;
+    // "steak", = 5;
+    // "eggplant", = 5;
+    // "goatCheese", = 5;
+    // "chiefLove", = 5;
+    std::vector<std::string> ingredient = { "dough", "tomato", "gruyere", "ham", "mushrooms", "steak", "eggplant", "goatCheese", "chiefLove" };
+
+    for (auto element : ingredient) {
+        _ingredient[element] = 5;
+    }
     std::cout << "Ingredient Filled and will be refilled by one every" << refillTime << " ms" << std::endl;
 }
 
 Ingredient::~Ingredient()
 {
+}
+
+bool makePizza(Plazza::IPizza *pizza)
+{
+    auto ingredient = pizza->getIngredients();
 }
