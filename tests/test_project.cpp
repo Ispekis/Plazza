@@ -5,7 +5,8 @@
 
 Test(Kitchen, kitchen_run)
 {
-    Plazza::Kitchen kitchen(2, 2, 1000);
+    std::array<int, 2> fd = {1, 1};
+    Plazza::Kitchen kitchen(2, 2, 1000, fd);
 
     kitchen.run();
     // cr_assert_eq(kitchen.isStaturated(), false);
@@ -13,14 +14,16 @@ Test(Kitchen, kitchen_run)
 
 Test(Kitchen, kitchen_saturated)
 {
-    Plazza::Kitchen kitchen(2, 2, 1000);
+    std::array<int, 2> fd = {1, 1};
+    Plazza::Kitchen kitchen(2, 2, 1000, fd);
 
     cr_assert_eq(kitchen.isStaturated(), false);
 }
 
 Test(Kitchen, kitchen_receive_order)
 {
-    Plazza::Kitchen kitchen(2, 2, 1000);
+    std::array<int, 2> fd = {1, 1};
+    Plazza::Kitchen kitchen(2, 2, 1000, fd);
 
     std::vector<Plazza::Order> orderList = {
         Plazza::Order(Plazza::PizzaType::Regina, Plazza::PizzaSize::M),

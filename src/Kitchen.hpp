@@ -17,7 +17,7 @@
 namespace Plazza {
     class Kitchen {
         public:
-            Kitchen(float mutiplier, int nbCooks, int time);
+            Kitchen(float mutiplier, int nbCooks, int time, std::array<int, 2> pipefd);
             ~Kitchen();
 
             /**
@@ -50,7 +50,6 @@ namespace Plazza {
             size_t availableCooks;
             std::vector<Plazza::Cook> _cooks;
             std::chrono::seconds _workDuration;
-            pid_t _pid;
     };
 }
 

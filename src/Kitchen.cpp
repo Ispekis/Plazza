@@ -7,7 +7,7 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time) : _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int, 2> pipefd) : _workDuration(5)
 {
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
@@ -15,6 +15,10 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time) : _workDuration
     availableCooks = _nbCooks;
     for (int i = 0; i < _nbCooks; i++) {
         _cooks.push_back(Plazza::Cook());
+    }
+    int tmp[2] = {pipefd.front(), pipefd.back()};
+    if (pipe(tmp) == -1) {
+        throw Error("Failed to pipe", "pipe");
     }
 }
 
@@ -24,15 +28,19 @@ Plazza::Kitchen::~Kitchen()
 
 void Plazza::Kitchen::run()
 {
-    _pid = fork();
-    if (_pid == -1) {
+    pid_t pid = fork();
+    if (pid == -1) {
         throw Error("Failed to fork", "fork");
     }
 
-    if (_pid == 0) { // Child
+    if (pid == 0) { // Child
         auto start =  std::chrono::steady_clock::now();
         std::cout << "Kitchen start" << std::endl;
         while (true) {
+            // restart the chrono
+            // if () {
+            //     start =  std::chrono::steady_clock::now();
+            // }
             auto current =  std::chrono::steady_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - start);
             // std::cout << "child" << std::endl;
@@ -48,7 +56,7 @@ void Plazza::Kitchen::run()
 
 void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> &orderList)
 {
-    if (_pid != 0) {
+    // if (_pid != 0) {
         for (auto cook : _cooks) {
             while (!cook.isOverwhelmed()) {
                 if (!orderList.empty()) {
@@ -58,7 +66,7 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> &orderList)
                 }
             }
         }
-    }
+    // }
 }
 
 bool Plazza::Kitchen::isStaturated()

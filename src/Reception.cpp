@@ -80,7 +80,9 @@ void Plazza::Reception::parseEnum()
 
 void Plazza::Reception::create_kitchen()
 {
-    Plazza::Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime());
+    std::array<int, 2> newPipefd;
+    _pipefds.push_back(newPipefd);
+    Plazza::Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _pipefds.back());
     kitchen.run();
     _kitchens.push_back(kitchen);
 }

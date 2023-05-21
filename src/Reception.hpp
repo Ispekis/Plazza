@@ -35,6 +35,7 @@ namespace Plazza {
             std::vector<std::vector<std::string>> _receiptList;
             std::vector<Order> _orderList;
             std::vector<Kitchen> _kitchens;
+            std::vector<std::array<int, 2>> _pipefds;
     };
 }
 #endif /* !PLAZZA_HPP_ */
