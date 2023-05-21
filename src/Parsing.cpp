@@ -21,7 +21,7 @@ Parsing::Parsing(int ac, char **av)
         if (_multiplier < 0 || _nbCooks < 0 || _refillTimer < 0) {
             throw Error("Number must be >= 0", "Parsing Error");
         }
-    } catch (std::invalid_argument) {
+    } catch (std::invalid_argument &e) {
         throw Error("Invalid conversion to number", "Parsing Error");
     }
 }
@@ -29,3 +29,19 @@ Parsing::Parsing(int ac, char **av)
 Parsing::~Parsing()
 {
 }
+
+int Parsing::getNbCooks()
+{
+    return _nbCooks;
+}
+
+float Parsing::getMultiplier()
+{
+    return _multiplier;
+}
+
+int Parsing::getRefillTime()
+{
+    return _refillTimer;
+}
+

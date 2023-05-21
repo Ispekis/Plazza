@@ -21,6 +21,17 @@ void Plazza::Reception::start()
 
     while (std::getline(std::cin, line)) {
         parsingInput(line);
+        for (auto order : _orderList) {
+            std::cout << order << std::endl;
+        }
+        // Create new kitchen if there is not
+        if (_kitchens.size() == 0) {
+            create_kitchen();
+        }
+        // kitchens receive orders
+        for (auto kitchen : _kitchens) {
+            kitchen.receiveOrder(_orderList);
+        }
     }
 }
 
@@ -60,9 +71,20 @@ void Plazza::Reception::parseEnum()
         PizzaType type = getPizzaType(a[0]);
         PizzaSize size = getPizzaSize(a[1]);
         int number = getPizzaNumber(a[2]);
-        Plazza::Order new_order(type, size, number);
-        _orderList.push_back(new_order);
+        for (int i = 0; i < number; i++) {
+            Plazza::Order new_order(type, size);
+            _orderList.push_back(new_order);
+        }
     }
+}
+
+void Plazza::Reception::create_kitchen()
+{
+    std::array<int, 2> newPipefd;
+    _pipefds.push_back(newPipefd);
+    Plazza::Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _pipefds.back());
+    kitchen.run();
+    _kitchens.push_back(kitchen);
 }
 
 void Plazza::Reception::splitInput(std::string &line)
@@ -83,10 +105,6 @@ void Plazza::Reception::splitInput(std::string &line)
         words.clear();
     }
     parseEnum();
-    for (auto order : _orderList) {
-        // std::cout << "Order : | " << order.getName() << "\t | " << order.getSizeName() << "\t | x" << order.getNumber() << " |" << std::endl;
-        std::cout << order << std::endl;
-    }
 }
 
 static void printVector(std::vector<std::vector<std::string>> &vector)

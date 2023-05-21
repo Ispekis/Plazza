@@ -15,6 +15,10 @@ class Parsing {
         Parsing(int ac, char **av);
         ~Parsing();
 
+        int getNbCooks();
+        float getMultiplier();
+        int getRefillTime();
+
     protected:
     private:
         float _multiplier;

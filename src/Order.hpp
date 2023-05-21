@@ -22,26 +22,24 @@ namespace Plazza {
     class Order {
         public:
             Order();
-            Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t number);
+            Order(Plazza::PizzaType type, Plazza::PizzaSize size);
             ~Order();
 
             //* Getters *//
             Plazza::PizzaType getType() const;
             std::string getName() const;
             Plazza::PizzaSize getSize() const;
-            std::size_t getNumber() const;
             std::string getSizeName() const;
+            std::shared_ptr<Plazza::IPizza> getPizza() const;
 
             //* Setters *//
             void setType(Plazza::PizzaType type);
             void setSize(Plazza::PizzaSize size);
-            void setNumber(std::size_t number);
 
         protected:
         private:
             Plazza::PizzaType _pizzaType;
             Plazza::PizzaSize _pizzaSize;
-            std::size_t _pizzaNumber;
             std::string _pizzaName;
             std::string _pizzaSizeName;
             std::shared_ptr<Plazza::IPizza> _pizzas;
