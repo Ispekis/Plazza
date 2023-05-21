@@ -47,6 +47,7 @@ void Plazza::Kitchen::run()
                 std::cout << "Kitchen closed" << std::endl;
                 break;
             }
+            _ingredient.refillIngredient();
         }
     } else { //Parent
         std::cout << "from parent" << std::endl;

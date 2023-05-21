@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
 #include <unordered_map>
 #include "IPizza.hpp"
 
@@ -17,22 +18,26 @@ class Ingredient {
     public:
         Ingredient(int refillTime);
 
-
+        /**
+         * @brief Check if there is enough ingredient to make the pizza then remove ingredient if yes
+         * 
+         * @param pizza 
+         * @return true 
+         * @return false 
+         */
         bool makePizza(Plazza::IPizza *pizza);
+
+        /**
+         * @brief Refill Ingredient every _refillTime in ms
+         *
+         */
+        void refillIngredient();
         ~Ingredient();
 
     protected:
     private:
-        // std::size_t _dough;
-        // std::size_t _tomato;
-        // std::size_t _gruyere;
-        // std::size_t _ham;
-        // std::size_t _mushrooms;
-        // std::size_t _steak;
-        // std::size_t _eggplant;
-        // std::size_t _goatCheese;
-        // std::size_t _chiefLove;
-        std::size_t _refillTime;
+        std::chrono::steady_clock::time_point _start;
+        std::chrono::milliseconds _refillTime;
         std::unordered_map<std::string, std::size_t> _ingredient;
 };
 
