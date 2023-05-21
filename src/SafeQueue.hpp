@@ -20,12 +20,12 @@ class ISafeQueue {
         virtual bool tryPop(int &value) = 0;
 };
 
+template <typename T>
 class SafeQueue : public ISafeQueue {
     public:
         SafeQueue(){};
         ~SafeQueue(){};
-        void push(int value)
-        {
+        void push(int value) {
             std::lock_guard<std::mutex> lock(_mutex);
             // std::unique_lock<std::mutex> lock(_mutex, std::defer_lock);
             // lock.lock();
@@ -33,20 +33,16 @@ class SafeQueue : public ISafeQueue {
             _queue.push(value);
             cv.notify_one();
             // lock.unlock();
-
         };
-        int pop(){
+        int pop() {
             std::unique_lock<std::mutex> lock(_mutex, std::defer_lock);
             lock.lock();
-            // int value;
-            // std::cout << "LOCKED" << std::endl;
-            if (!_queue.size() <= 0)
-            {
+            if (_queue.empty()) {
                 std::cout << "Waiting until refill" << std::endl;
-                cv.wait(lock);
-                // tryPop(value);
+            // auto a = _queue;
+            cv.wait(lock);
             }
-            int value = _queue.front();
+            T value = _queue.front();
             _queue.pop();
             std::cout << "\tPop value: " << value << std::endl;
             lock.unlock();
@@ -58,8 +54,7 @@ class SafeQueue : public ISafeQueue {
             else
                 return false;
         };
-        bool tryPop(int &value)
-        {
+        bool tryPop(int &value) {
             std::unique_lock<std::mutex> lock(_mutex);
             if (!_queue.empty()) {
                 value = _queue.front();
@@ -71,7 +66,7 @@ class SafeQueue : public ISafeQueue {
         };
 
     private:
-        std::queue<int> _queue;
+        std::queue<T> _queue;
         std::mutex _mutex;
         std::condition_variable cv;
 };

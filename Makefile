@@ -5,34 +5,64 @@
 ## Makefile
 ##
 
+TEST_FILES = tests/test_project.cpp
+
 NAME = plazza
 
-CC = g++
+TEST_NAME = unit_tests
 
-SRC	=	src
+MAIN_SRC = src/main.cpp
 
-FILE	=	$(SRC)/main.cpp	\
-			$(SRC)/bootstrap.cpp	\
+SRC	=	src/Parsing.cpp			\
+		src/Error.cpp			\
+		src/Reception.cpp		\
+		src/ErrorHandling.cpp	\
+		src/Order.cpp			\
+		src/Kitchen.cpp			\
+		src/Ingredient.cpp			\
+		src/Cook.cpp
 
-FILE_OBJ	= $(FILE:.cpp=.o)
+SRC +=	src/Pizza/Pizza.cpp			\
+		src/Pizza/Regina.cpp		\
+		src/Pizza/Americana.cpp		\
+		src/Pizza/Fantasia.cpp		\
+		src/Pizza/Margarita.cpp		\
 
-CPPFLAGS += -Wall -Wextra
+ALL_SRC += $(SRC)
 
-CPPFLAGS += -iquote include/ -g3
+ALL_SRC += $(MAIN_SRC)
+
+OBJ	= $(ALL_SRC:.cpp=.o)
+
+CFLAGS += -Wall -Wextra
+
+CPPFLAGS += -I./include/
 
 LDFLAGS += -lpthread
 
 all: $(NAME)
 
-$(NAME): $(FILE_OBJ)
-	$(CC) -o $(NAME) $(FILE_OBJ) $(CPPFLAGS) $(LDFLAGS)
+# $(NAME): OBJ += $(MAIN_SRC:.cpp=.o)
+$(NAME): $(OBJ)
+	$(CXX) -o $(NAME) $(OBJ) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS)
+
+tests_run: clean
+	$(CXX) $(SRC) $(TEST_FILES) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS) -o $(TEST_NAME) -lcriterion --coverage
+	./${TEST_NAME}
+	gcovr --exclude tests/
+	gcovr --exclude tests/ --branches
 
 clean:
-	$(RM) -f $(FILE_OBJ)
+	$(RM) -f $(OBJ)
+	$(RM) *.gcda
+	$(RM) *.gcno
 
 fclean: clean
 	$(RM) -f $(NAME)
 
 re: fclean all
+
+debug: CPPFLAGS += -g3
+debug: re
 
 .PHONY: all clean fclean re

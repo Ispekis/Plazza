@@ -5,9 +5,7 @@
 ** plazza
 */
 
-#ifndef PLAZZA_H_
-#define PLAZZA_H_
-
-void incrementCounter(int *counter, int n);
+#ifndef PLAZZA_HPP_
+    #define PLAZZA_HPP_
 
 #endif /* !PLAZZA_H_ */

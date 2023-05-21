@@ -1,0 +1,14 @@
+.vscode
+a.out
+*.gcno
+*.gcda
+unit_tests
+test.txt
+test
+tmp
+*.txt
+plazza
+*.o
+*~
+.idea/
+*.so
