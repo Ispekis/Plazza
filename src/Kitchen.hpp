@@ -9,6 +9,7 @@
     #define KITCHEN_HPP_
     #include <unistd.h>
     #include <chrono>
+    #include "Ingredient.hpp"
     #include "Error.hpp"
     #include <iostream>
     #include "Order.hpp"
@@ -46,10 +47,10 @@ namespace Plazza {
         private:
             float _mutiplier;
             int _nbCooks;
-            int _refillTime;
             size_t availableCooks;
             std::vector<Plazza::Cook> _cooks;
             std::chrono::seconds _workDuration;
+            Ingredient _ingredient;
     };
 }
 
