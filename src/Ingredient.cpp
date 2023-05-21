@@ -24,12 +24,10 @@ Ingredient::~Ingredient()
 bool Ingredient::makePizza(Plazza::IPizza *pizza)
 {
     std::vector<std::string> ingredient = pizza->getIngredients();
-    for (auto &element : ingredient) {
-        auto it = _ingredient.find(element);
-        if (it->second == 0)
-            return false;
-    }
-    for (auto &element : ingredient) {
+    if (!checkEnoughIngredient(pizza))
+        return false;
+    for (auto &element : ingredient)
+    {
         auto it = _ingredient.find(element);
         it->second--;
     }
@@ -46,4 +44,15 @@ void Ingredient::refillIngredient()
         _start = current;
         std::cout << "[Refill] All Ingredient have been refilled by one" << std::endl;
     }
+}
+
+bool Ingredient::checkEnoughIngredient(Plazza::IPizza *pizza)
+{
+    std::vector<std::string> ingredient = pizza->getIngredients();
+    for (auto &element : ingredient) {
+        auto it = _ingredient.find(element);
+        if (it->second == 0)
+            return false;
+    }
+    return true;
 }
