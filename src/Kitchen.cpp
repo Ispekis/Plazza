@@ -7,8 +7,15 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen() : _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time) : _workDuration(5)
 {
+    _mutiplier = mutiplier;
+    _nbCooks = nbCooks;
+    _refillTime = time;
+    availableCooks = _nbCooks;
+    for (int i = 0; i < _nbCooks; i++) {
+        _cooks.push_back(Plazza::Cook());
+    }
 }
 
 Plazza::Kitchen::~Kitchen()
@@ -17,12 +24,12 @@ Plazza::Kitchen::~Kitchen()
 
 void Plazza::Kitchen::run()
 {
-    pid_t pid = fork();
-    if (pid == -1) {
+    _pid = fork();
+    if (_pid == -1) {
         throw Error("Failed to fork", "fork");
     }
 
-    if (pid == 0) { // Child
+    if (_pid == 0) { // Child
         auto start =  std::chrono::steady_clock::now();
         std::cout << "Kitchen start" << std::endl;
         while (true) {
@@ -37,4 +44,24 @@ void Plazza::Kitchen::run()
     } else { //Parent
         std::cout << "from parent" << std::endl;
     }
+}
+
+void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> &orderList)
+{
+    if (_pid != 0) {
+        for (auto cook : _cooks) {
+            for (int i = 0; i < cook.availableOrderCapacity(); i++) {
+                if (!orderList.empty()) {
+                    // cook.addOrder(orderList.front());
+                    // orderList.erase(orderList.begin());
+                    std::cout << "ok receive" << std::endl;
+                }
+            }
+        }
+    }
+}
+
+bool Plazza::Kitchen::isStaturated()
+{
+    return false;
 }

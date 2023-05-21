@@ -11,18 +11,46 @@
     #include <chrono>
     #include "Error.hpp"
     #include <iostream>
+    #include "Order.hpp"
+    #include "Cook.hpp"
 
 namespace Plazza {
     class Kitchen {
         public:
-            Kitchen();
+            Kitchen(float mutiplier, int nbCooks, int time);
             ~Kitchen();
 
+            /**
+             * @brief Run the kitchen
+             *
+             */
             void run();
+
+            /**
+             * @brief receive order from the reception and remove it from the list
+             *
+             * @param orderList
+             */
+            void receiveOrder(std::vector<Plazza::Order> &orderList);
+
+            /**
+             *
+             * @brief check if the kitchen is saturated
+             *
+             * @return true
+             * @return false
+             */
+            bool isStaturated();
 
         protected:
         private:
+            float _mutiplier;
+            int _nbCooks;
+            int _refillTime;
+            size_t availableCooks;
+            std::vector<Plazza::Cook> _cooks;
             std::chrono::seconds _workDuration;
+            pid_t _pid;
     };
 }
 

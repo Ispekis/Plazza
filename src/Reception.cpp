@@ -24,7 +24,14 @@ void Plazza::Reception::start()
         for (auto order : _orderList) {
             std::cout << order << std::endl;
         }
-        create_kitchen();
+        // Create new kitchen if there is not
+        if (_kitchens.size() == 0) {
+            create_kitchen();
+        }
+        // kitchens receive orders
+        for (auto kitchen : _kitchens) {
+            kitchen.receiveOrder(_orderList);
+        }
     }
 }
 
@@ -73,9 +80,9 @@ void Plazza::Reception::parseEnum()
 
 void Plazza::Reception::create_kitchen()
 {
-    // Plazza::Kitchen kitchen;
-    // kitchen.run();
-    // _kitchens.push_back(kitchen);
+    Plazza::Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime());
+    kitchen.run();
+    _kitchens.push_back(kitchen);
 }
 
 void Plazza::Reception::splitInput(std::string &line)
