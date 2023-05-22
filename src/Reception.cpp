@@ -35,12 +35,14 @@ void Plazza::Reception::start()
 
 static Plazza::PizzaType getPizzaType(std::string &pizza)
 {
-    std::vector<std::string> pizzaType = {"regina", "margarita", "america", "fantasia"};
-    std::vector<Plazza::PizzaType> pizzaEnum = { Plazza::PizzaType::Regina, Plazza::PizzaType::Margarita, Plazza::PizzaType::Americana, Plazza::PizzaType::Fantasia};
+    std::vector<std::string> pizzaType = {"margarita", "regina", "americana", "fantasia"};
+    std::vector<Plazza::PizzaType> pizzaEnum = { Plazza::PizzaType::Margarita, Plazza::PizzaType::Regina, Plazza::PizzaType::Americana, Plazza::PizzaType::Fantasia};
 
     for (std::size_t i = 0; i != pizzaType.size(); i++) {
-        if (pizzaType[i].compare(pizza))
+        if (pizzaType[i] == pizza) {
+            std::cout << pizzaType[i] << " = " << i << std::endl;
             return pizzaEnum[i];
+        }
     }
     throw Error("Pizza Enum Not Found", pizza);
 }
