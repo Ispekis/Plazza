@@ -23,7 +23,7 @@ namespace Plazza {
             ~Reception();
 
             void start();
-            void parsingInput(std::string &line);
+            bool parsingInput(std::string &line);
             void parseEnum();
             void splitInput(std::string &line);
             void create_kitchen();
