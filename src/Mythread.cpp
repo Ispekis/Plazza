@@ -13,4 +13,22 @@ Mythread::Mythread()
 
 Mythread::~Mythread()
 {
+    if (_thread.joinable())
+        _thread.join();
+}
+
+void Mythread::start(Plazza::Order order)
+{
+    _thread = std::thread(&Mythread::cookingPizza, this);
+    _order = order;
+}
+
+void Mythread::end()
+{
+    _thread.join();
+}
+
+void Mythread::cookingPizza()
+{
+    std::cout << "Going to cook" << std::endl;
 }

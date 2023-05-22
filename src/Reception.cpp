@@ -29,9 +29,6 @@ void Plazza::Reception::start()
                 create_kitchen();
             }
             // kitchens receive orders
-            for (auto kitchen : _kitchens) {
-                kitchen.receiveOrder(_orderList);
-            }
         }
     }
 }
@@ -84,8 +81,10 @@ void Plazza::Reception::create_kitchen()
     std::array<int, 2> newPipefd;
     _pipefds.push_back(newPipefd);
     Plazza::Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _pipefds.back());
-    kitchen.run();
+    kitchen.receiveOrder(_orderList);
     _kitchens.push_back(kitchen);
+    std::cout << _kitchens.size() << std::endl;
+    kitchen.run();
 }
 
 void Plazza::Reception::splitInput(std::string &line)
@@ -126,6 +125,5 @@ bool Plazza::Reception::parsingInput(std::string &line)
         std::cout << error.what() << ": " << error.message() << "." << std::endl;
         return false;
     }
-    // printVector(_receiptList);
     return true;
 }

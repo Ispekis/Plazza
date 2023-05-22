@@ -37,23 +37,21 @@ void Plazza::Kitchen::run()
         auto start =  std::chrono::steady_clock::now();
         std::cout << "Kitchen start" << std::endl;
         while (true) {
-            //     start =  std::chrono::steady_clock::now();
-            // }
             auto current =  std::chrono::steady_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - start);
             if (elapsed >= _workDuration) {
                 std::cout << "Kitchen closed" << std::endl;
                 break;
             }
-
-            _ingredient->refillIngredient();
+            // _ingredient->refillIngredient();
+            runCooks();
         }
     } else { //Parent
         std::cout << "from parent" << std::endl;
     }
 }
 
-void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> &orderList)
+void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
 {
     // if (_pid != 0) {
         for (auto &cook : _cooks) {
@@ -62,7 +60,8 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> &orderList)
                     cook.addOrder(orderList.front());
                     orderList.erase(orderList.begin());
                     std::cout << "ok receive" << std::endl;
-                }
+                } else
+                    break;
             }
         }
     // }
@@ -70,11 +69,16 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> &orderList)
 
 void Plazza::Kitchen::runCooks()
 {
-    for (auto &cook : _cooks) {
+    for (auto cook : _cooks) {
         if (!cook.isCooking()) {
-                cook.cookPizza();
-        }
+            std::cout << "Cokking" << std::endl;
+            cook.cookPizza();
+            std::cout << "3" << std::endl;
+        } else
+            std::cout << "Is cooking" << std::endl;
     }
+    std::cout << "sort" << std::endl;
+
 }
 
 bool Plazza::Kitchen::isStaturated()

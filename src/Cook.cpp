@@ -11,6 +11,8 @@ Plazza::Cook::Cook(std::shared_ptr<Ingredient> ingredient) : _ingredient(ingredi
 {
     _orderCapacity = 2;
     _cooking = false;
+    _thread = std::make_shared<Mythread>();
+    // _thread = Mythread();
 }
 
 Plazza::Cook::~Cook()
@@ -43,9 +45,15 @@ bool Plazza::Cook::isCooking()
 
 void Plazza::Cook::cookPizza()
 {
+    std::cout << "1eeeeeeeeee" << std::endl;
     _cooking = true;
+    std::cout << _orderList.size() << std::endl;
     auto order = _orderList.front();
-    _orderList.erase(_orderList.begin());
     auto pizza = order.getPizza();
-    _ingredient->makePizza(pizza);
+    if (_ingredient->makePizza(pizza)) {
+        _orderList.erase(_orderList.begin());
+        _thread->start(order);
+        _thread->end();
+    }
+    std::cout << "2" << std::endl;
 }

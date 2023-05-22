@@ -7,6 +7,7 @@
 
 #include <thread>
 #include <iostream>
+#include "Order.hpp"
 
 #ifndef MYTHREAD_HPP_
 #define MYTHREAD_HPP_
@@ -14,25 +15,18 @@
 class Mythread {
     public:
         Mythread();
-        ~Mythread()
-        {
-            if (_thread.joinable())
-                _thread.join();
-        }
+        ~Mythread();
 
-        void start()
-        {
-            _thread = std::thread(&Mythread::cookingPizza, this);
-        }
+        void start(Plazza::Order order);
 
-        void cookingPizza()
-        {
-            std::cout << "Going to cook" << std::endl;
-        }
+        void end();
+
+        void cookingPizza();
 
     protected:
     private:
         std::thread _thread;
+        Plazza::Order _order;
 };
 
 #endif /* !MYTHREAD_HPP_ */

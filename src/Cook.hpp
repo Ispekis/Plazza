@@ -48,7 +48,7 @@ namespace Plazza {
         private:
             std::size_t _orderCapacity;
             std::vector<Plazza::Order> _orderList;
-            Mythread cook();
+            std::shared_ptr<Mythread> _thread;
             bool _cooking;
             std::shared_ptr<Ingredient> _ingredient;
     };

@@ -33,7 +33,7 @@ namespace Plazza {
              *
              * @param orderList
              */
-            void receiveOrder(std::vector<Plazza::Order> &orderList);
+            void receiveOrder(std::vector<Plazza::Order> orderList);
 
             /**
              *
