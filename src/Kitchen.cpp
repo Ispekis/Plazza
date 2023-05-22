@@ -59,7 +59,7 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
                 if (!orderList.empty()) {
                     cook.addOrder(orderList.front());
                     orderList.erase(orderList.begin());
-                    std::cout << "ok receive" << std::endl;
+                    std::cout << orderList.front().getName() << " receive" << std::endl;
                 } else
                     break;
             }
@@ -71,14 +71,11 @@ void Plazza::Kitchen::runCooks()
 {
     for (auto cook : _cooks) {
         if (!cook.isCooking()) {
-            std::cout << "Cokking" << std::endl;
             cook.cookPizza();
-            std::cout << "3" << std::endl;
         } else
             std::cout << "Is cooking" << std::endl;
     }
     std::cout << "sort" << std::endl;
-
 }
 
 bool Plazza::Kitchen::isStaturated()

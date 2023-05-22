@@ -22,13 +22,13 @@ void ErrorHandling::checkVectorLength(std::size_t size, std::vector<U> &vector)
         throw Error("Vector", "BadLength");
 }
 
-static std::string toLower(std::string &str)
+std::string toLower(std::string &str)
 {
     std::string res = str;
     std::transform(res.begin(), res.end(), res.begin(),
     [](unsigned char c)
     {
-        return std::tolower(c); 
+        return std::tolower(c);
     });
     return res;
 }

@@ -39,7 +39,7 @@ static Plazza::PizzaType getPizzaType(std::string &pizza)
     std::vector<Plazza::PizzaType> pizzaEnum = { Plazza::PizzaType::Margarita, Plazza::PizzaType::Regina, Plazza::PizzaType::Americana, Plazza::PizzaType::Fantasia};
 
     for (std::size_t i = 0; i != pizzaType.size(); i++) {
-        if (pizzaType[i] == pizza) {
+        if (toLower(pizza) == pizzaType[i]) {
             std::cout << pizzaType[i] << " = " << i << std::endl;
             return pizzaEnum[i];
         }
@@ -49,11 +49,11 @@ static Plazza::PizzaType getPizzaType(std::string &pizza)
 
 static Plazza::PizzaSize getPizzaSize(std::string &size)
 {
-    std::array<std::string, 5> pizzaSize = {"S", "M", "L", "XL", "XXL"};
+    std::array<std::string, 5> pizzaSize = {"s", "m", "l", "xl", "xxl"};
     std::array<Plazza::PizzaSize, 5> sizeEnum = { Plazza::PizzaSize::S, Plazza::PizzaSize::M, Plazza::PizzaSize::L, Plazza::PizzaSize::XL, Plazza::PizzaSize::XXL};
 
     for (std::size_t i = 0; i != pizzaSize.size(); i++) {
-        if (pizzaSize[i].compare(size) == 0)
+        if (toLower(size) == pizzaSize[i])
             return sizeEnum[i];
     }
     throw Error("Pizza Size Not Found", size);

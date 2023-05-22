@@ -45,15 +45,13 @@ bool Plazza::Cook::isCooking()
 
 void Plazza::Cook::cookPizza()
 {
-    std::cout << "1eeeeeeeeee" << std::endl;
     _cooking = true;
-    std::cout << _orderList.size() << std::endl;
     auto order = _orderList.front();
     auto pizza = order.getPizza();
     if (_ingredient->makePizza(pizza)) {
+        std::cout << "Cooking a " << _orderList.front().getName() << std::endl;
         _orderList.erase(_orderList.begin());
         _thread->start(order);
         _thread->end();
     }
-    std::cout << "2" << std::endl;
 }
