@@ -47,4 +47,5 @@ void Plazza::Cook::cookPizza()
     auto order = _orderList.front();
     _orderList.erase(_orderList.begin());
     auto pizza = order.getPizza();
+    _ingredient->makePizza(pizza);
 }

@@ -21,7 +21,7 @@ Ingredient::~Ingredient()
 {
 }
 
-bool Ingredient::makePizza(Plazza::IPizza *pizza)
+bool Ingredient::makePizza(std::shared_ptr<Plazza::IPizza> pizza)
 {
     std::vector<std::string> ingredient = pizza->getIngredients();
     if (!checkEnoughIngredient(pizza))
@@ -46,7 +46,7 @@ void Ingredient::refillIngredient()
     }
 }
 
-bool Ingredient::checkEnoughIngredient(Plazza::IPizza *pizza)
+bool Ingredient::checkEnoughIngredient(std::shared_ptr<Plazza::IPizza> pizza)
 {
     std::vector<std::string> ingredient = pizza->getIngredients();
     for (auto &element : ingredient) {
