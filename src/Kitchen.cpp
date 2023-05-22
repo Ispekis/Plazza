@@ -7,13 +7,14 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int, 2> pipefd) : _workDuration(5), _ingredient(time)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int, 2> pipefd) : _workDuration(5)
 {
+    _ingredient = std::make_shared<Ingredient>(time);
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
     availableCooks = _nbCooks;
     for (int i = 0; i < _nbCooks; i++) {
-        _cooks.push_back(Plazza::Cook());
+        _cooks.push_back(Plazza::Cook(_ingredient));
     }
     int tmp[2] = {pipefd.front(), pipefd.back()};
     if (pipe(tmp) == -1) {
@@ -36,18 +37,16 @@ void Plazza::Kitchen::run()
         auto start =  std::chrono::steady_clock::now();
         std::cout << "Kitchen start" << std::endl;
         while (true) {
-            // restart the chrono
-            // if () {
             //     start =  std::chrono::steady_clock::now();
             // }
             auto current =  std::chrono::steady_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - start);
-            // std::cout << "child" << std::endl;
             if (elapsed >= _workDuration) {
                 std::cout << "Kitchen closed" << std::endl;
                 break;
             }
-            _ingredient.refillIngredient();
+
+            _ingredient->refillIngredient();
         }
     } else { //Parent
         std::cout << "from parent" << std::endl;
@@ -57,7 +56,7 @@ void Plazza::Kitchen::run()
 void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> &orderList)
 {
     // if (_pid != 0) {
-        for (auto cook : _cooks) {
+        for (auto &cook : _cooks) {
             while (!cook.isOverwhelmed()) {
                 if (!orderList.empty()) {
                     cook.addOrder(orderList.front());
@@ -67,6 +66,15 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> &orderList)
             }
         }
     // }
+}
+
+void Plazza::Kitchen::runCooks()
+{
+    for (auto &cook : _cooks) {
+        if (!cook.isCooking()) {
+                cook.cookPizza();
+        }
+    }
 }
 
 bool Plazza::Kitchen::isStaturated()

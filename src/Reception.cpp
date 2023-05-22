@@ -21,17 +21,17 @@ void Plazza::Reception::start()
 
     while (std::getline(std::cin, line)) {
         if (parsingInput(line)) {
-        for (auto order : _orderList) {
-            std::cout << order << std::endl;
-        }
-        // Create new kitchen if there is not
-        if (_kitchens.size() == 0) {
-            create_kitchen();
-        }
-        // kitchens receive orders
-        for (auto kitchen : _kitchens) {
-            kitchen.receiveOrder(_orderList);
-        }
+            for (auto order : _orderList) {
+                std::cout << order << std::endl;
+            }
+            // Create new kitchen if there is not
+            if (_kitchens.size() == 0) {
+                create_kitchen();
+            }
+            // kitchens receive orders
+            for (auto kitchen : _kitchens) {
+                kitchen.receiveOrder(_orderList);
+            }
         }
     }
 }

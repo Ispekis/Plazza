@@ -8,12 +8,14 @@
 #ifndef COOK_HPP_
     #define COOK_HPP_
     #include <cstddef>
+    #include "Mythread.hpp"
     #include "Order.hpp"
+    #include "Ingredient.hpp"
 
 namespace Plazza {
     class Cook {
         public:
-            Cook();
+            Cook(std::shared_ptr<Ingredient>ingredient);
             ~Cook();
 
             /**
@@ -38,10 +40,17 @@ namespace Plazza {
              */
             void addOrder(Plazza::Order order);
 
+            bool isCooking();
+
+            void cookPizza();
+
         protected:
         private:
             std::size_t _orderCapacity;
             std::vector<Plazza::Order> _orderList;
+            Mythread cook();
+            bool _cooking;
+            std::shared_ptr<Ingredient> _ingredient;
     };
 }
 

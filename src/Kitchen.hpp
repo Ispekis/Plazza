@@ -42,6 +42,8 @@ namespace Plazza {
              * @return true
              * @return false
              */
+
+            void runCooks();
             bool isStaturated();
 
         protected:
@@ -51,7 +53,7 @@ namespace Plazza {
             size_t availableCooks;
             std::vector<Plazza::Cook> _cooks;
             std::chrono::seconds _workDuration;
-            Ingredient _ingredient;
+            std::shared_ptr<Ingredient> _ingredient;
     };
 }
 
