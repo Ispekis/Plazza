@@ -15,6 +15,8 @@
     #include <tuple>
     #include <vector>
     #include "Kitchen.hpp"
+    #include <array>
+    #include <string>
 
 namespace Plazza {
     class Reception {
