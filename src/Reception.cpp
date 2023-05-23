@@ -20,7 +20,7 @@ void Plazza::Reception::start()
     std::string line;
 
     while (std::getline(std::cin, line)) {
-        parsingInput(line);
+        if (parsingInput(line)) {
         for (auto order : _orderList) {
             std::cout << order << std::endl;
         }
@@ -31,6 +31,7 @@ void Plazza::Reception::start()
         // kitchens receive orders
         for (auto kitchen : _kitchens) {
             kitchen.receiveOrder(_orderList);
+        }
         }
     }
 }
@@ -117,12 +118,14 @@ static void printVector(std::vector<std::vector<std::string>> &vector)
     }
 }
 
-void Plazza::Reception::parsingInput(std::string &line)
+bool Plazza::Reception::parsingInput(std::string &line)
 {
     try {
         splitInput(line);
     } catch (const Error &error) {
         std::cout << error.what() << ": " << error.message() << "." << std::endl;
+        return false;
     }
     // printVector(_receiptList);
+    return true;
 }

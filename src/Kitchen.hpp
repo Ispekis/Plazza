@@ -14,6 +14,7 @@
     #include <iostream>
     #include "Order.hpp"
     #include "Cook.hpp"
+    #include <array>
 
 namespace Plazza {
     class Kitchen {
