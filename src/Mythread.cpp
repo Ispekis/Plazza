@@ -19,8 +19,8 @@ Mythread::~Mythread()
 
 void Mythread::start(Plazza::Order order)
 {
-    _thread = std::thread(&Mythread::cookingPizza, this);
     _order = order;
+    _thread = std::thread(&Mythread::cookingPizza, this);
 }
 
 void Mythread::end()
@@ -31,4 +31,9 @@ void Mythread::end()
 void Mythread::cookingPizza()
 {
     std::cout << "Going to cook" << std::endl;
+    auto pizza = _order.getPizza();
+    auto size = _order.getSize();
+    auto cookTime = pizza->getBakeTime();
+    std::this_thread::sleep_for(std::chrono::seconds(cookTime));
+    std::cout << "Cooked" << std::endl;
 }
