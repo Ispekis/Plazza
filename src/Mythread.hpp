@@ -7,6 +7,9 @@
 
 #include <thread>
 #include <iostream>
+#include <condition_variable>
+#include <mutex>
+#include "Ingredient.hpp"
 #include "Order.hpp"
 
 #ifndef MYTHREAD_HPP_
@@ -19,14 +22,21 @@ class Mythread {
 
         void start(Plazza::Order order);
 
-        void end();
+        bool isRunning();
 
+        void endThread();
+        void fillOrder(std::vector<Plazza::Order>);
         void cookingPizza();
 
     protected:
     private:
         std::thread _thread;
-        Plazza::Order _order;
+        std::vector<Plazza::Order> _order;
+        bool _isRunning;
+        bool _isCooking;
+        std::shared_ptr<Ingredient> _ingredient;
+        std::condition_variable conditionVariable;
+        std::mutex mutex;
 };
 
 #endif /* !MYTHREAD_HPP_ */

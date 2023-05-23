@@ -9,31 +9,55 @@
 
 Mythread::Mythread()
 {
+    _isRunning = true;
+    std::cout << "Cook is ready to cook pizza" << std::endl;
+    _thread = std::thread(&Mythread::cookingPizza, this);
 }
 
 Mythread::~Mythread()
 {
-    if (_thread.joinable())
-        _thread.join();
+    std::cout << "thread is running: " << _isRunning << std::endl;
+    _thread.join();
+    std::cout << "Thread Joined" << std::endl;
+}
+
+void Mythread::fillOrder(std::vector<Plazza::Order> order)
+{
+    _order = order;
 }
 
 void Mythread::start(Plazza::Order order)
 {
-    _order = order;
-    _thread = std::thread(&Mythread::cookingPizza, this);
+    _isRunning = true;
 }
 
-void Mythread::end()
+bool Mythread::isRunning()
 {
-    _thread.join();
+    if (_isRunning == false)
+        if (_thread.joinable())
+            _thread.join();
+    return _isRunning;
+}
+
+void Mythread::endThread()
+{
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        _isRunning = false;
+    }
+    conditionVariable.notify_one();
 }
 
 void Mythread::cookingPizza()
 {
-    std::cout << "Going to cook" << std::endl;
-    auto pizza = _order.getPizza();
-    auto size = _order.getSize();
-    auto cookTime = pizza->getBakeTime();
-    std::this_thread::sleep_for(std::chrono::seconds(cookTime));
-    std::cout << "Cooked" << std::endl;
+    std::unique_lock<std::mutex> lock(mutex);
+    while (_isRunning == true)
+    {
+        if (!_order.empty())
+            std::cout << "cooc" << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << _isRunning << std::endl;
+        conditionVariable.wait(lock, [this] { return _isRunning; });
+    }
+    std::cout << "Cook is going to sleep" << std::endl;
 }

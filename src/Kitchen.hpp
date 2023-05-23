@@ -44,7 +44,10 @@ namespace Plazza {
              */
 
             void runCooks();
+
+            bool stopCooks();
             bool isStaturated();
+            bool timeOut();
 
         protected:
         private:
@@ -54,6 +57,7 @@ namespace Plazza {
             std::vector<Plazza::Cook> _cooks;
             std::chrono::seconds _workDuration;
             std::shared_ptr<Ingredient> _ingredient;
+            std::chrono::steady_clock::time_point _start;
     };
 }
 

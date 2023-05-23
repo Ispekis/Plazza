@@ -44,11 +44,14 @@ namespace Plazza {
 
             void cookPizza();
 
+            void endThread();
+            void closeThread();
+            
+            std::shared_ptr<Mythread> _thread;
         protected:
         private:
             std::size_t _orderCapacity;
             std::vector<Plazza::Order> _orderList;
-            std::shared_ptr<Mythread> _thread;
             bool _cooking;
             std::shared_ptr<Ingredient> _ingredient;
     };
