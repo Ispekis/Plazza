@@ -13,15 +13,16 @@
 #include <queue>
 #include <condition_variable>
 
+template <typename T>
 class ISafeQueue {
     public :
         virtual ~ISafeQueue() = default ;
-        virtual void push(int value) = 0;
-        virtual bool tryPop(int &value) = 0;
+        virtual void push(T value) = 0;
+        virtual bool tryPop(T &value) = 0;
 };
 
 template <typename T>
-class SafeQueue : public ISafeQueue {
+class SafeQueue : public ISafeQueue<T> {
     public:
         SafeQueue(){};
         ~SafeQueue(){};

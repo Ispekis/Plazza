@@ -9,6 +9,7 @@
 #include <iostream>
 #include <condition_variable>
 #include <mutex>
+#include <atomic>
 #include "Ingredient.hpp"
 #include "Order.hpp"
 
@@ -19,24 +20,38 @@ class Mythread {
     public:
         Mythread();
         ~Mythread();
+        // Mythread(Mythread const &) = delete;
+        // void operator=(Mythread const &) = delete;
 
         void start(Plazza::Order order);
 
         bool isRunning();
 
         void endThread();
-        void fillOrder(std::vector<Plazza::Order>);
-        void cookingPizza();
+        // void stopThread() {
+        //     _isRunning = false;
+        //     _thread.join();
+        //     std::cout << "joined" << std::endl;
+        // }
+        void fillOrder(Plazza::Order);
+
+        bool isCooking() {}
+
+        void stopThread();
 
     protected:
     private:
+        void cookingPizza();
         std::thread _thread;
-        std::vector<Plazza::Order> _order;
+        Plazza::Order _order;
+
         bool _isRunning;
         bool _isCooking;
+
         std::shared_ptr<Ingredient> _ingredient;
-        std::condition_variable conditionVariable;
-        std::mutex mutex;
+
+        // std::condition_variable conditionVariable;
+        // std::mutex mutex;
 };
 
 #endif /* !MYTHREAD_HPP_ */
