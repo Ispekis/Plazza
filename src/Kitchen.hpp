@@ -15,6 +15,7 @@
     #include "Order.hpp"
     #include "Cook.hpp"
     #include <array>
+    #include "SafeQueue.hpp"
 
 namespace Plazza {
     class Kitchen {
@@ -28,12 +29,14 @@ namespace Plazza {
              */
             void run();
 
+            void kitchenLoop();
+
             /**
              * @brief receive order from the reception and remove it from the list
              *
              * @param orderList
              */
-            void receiveOrder(std::vector<Plazza::Order> &orderList);
+            void receiveOrder(std::vector<Plazza::Order> orderList);
 
             /**
              *
@@ -42,16 +45,27 @@ namespace Plazza {
              * @return true
              * @return false
              */
+
+
+            void stopCooks();
             bool isStaturated();
+            bool timeOut();
+
 
         protected:
         private:
             float _mutiplier;
             int _nbCooks;
             size_t availableCooks;
-            std::vector<Plazza::Cook> _cooks;
+            size_t _orderCapacity;
+
+            std::vector<std::shared_ptr<Plazza::Cook>> _cooks;
+            std::shared_ptr<Ingredient> _ingredient;
+            std::shared_ptr<SafeQueue<Plazza::Order>> _order;
+
+            std::chrono::steady_clock::time_point _start;
             std::chrono::seconds _workDuration;
-            Ingredient _ingredient;
+
     };
 }
 

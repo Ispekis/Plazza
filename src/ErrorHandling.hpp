@@ -21,4 +21,6 @@ class ErrorHandling {
         void checkReceiptArg(std::vector<std::string> words);
 };
 
+std::string toLower(std::string &str);
+
 #endif /* !ERRORHANDLING_HPP_ */
