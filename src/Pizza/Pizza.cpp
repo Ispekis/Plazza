@@ -6,6 +6,7 @@
 */
 
 #include "Pizza.hpp"
+#include <iostream>
 
 Plazza::Pizza::Pizza()
 {
@@ -62,14 +63,18 @@ int Plazza::Pizza::getNbrIngredient() const
 //     return os;
 // }
 
-std::ostream& operator<<(std::ostream &os, const Plazza::Pizza &pizza)
+std::ostream& operator<<(std::ostream &os, const Plazza::IPizza &pizza)
 {
-    os << pizza.getName() << std::string(" ");
-
+    os << pizza.getName() << "\n";
+    os << pizza.getBakeTime() << "\n";
+    os << pizza.getNbrIngredient() << "\n";
+    for (auto ingredient : pizza.getIngredients()) {
+        os << ingredient << "\n";
+    }
     return os;
 }
 
-std::istream& operator>>(std::istream &is, Plazza::Pizza &pizza)
+std::istream& operator>>(std::istream &is, Plazza::IPizza &pizza)
 {
     std::string name;
     is >> name;

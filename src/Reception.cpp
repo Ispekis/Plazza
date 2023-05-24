@@ -21,12 +21,13 @@ void Plazza::Reception::start()
 
     while (std::getline(std::cin, line)) {
         if (parsingInput(line)) {
-            for (auto order : _orderList) {
-                std::cout << order << std::endl;
-            }
+            // for (auto order : _orderList) {
+            //     std::cout << order << std::endl;
+            // }
             // Create new kitchen if there is not
             if (_kitchens.size() == 0) {
                 create_kitchen();
+                _msgQueue.push(_orderList.at(0));
             }
             // kitchens receive orders
         }
@@ -80,13 +81,34 @@ void Plazza::Reception::parseEnum()
 
 void Plazza::Reception::create_kitchen()
 {
-    std::array<int, 2> newPipefd;
-    _pipefds.push_back(newPipefd);
-    Plazza::Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _pipefds.back());
-    kitchen.receiveOrder(_orderList);
-    _kitchens.push_back(kitchen);
-    std::cout << _kitchens.size() << std::endl;
-    kitchen.run();
+    // std::array<int, 2> newPipefd;
+    // _pipefds.push_back(newPipefd);
+    // Plazza::Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _pipefds.back());
+    // kitchen.receiveOrder(_orderList);
+    // _kitchens.push_back(kitchen);
+    // std::cout << _kitchens.size() << std::endl;
+    // kitchen.run();
+    pid_t pid = fork();
+    std::chrono::seconds workDuration(5);
+
+    if (pid == -1)
+        throw Error("Failed to fork", "fork");
+    if (pid == 0) { // Child
+        std::cout << "Kitchen start" << std::endl;
+        auto start = std::chrono::steady_clock::now();
+        while (true) {
+            auto current =  std::chrono::steady_clock::now();
+            auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - start);
+            if (elapsed >= workDuration) {
+                break;
+            }
+
+        }
+        std::cout << "Kitchen closed" << std::endl;
+    }
+    else { // Parent
+        // std::cout << "from parent" << std::endl;
+    }
 }
 
 void Plazza::Reception::splitInput(std::string &line)

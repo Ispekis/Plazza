@@ -10,7 +10,12 @@
 
 typedef struct pizza_data {
     long msg_type;
-    char msg_text[100];
+    std::string name;
+    std::vector<std::string> ingredients;
+    int bakeTime;
+    int nbrIngredient;
+    int type;
+    int size;
 } pizza_data;
 
 #endif /* !PLAZZA_H_ */

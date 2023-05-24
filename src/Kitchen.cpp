@@ -84,7 +84,7 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
             _order->push(orderList.front());
             orderList.erase(orderList.begin());
             _orderCapacity--;
-            std::cout << orderList.front().getName() << "Added into Kitchen queue" << std::endl;
+            std::cout << orderList.front().getPizza().get()->getName() << "Added into Kitchen queue" << std::endl;
         } else
             break;
     }

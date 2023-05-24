@@ -8,7 +8,6 @@
 #ifndef PIZZA_HPP_
     #define PIZZA_HPP_
     #include "IPizza.hpp"
-    #include "plazza.hpp"
 
 namespace Plazza {
     class Pizza : public Plazza::IPizza {
@@ -43,7 +42,7 @@ namespace Plazza {
  * @param pizza
  * @return std::ostream&
  */
-std::ostream& operator<<(std::ostream &os, const Plazza::Pizza &pizza);
+std::ostream& operator<<(std::ostream &os, const Plazza::IPizza &pizza);
 
 /**
  * @brief Deserialize pizza

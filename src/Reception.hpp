@@ -17,6 +17,9 @@
     #include "Kitchen.hpp"
     #include <array>
     #include <string>
+    #include <unistd.h>
+    #include <chrono>
+    #include "MessageQueue.hpp"
 
 namespace Plazza {
     class Reception {
@@ -36,6 +39,7 @@ namespace Plazza {
             ErrorHandling _CheckError;
             std::vector<std::vector<std::string>> _receiptList;
             std::vector<Order> _orderList;
+            MessageQueue _msgQueue;
             std::vector<Kitchen> _kitchens;
             std::vector<std::array<int, 2>> _pipefds;
     };

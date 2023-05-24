@@ -12,6 +12,7 @@ Plazza::AmericanaPizza::AmericanaPizza()
     _name = "americana";
     _ingredients = {"dough", "tomato", "eggplant", "goat cheese", "chief love"};
     _bakeTime = 4;
+    _nbrIngredient = _ingredients.size();
 }
 
 Plazza::AmericanaPizza::~AmericanaPizza()
