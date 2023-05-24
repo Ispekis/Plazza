@@ -10,12 +10,13 @@
     #include <cstddef>
     #include "Mythread.hpp"
     #include "Order.hpp"
+    #include "SafeQueue.hpp"
     #include "Ingredient.hpp"
 
 namespace Plazza {
     class Cook {
         public:
-            Cook(std::shared_ptr<Ingredient>ingredient);
+            Cook(std::shared_ptr<Ingredient>ingredient, std::shared_ptr<SafeQueue<Plazza::Order>> order);
             ~Cook();
 
             /**
@@ -54,6 +55,7 @@ namespace Plazza {
             std::vector<Plazza::Order> _orderList;
             bool _cooking;
             std::shared_ptr<Ingredient> _ingredient;
+            std::shared_ptr<SafeQueue<Plazza::Order>> _order;
     };
 }
 

@@ -9,19 +9,19 @@
 
 Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int, 2> pipefd) : _workDuration(5)
 {
+    _order = std::make_shared<SafeQueue<Plazza::Order>>();
     _ingredient = std::make_shared<Ingredient>(time);
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
     availableCooks = _nbCooks;
     for (int i = 0; i < _nbCooks; i++) {
-        _cooks.push_back(Plazza::Cook(_ingredient));
+        _cooks.push_back(Plazza::Cook(_ingredient, _order));
     }
     int tmp[2] = {pipefd.front(), pipefd.back()};
     if (pipe(tmp) == -1) {
         throw Error("Failed to pipe", "pipe");
     }
     _start = std::chrono::steady_clock::now();
-
 }
 
 Plazza::Kitchen::~Kitchen()

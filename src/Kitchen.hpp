@@ -15,6 +15,7 @@
     #include "Order.hpp"
     #include "Cook.hpp"
     #include <array>
+    #include "SafeQueue.hpp"
 
 namespace Plazza {
     class Kitchen {
@@ -58,6 +59,7 @@ namespace Plazza {
             std::chrono::seconds _workDuration;
             std::shared_ptr<Ingredient> _ingredient;
             std::chrono::steady_clock::time_point _start;
+            std::shared_ptr<SafeQueue<Plazza::Order>> _order;
     };
 }
 

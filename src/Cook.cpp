@@ -7,7 +7,7 @@
 
 #include "Cook.hpp"
 
-Plazza::Cook::Cook(std::shared_ptr<Ingredient> ingredient) : _ingredient(ingredient)
+Plazza::Cook::Cook(std::shared_ptr<Ingredient> ingredient, std::shared_ptr<SafeQueue<Plazza::Order>> order) : _ingredient(ingredient), _order(order)
 {
     _orderCapacity = 2;
     _cooking = false;

@@ -25,7 +25,7 @@ class SafeQueue : public ISafeQueue {
     public:
         SafeQueue(){};
         ~SafeQueue(){};
-        void push(int value) {
+        void push(T value) {
             std::lock_guard<std::mutex> lock(_mutex);
             // std::unique_lock<std::mutex> lock(_mutex, std::defer_lock);
             // lock.lock();
@@ -34,7 +34,7 @@ class SafeQueue : public ISafeQueue {
             cv.notify_one();
             // lock.unlock();
         };
-        int pop() {
+        T pop() {
             std::unique_lock<std::mutex> lock(_mutex, std::defer_lock);
             lock.lock();
             if (_queue.empty()) {
@@ -54,7 +54,7 @@ class SafeQueue : public ISafeQueue {
             else
                 return false;
         };
-        bool tryPop(int &value) {
+        bool tryPop(T &value) {
             std::unique_lock<std::mutex> lock(_mutex);
             if (!_queue.empty()) {
                 value = _queue.front();
