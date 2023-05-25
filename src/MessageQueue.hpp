@@ -11,20 +11,28 @@
     #include <sys/msg.h>
     #include "plazza.hpp"
     #include <iostream>
+    #include <sstream>
     #include "Order.hpp"
+    #include <cstring>
 
 namespace Plazza {
     class MessageQueue {
         public:
-            MessageQueue() {};
+            MessageQueue() {
+                _key = ftok(".", 65);
+            };
             ~MessageQueue() {};
 
             void push(Order order, int id) {
+                key_t key;
                 int msgid;
-                pizza_data pizdata;
+                msg_data msgData;
+
+                // Remove padding
+                std::memset(&msgData, sizeof(msgData), 0);
 
                 // Init struct
-                pizdata.mesg_type = id;
+                msgData.mesg_type = id;
 
                 // serialize data
                 std::stringstream serializedStream;
@@ -33,54 +41,50 @@ namespace Plazza {
 
                 // Deserialize data to struct
                 std::stringstream deserializedStream(serializedString);
-                deserializedStream >> pizdata;
-
-                // std::cout << pizdata.name << std::endl;
-                // std::cout << pizdata.bakeTime << std::endl;
-                // std::cout << pizdata.nbrIngredient << std::endl;
-                // for (int i = 0; i < pizdata.nbrIngredient; i++) {
-                //     std::cout << pizdata.ingredients[i] << std::endl;
-                // }
-                // std::cout << pizdata.type << std::endl;
-                // std::cout << pizdata.size << std::endl;
+                deserializedStream >> msgData;
 
                 // Send data to queue
-                // msgid = msgget(IPC_PRIVATE, 0666 | IPC_CREAT);
-                // if (msgid == -1) {
-                //     std::cout << "msgget error" << std::endl;
-                // } else {
+                msgid = msgget(_key, 0666 | IPC_CREAT);
+                if (msgid == -1) {
+                    std::cout << "msgget error" << std::endl;
+                    perror("");
+                }
+                //  else {
                 //     std::cout << "msg success" << std::endl;
                 // }
-                // if (msgsnd(msgid, &pizdata, sizeof(pizdata), 0) != -1) {
-                //     std::cout << "message send" << std::endl;
-                // } else {
+                if (msgsnd(msgid, &msgData, sizeof(msgData) - sizeof(long), 0) == -1) {
+                    std::cout << "message send " << id << std::endl;
+                }
+                //  else {
                 //     std::cout << "message not send" << std::endl;
                 //     perror("");
                 // }
             };
 
-            void pop(int id) {
+            Plazza::Order pop(int id) {
                 int msgid;
-                pizza_data rcvPizza;
+                msg_data rcvData;
+
+                // Remove padding
+                std::memset(&rcvData, sizeof(rcvData), 0);
 
                 // Receive queue
-                msgid = msgget(IPC_PRIVATE, 0666 | IPC_CREAT);
-                if (msgrcv(msgid, &rcvPizza, sizeof(rcvPizza), id, IPC_NOWAIT) != -1) {
-                    std::cout << "ok2" << std::endl;
-
-                    std::cout << rcvPizza.name << std::endl;
-                    std::cout << rcvPizza.bakeTime << std::endl;
-                    std::cout << rcvPizza.nbrIngredient << std::endl;
-                    for (int i = 0; i < rcvPizza.nbrIngredient; i++) {
-                        std::cout << rcvPizza.ingredients[i] << std::endl;
-                    }
-                    std::cout << rcvPizza.type << std::endl;
-                    std::cout << rcvPizza.size << std::endl;
+                msgid = msgget(_key, 0666 | IPC_CREAT);
+                if (msgrcv(msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, IPC_NOWAIT) != -1) {
+                    // std::cout << rcvData.type << std::endl;
+                    // std::cout << rcvData.size << std::endl;
+                    // std::cout << rcvData.nbr << std::endl;
+                    // Delete message from queue
+                    msgctl(msgid, IPC_RMID, NULL);
+                    return Plazza::Order((Plazza::PizzaType) rcvData.type, (Plazza::PizzaSize) rcvData.size, rcvData.nbr);
+                } else {
+                    perror("");
                 }
             }
 
         protected:
         private:
+            key_t _key;
     };
 }
 

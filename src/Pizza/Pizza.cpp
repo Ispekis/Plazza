@@ -31,11 +31,6 @@ void Plazza::Pizza::setIngredients(std::vector<std::string> ingredients)
     _ingredients = ingredients;
 }
 
-void Plazza::Pizza::setNbrIngredient(int nbr)
-{
-    _nbrIngredient = nbr;
-}
-
 int Plazza::Pizza::getBakeTime() const
 {
     return _bakeTime;
@@ -51,11 +46,6 @@ std::string Plazza::Pizza::getName() const
     return _name;
 }
 
-int Plazza::Pizza::getNbrIngredient() const
-{
-    return _nbrIngredient;
-}
-
 // std::ostream& operator<<(std::ostream &os, const pizza_data &pizzaData)
 // {
 //     pizza_data pd;
@@ -63,21 +53,21 @@ int Plazza::Pizza::getNbrIngredient() const
 //     return os;
 // }
 
-std::ostream& operator<<(std::ostream &os, const Plazza::IPizza &pizza)
-{
-    os << pizza.getName() << "\n";
-    os << pizza.getBakeTime() << "\n";
-    os << pizza.getNbrIngredient() << "\n";
-    for (auto ingredient : pizza.getIngredients()) {
-        os << ingredient << "\n";
-    }
-    return os;
-}
+// std::ostream& operator<<(std::ostream &os, const Plazza::IPizza &pizza)
+// {
+//     os << pizza.getName() << "\n";
+//     os << pizza.getBakeTime() << "\n";
+//     os << pizza.getNbrIngredient() << "\n";
+//     for (auto ingredient : pizza.getIngredients()) {
+//         os << ingredient << "\n";
+//     }
+//     return os;
+// }
 
-std::istream& operator>>(std::istream &is, Plazza::IPizza &pizza)
-{
-    std::string name;
-    is >> name;
-    pizza.setName(name);
-    return is;
-}
+// std::istream& operator>>(std::istream &is, Plazza::IPizza &pizza)
+// {
+//     std::string name;
+//     is >> name;
+//     pizza.setName(name);
+//     return is;
+// }

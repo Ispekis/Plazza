@@ -19,6 +19,7 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
     for (int i = 0; i < _nbCooks; i++) {
         _cooks.push_back(std::make_shared<Plazza::Cook>(_ingredient, _order));
     }
+    _msgQueue.pop(getpid());
 }
 
 Plazza::Kitchen::~Kitchen()

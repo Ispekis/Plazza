@@ -23,23 +23,26 @@ namespace Plazza {
     class Order {
         public:
             Order();
-            Order(Plazza::PizzaType type, Plazza::PizzaSize size);
+            Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t amount);
             ~Order();
 
             //* Getters *//
             Plazza::PizzaType getType() const;
             Plazza::PizzaSize getSize() const;
+            std::size_t getAmount() const;
             std::string getSizeName() const;
             std::shared_ptr<Plazza::IPizza> getPizza() const;
 
             //* Setters *//
             void setType(Plazza::PizzaType type);
             void setSize(Plazza::PizzaSize size);
+            void setAmount(std::size_t amount);
 
         protected:
         private:
             Plazza::PizzaType _pizzaType;
             Plazza::PizzaSize _pizzaSize;
+            std::size_t _amount;
             std::string _pizzaSizeName;
             std::shared_ptr<Plazza::IPizza> _pizzas;
             // TODO Make it generic to use
@@ -60,7 +63,7 @@ namespace Plazza {
  * @param pizzaData
  * @return std::istream&
  */
-std::istream& operator>>(std::istream &is, pizza_data &pizzaData);
+std::istream& operator>>(std::istream &is, msg_data &msgData);
 
 
 /**

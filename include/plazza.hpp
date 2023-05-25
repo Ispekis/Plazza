@@ -8,14 +8,11 @@
 #ifndef PLAZZA_HPP_
     #define PLAZZA_HPP_
 
-typedef struct pizza_data {
+typedef struct msg_data {
     long mesg_type;
-    std::string name;
-    std::vector<std::string> ingredients;
-    int bakeTime;
-    int nbrIngredient;
     int type;
     int size;
-} pizza_data;
+    int nbr;
+} msg_data;
 
 #endif /* !PLAZZA_H_ */

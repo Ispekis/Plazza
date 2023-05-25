@@ -46,7 +46,7 @@ namespace Plazza {
 
         protected:
         private:
-            Mythread _thread;
+            // Mythread _thread;
             std::vector<Plazza::Order> _orderList;
             bool _cooking;
 

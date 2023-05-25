@@ -12,10 +12,11 @@ Plazza::Order::Order()
 
 }
 
-Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size)
+Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t amount)
 {
     this->setType(type);
     this->setSize(size);
+    this->setAmount(amount);
 }
 
 Plazza::Order::~Order()
@@ -30,6 +31,11 @@ Plazza::PizzaType Plazza::Order::getType() const
 Plazza::PizzaSize Plazza::Order::getSize() const
 {
     return _pizzaSize;
+}
+
+std::size_t Plazza::Order::getAmount() const
+{
+    return _amount;
 }
 
 std::string Plazza::Order::getSizeName() const
@@ -68,32 +74,41 @@ void Plazza::Order::setSize(Plazza::PizzaSize size)
     _pizzaSizeName = pizzaSizesMap[size];
 }
 
+void Plazza::Order::setAmount(std::size_t amount)
+{
+    _amount = amount;
+}
+
 std::ostream &operator<<(std::ostream &os, const Plazza::Order &order)
 {
 
     // Serialize pizza
-    os << *order.getPizza();
-    os << order.getType() << "\n";
-    os << order.getSize() << "\n";
+    // os << *order.getPizza();
+    os << order.getType() << " ";
+    os << order.getSize() << " ";
+    os << order.getAmount();
     return os;
 }
 
-std::istream& operator>>(std::istream &is, pizza_data &pizzaData)
+std::istream& operator>>(std::istream &is, msg_data &msgData)
 {
     // Deserialize pizza
-    is >> pizzaData.name;
-    is >> pizzaData.bakeTime;
-    is >> pizzaData.nbrIngredient;
-    std::vector<std::string> ings;
-    std::string tmp;
-    for (int i = 0; i < pizzaData.nbrIngredient; i++) {
-        is >> tmp;
-        ings.push_back(tmp);
-    }
-    pizzaData.ingredients = ings;
+    is >> msgData.type;
+    is >> msgData.size;
+    is >> msgData.nbr;
+    // is >> pizzaData.name;
+    // is >> pizzaData.bakeTime;
+    // is >> pizzaData.nbrIngredient;
+    // std::vector<std::string> ings;
+    // std::string tmp;
+    // for (int i = 0; i < pizzaData.nbrIngredient; i++) {
+    //     is >> tmp;
+    //     ings.push_back(tmp);
+    // }
+    // pizzaData.ingredients = ings;
 
-    // Deserialize others
-    is >> pizzaData.type;
-    is >> pizzaData.size;
+    // // Deserialize others
+    // is >> pizzaData.type;
+    // is >> pizzaData.size;
     return is;
 }

@@ -12,7 +12,6 @@ Plazza::ReginaPizza::ReginaPizza()
     _name = "regina";
     _ingredients = {"dough", "tomato", "gruyere"};
     _bakeTime = 1;
-    _nbrIngredient = _ingredients.size();
 }
 
 Plazza::ReginaPizza::~ReginaPizza()

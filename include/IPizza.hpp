@@ -37,13 +37,6 @@ namespace Plazza {
             virtual void setIngredients(std::vector<std::string> ingredients) = 0;
 
             /**
-             * @brief Set the number of Ingredients
-             *
-             * @return int
-             */
-            virtual void setNbrIngredient(int nbr) = 0;
-
-            /**
              * @brief Get the Bake Time of the pizza in second
              *
              * @return int
@@ -63,13 +56,6 @@ namespace Plazza {
              * @return std::string
              */
             virtual std::string getName() const = 0;
-
-            /**
-             * @brief Get the number of Ingredients
-             *
-             * @return int
-             */
-            virtual int getNbrIngredient() const = 0;
 
             // /**
             //  * @brief Serialize data

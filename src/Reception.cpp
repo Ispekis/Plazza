@@ -73,10 +73,8 @@ void Plazza::Reception::parseEnum()
         PizzaType type = getPizzaType(a[0]);
         PizzaSize size = getPizzaSize(a[1]);
         int number = getPizzaNumber(a[2]);
-        for (int i = 0; i < number; i++) {
-            Plazza::Order new_order(type, size);
-            _orderList.push_back(new_order);
-        }
+        Plazza::Order new_order(type, size, number);
+        _orderList.push_back(new_order);
     }
 }
 
@@ -88,17 +86,7 @@ void Plazza::Reception::create_kitchen()
     if (pid == -1)
         throw Error("Failed to fork", "fork");
     if (pid == 0) { // Child
-        // std::cout << "Kitchen start" << std::endl;
         Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
-        // auto start = std::chrono::steady_clock::now();
-        // while (true) {
-        //     _msgQueue.pop(getpid());
-        //     auto current =  std::chrono::steady_clock::now();
-        //     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - start);
-        //     if (elapsed >= workDuration) {
-        //         break;
-        //     }
-        // }
         std::cout << "Kitchen closed" << std::endl;
     }
     else { // Parent
@@ -107,7 +95,7 @@ void Plazza::Reception::create_kitchen()
         // for (auto pid : _kitchenPids) {
         //     std::cout << pid << std::endl;
         // }
-        // _msgQueue.push(_orderList.at(0), _kitchenPids.at(0));
+        _msgQueue.push(_orderList.at(0), _kitchenPids.at(0));
         // std::cout << "send to msg" << std::endl;
     }
 }
