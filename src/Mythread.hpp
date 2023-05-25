@@ -28,14 +28,9 @@ class Mythread {
         bool isRunning();
 
         void endThread();
-        // void stopThread() {
-        //     _isRunning = false;
-        //     _thread.join();
-        //     std::cout << "joined" << std::endl;
-        // }
         void fillOrder(Plazza::Order);
 
-        bool isCooking() {}
+        bool isCooking();
 
         void stopThread();
 

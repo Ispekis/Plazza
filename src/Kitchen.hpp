@@ -59,7 +59,7 @@ namespace Plazza {
             size_t availableCooks;
             size_t _orderCapacity;
 
-            std::vector<std::shared_ptr<Plazza::Cook>> _cooks;
+            std::vector<Plazza::Cook> _cooks;
             std::shared_ptr<Ingredient> _ingredient;
             std::shared_ptr<SafeQueue<Plazza::Order>> _order;
 

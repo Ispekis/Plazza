@@ -15,9 +15,10 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int,
     _nbCooks = nbCooks;
     availableCooks = _nbCooks;
     _orderCapacity = _nbCooks * 2;
-    for (int i = 0; i < _nbCooks; i++) {
-        _cooks.push_back(std::make_shared<Plazza::Cook>(_ingredient, _order));
+    for (int i = 0; i != _nbCooks + 6; i++) {
+        _cooks.push_back(Plazza::Cook(_ingredient, _order));
     }
+        std::cout << "End of while" << std::endl;
     int tmp[2] = {pipefd.front(), pipefd.back()};
     if (pipe(tmp) == -1) {
         throw Error("Failed to pipe", "pipe");
@@ -27,6 +28,7 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int,
 
 Plazza::Kitchen::~Kitchen()
 {
+    printf("kitchen destroy\n");
 }
 
 bool Plazza::Kitchen::timeOut()
@@ -56,29 +58,17 @@ void Plazza::Kitchen::run()
     if (pid == -1)
         throw Error("Failed to fork", "fork");
     if (pid == 0) { // Child
-        std::cout << "Kitchen start" << std::endl;
+        // std::cout << "Kitchen start" << std::endl;
         kitchenLoop();
-        std::cout << "Kitchen closed" << std::endl;
+        // std::cout << "Kitchen closed" << std::endl;
     }
     else { // Parent
-        // std::cout << "from parent" << std::endl;
+        std::cout << "from parent" << std::endl;
     }
 }
 
 void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
 {
-    // if (_pid != 0) {
-        // for (auto &cook : _cooks) {
-        //     while (!cook.isOverwhelmed()) {
-        //         if (!orderList.empty()) {
-        //             cook.addOrder(orderList.front());
-        //             orderList.erase(orderList.begin());
-        //             std::cout << orderList.front().getName() << " receive" << std::endl;
-        //         } else
-        //             break;
-        //     }
-        // }
-    // }
     while (_orderCapacity != 0) {
         if (!orderList.empty()) {
             _order->push(orderList.front());
@@ -92,10 +82,9 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
 
 void Plazza::Kitchen::stopCooks()
 {
-    // for (auto &cook : _cooks) {
-        // cook->stopCook();
-    // }
+    std::cout << "Cook size before clear " << _cooks.size() << std::endl;
     _cooks.clear();
+    std::cout << "Cook size after clear " << _cooks.size() << std::endl;
 }
 
 bool Plazza::Kitchen::isStaturated()
