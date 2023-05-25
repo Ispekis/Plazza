@@ -12,6 +12,7 @@
     #include "Ingredient.hpp"
     #include "Error.hpp"
     #include <iostream>
+    #include "Process.hpp"
     #include "Order.hpp"
     #include "Cook.hpp"
     #include <array>
@@ -61,7 +62,7 @@ namespace Plazza {
             size_t _orderCapacity;
             MessageQueue _msgQueue;
 
-            std::vector<std::shared_ptr<Plazza::Cook>> _cooks;
+            std::vector<Plazza::Cook> _cooks;
             std::shared_ptr<Ingredient> _ingredient;
             std::shared_ptr<SafeQueue<Plazza::Order>> _order;
 

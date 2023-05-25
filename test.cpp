@@ -1,51 +1,34 @@
 #include <iostream>
-#include <thread>
+#include <unistd.h> // Include for fork()
 
-class ThreadLauncher {
+class Process {
 public:
-    ThreadLauncher() : isRunning(false) {
-        startThread();
-    }
-
-    ~ThreadLauncher() {
-        stopThread();
-    }
-
-    void startThread() {
-        if (!isRunning) {
-            isRunning = true;
-            thread = std::thread(&ThreadLauncher::threadFunction, this);
+    void spawnChildProcess() {
+        pid_t pid = fork();
+        std::cout << pid << std::endl;
+        if (pid == -1)
+        {
+            std::cerr << "Fork failed!" << std::endl;
+            return;
+        }
+        else if (pid == 0)
+        {
+            // Child process
+            std::cout << "Child process" << std::endl;
+            // ... Do child process tasks ...
+        }
+        else
+        {
+            // Parent process
+            std::cout << "Parent process" << std::endl;
+            // ... Do parent process tasks ...
         }
     }
-
-    void stopThread() {
-        if (isRunning) {
-            isRunning = false;
-            thread.join();
-        }
-    }
-
-private:
-    void threadFunction() {
-        while (isRunning) {
-            // Perform thread tasks
-            std::cout << "Thread is running!" << std::endl;
-        }
-    }
-
-    std::thread thread;
-    bool isRunning;
 };
 
 int main() {
-    ThreadLauncher launcher;
-
-    // Perform other operations...
-    // sleep(1);
-    int i = 0;
-    while (i < 1000000)
-        i++;
-    launcher.stopThread();
+    Process myProcess;
+    myProcess.spawnChildProcess();
 
     return 0;
 }

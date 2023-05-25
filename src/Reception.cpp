@@ -80,13 +80,16 @@ void Plazza::Reception::parseEnum()
 void Plazza::Reception::create_kitchen()
 {
     std::chrono::seconds workDuration(5);
-    pid_t pid = fork();
-
-    if (pid == -1)
-        throw Error("Failed to fork", "fork");
-    if (pid == 0) { // Child
+    Process child;
+    pid_t pid = child.spawnChildProcess();
+//
+    std::cout << "pid :" << pid << std::endl;
+    if (pid == 0)
+    { // Child
         Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
         std::cout << "Kitchen closed" << std::endl;
+        child.~Process();
+        exit(0);
     }
     else { // Parent
         _kitchenPids.push_back(pid);

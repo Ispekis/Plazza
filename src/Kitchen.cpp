@@ -17,9 +17,10 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
     availableCooks = _nbCooks;
     _orderCapacity = _nbCooks * 2;
     for (int i = 0; i < _nbCooks; i++) {
-        _cooks.push_back(std::make_shared<Plazza::Cook>(_ingredient, _order));
+        _cooks.push_back(Plazza::Cook(_ingredient, _order));
     }
     // std::cout << _msgQueue.recvOrder(getpid()).getPizza().get()->getName() << std::endl;
+    run();
 }
 
 Plazza::Kitchen::~Kitchen()
@@ -50,22 +51,11 @@ void Plazza::Kitchen::kitchenLoop()
 
 void Plazza::Kitchen::run()
 {
+    kitchenLoop();
 }
 
 void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
 {
-    // if (_pid != 0) {
-        // for (auto &cook : _cooks) {
-        //     while (!cook.isOverwhelmed()) {
-        //         if (!orderList.empty()) {
-        //             cook.addOrder(orderList.front());
-        //             orderList.erase(orderList.begin());
-        //             std::cout << orderList.front().getName() << " receive" << std::endl;
-        //         } else
-        //             break;
-        //     }
-        // }
-    // }
     while (_orderCapacity != 0) {
         if (!orderList.empty()) {
             _order->push(orderList.front());
@@ -79,9 +69,6 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
 
 void Plazza::Kitchen::stopCooks()
 {
-    // for (auto &cook : _cooks) {
-        // cook->stopCook();
-    // }
     _cooks.clear();
 }
 
