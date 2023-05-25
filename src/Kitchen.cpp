@@ -104,3 +104,11 @@ bool Plazza::Kitchen::isStaturated()
         return true;
     return false;
 }
+
+size_t Plazza::Kitchen::getAvailableCooks() {
+    return availableCooks - _nbCooks;
+}
+
+std::unordered_map<std::string, std::size_t> Plazza::Kitchen::getIngredient() {
+    return _ingredient.getIngredient();
+}

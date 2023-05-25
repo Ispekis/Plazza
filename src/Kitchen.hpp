@@ -52,13 +52,22 @@ namespace Plazza {
             bool timeOut();
 
 
-            size_t getAvailableCooks() {
-                return availableCooks - _nbCooks;
-            }
+            /**
+             *
+             * @brief get the number of Available cookers
+             *
+             * @return size_t
+             *
+            */
+            size_t getAvailableCooks();
 
-            std::unordered_map<std::string, std::size_t> getIngredient() {
-                return _ingredient.get()->getIngredient();
-            }
+            /**
+             *
+             * @brief get the ingredient from the ingredient class
+             *
+             * @return unordedred_map<std::string, std::size_t>
+             */
+            std::unordered_map<std::string, std::size_t> getIngredient();
 
         protected:
         private:

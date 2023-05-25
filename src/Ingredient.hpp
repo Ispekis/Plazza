@@ -42,9 +42,14 @@ class Ingredient {
          */
         void refillIngredient();
 
-        std::unordered_map<std::string, std::size_t> getIngredient() {
-            return _ingredient;
-        }
+        /**
+         *
+         * @brief get the ingredient
+         *
+         * @return unordedred_map<std::string, std::size_t>
+         */
+        std::unordered_map<std::string, std::size_t> getIngredient();
+
         ~Ingredient();
 
     protected:
