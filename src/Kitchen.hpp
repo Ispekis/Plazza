@@ -20,7 +20,7 @@
 namespace Plazza {
     class Kitchen {
         public:
-            Kitchen(float mutiplier, int nbCooks, int time, std::array<int, 2> pipefd);
+            Kitchen(float mutiplier, int nbCooks, int time, int pid);
             ~Kitchen();
 
             /**

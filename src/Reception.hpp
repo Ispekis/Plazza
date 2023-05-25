@@ -39,9 +39,9 @@ namespace Plazza {
             ErrorHandling _CheckError;
             std::vector<std::vector<std::string>> _receiptList;
             std::vector<Order> _orderList;
+            pid_t _receptionPid = 0;
             MessageQueue _msgQueue;
-            std::vector<Kitchen> _kitchens;
-            std::vector<std::array<int, 2>> _pipefds;
+            std::vector<int> _kitchenPids;
     };
 }
 #endif /* !PLAZZA_HPP_ */

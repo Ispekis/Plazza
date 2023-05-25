@@ -9,7 +9,7 @@
     #define PLAZZA_HPP_
 
 typedef struct pizza_data {
-    long msg_type;
+    long mesg_type;
     std::string name;
     std::vector<std::string> ingredients;
     int bakeTime;
