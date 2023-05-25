@@ -110,5 +110,5 @@ size_t Plazza::Kitchen::getAvailableCooks() {
 }
 
 std::unordered_map<std::string, std::size_t> Plazza::Kitchen::getIngredient() {
-    return _ingredient.getIngredient();
+    return _ingredient.get()->getIngredient();
 }
