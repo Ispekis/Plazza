@@ -12,6 +12,7 @@ Plazza::MargaritaPizza::MargaritaPizza()
     _name = "margarita";
     _ingredients = {"dough", "tomato", "gruyere", "ham", "mushrooms"};
     _bakeTime = 2;
+    _nbrIngredient = _ingredients.size();
 }
 
 Plazza::MargaritaPizza::~MargaritaPizza()

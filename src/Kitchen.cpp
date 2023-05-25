@@ -7,8 +7,9 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int, 2> pipefd) : _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _workDuration(5)
 {
+    std::cout << "Kitchen start" << std::endl;
     _order = std::make_shared<SafeQueue<Plazza::Order>>();
     _ingredient = std::make_shared<Ingredient>(time);
     _mutiplier = mutiplier;
@@ -18,15 +19,11 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, std::array<int,
     for (int i = 0; i < _nbCooks; i++) {
         _cooks.push_back(std::make_shared<Plazza::Cook>(_ingredient, _order));
     }
-    int tmp[2] = {pipefd.front(), pipefd.back()};
-    if (pipe(tmp) == -1) {
-        throw Error("Failed to pipe", "pipe");
-    }
-    _start = std::chrono::steady_clock::now();
 }
 
 Plazza::Kitchen::~Kitchen()
 {
+    std::cout << "Kitchen closed" << std::endl;
 }
 
 bool Plazza::Kitchen::timeOut()
@@ -52,17 +49,6 @@ void Plazza::Kitchen::kitchenLoop()
 
 void Plazza::Kitchen::run()
 {
-    pid_t pid = fork();
-    if (pid == -1)
-        throw Error("Failed to fork", "fork");
-    if (pid == 0) { // Child
-        std::cout << "Kitchen start" << std::endl;
-        kitchenLoop();
-        std::cout << "Kitchen closed" << std::endl;
-    }
-    else { // Parent
-        // std::cout << "from parent" << std::endl;
-    }
 }
 
 void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
@@ -84,7 +70,7 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
             _order->push(orderList.front());
             orderList.erase(orderList.begin());
             _orderCapacity--;
-            std::cout << orderList.front().getName() << "Added into Kitchen queue" << std::endl;
+            std::cout << orderList.front().getPizza().get()->getName() << "Added into Kitchen queue" << std::endl;
         } else
             break;
     }

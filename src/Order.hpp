@@ -17,6 +17,7 @@
     #include "Pizza/Fantasia.hpp"
     #include "Pizza/Margarita.hpp"
     #include <memory>
+    #include "plazza.hpp"
 
 namespace Plazza {
     class Order {
@@ -27,7 +28,6 @@ namespace Plazza {
 
             //* Getters *//
             Plazza::PizzaType getType() const;
-            std::string getName() const;
             Plazza::PizzaSize getSize() const;
             std::string getSizeName() const;
             std::shared_ptr<Plazza::IPizza> getPizza() const;
@@ -40,16 +40,9 @@ namespace Plazza {
         private:
             Plazza::PizzaType _pizzaType;
             Plazza::PizzaSize _pizzaSize;
-            std::string _pizzaName;
             std::string _pizzaSizeName;
             std::shared_ptr<Plazza::IPizza> _pizzas;
             // TODO Make it generic to use
-            std::map<Plazza::PizzaType, std::string> pizzaNamesMap = {
-                {Plazza::PizzaType::Regina, "regina"},
-                {Plazza::PizzaType::Margarita, "margarita"},
-                {Plazza::PizzaType::Americana, "americana"},
-                {Plazza::PizzaType::Fantasia, "fantasia"}
-            };
             std::map<Plazza::PizzaSize, std::string> pizzaSizesMap = {
                 {Plazza::PizzaSize::S, "S"},
                 {Plazza::PizzaSize::M, "M"},
@@ -60,6 +53,23 @@ namespace Plazza {
     };
 }
 
+/**
+ * @brief Deserialize to struct
+ *
+ * @param is
+ * @param pizzaData
+ * @return std::istream&
+ */
+std::istream& operator>>(std::istream &is, pizza_data &pizzaData);
+
+
+/**
+ * @brief Serialize order
+ *
+ * @param os
+ * @param order
+ * @return std::ostream&
+ */
 std::ostream& operator<<(std::ostream& os, const Plazza::Order& order);
 
 #endif /* !ORDER_HPP_ */

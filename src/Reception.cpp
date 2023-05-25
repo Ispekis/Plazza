@@ -9,6 +9,7 @@
 
 Plazza::Reception::Reception(Parsing &data) : _data(data)
 {
+    _receptionPid = getpid();
 }
 
 Plazza::Reception::~Reception()
@@ -21,12 +22,13 @@ void Plazza::Reception::start()
 
     while (std::getline(std::cin, line)) {
         if (parsingInput(line)) {
-            for (auto order : _orderList) {
-                std::cout << order << std::endl;
-            }
+            // for (auto order : _orderList) {
+            //     std::cout << order << std::endl;
+            // }
             // Create new kitchen if there is not
-            if (_kitchens.size() == 0) {
+            if (_kitchenPids.size() == 0) {
                 create_kitchen();
+            //     _msgQueue.push(_orderList.at(0));
             }
             // kitchens receive orders
         }
@@ -80,13 +82,34 @@ void Plazza::Reception::parseEnum()
 
 void Plazza::Reception::create_kitchen()
 {
-    std::array<int, 2> newPipefd;
-    _pipefds.push_back(newPipefd);
-    Plazza::Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _pipefds.back());
-    kitchen.receiveOrder(_orderList);
-    _kitchens.push_back(kitchen);
-    std::cout << _kitchens.size() << std::endl;
-    kitchen.run();
+    std::chrono::seconds workDuration(5);
+    pid_t pid = fork();
+
+    if (pid == -1)
+        throw Error("Failed to fork", "fork");
+    if (pid == 0) { // Child
+        // std::cout << "Kitchen start" << std::endl;
+        Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
+        // auto start = std::chrono::steady_clock::now();
+        // while (true) {
+        //     _msgQueue.pop(getpid());
+        //     auto current =  std::chrono::steady_clock::now();
+        //     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - start);
+        //     if (elapsed >= workDuration) {
+        //         break;
+        //     }
+        // }
+        std::cout << "Kitchen closed" << std::endl;
+    }
+    else { // Parent
+        _kitchenPids.push_back(pid);
+        // std::cout << "from parent" << std::endl;
+        // for (auto pid : _kitchenPids) {
+        //     std::cout << pid << std::endl;
+        // }
+        // _msgQueue.push(_orderList.at(0), _kitchenPids.at(0));
+        // std::cout << "send to msg" << std::endl;
+    }
 }
 
 void Plazza::Reception::splitInput(std::string &line)

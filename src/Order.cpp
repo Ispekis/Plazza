@@ -27,11 +27,6 @@ Plazza::PizzaType Plazza::Order::getType() const
     return _pizzaType;
 }
 
-std::string Plazza::Order::getName() const
-{
-    return _pizzaName;
-}
-
 Plazza::PizzaSize Plazza::Order::getSize() const
 {
     return _pizzaSize;
@@ -49,11 +44,6 @@ std::shared_ptr<Plazza::IPizza> Plazza::Order::getPizza() const
 void Plazza::Order::setType(Plazza::PizzaType type)
 {
     _pizzaType = type;
-    auto iter = pizzaNamesMap.find(type);
-
-    _pizzaName = iter->second;
-    // std::cout << pizzaNamesMap[type] << std::endl;
-    // _pizzaName = pizzaNamesMap[type];
 
     // set pizza class
     switch (_pizzaType) {
@@ -80,6 +70,30 @@ void Plazza::Order::setSize(Plazza::PizzaSize size)
 
 std::ostream &operator<<(std::ostream &os, const Plazza::Order &order)
 {
-    os << "Order : | " << order.getName() << "\t | " << order.getSizeName() << " |";
+
+    // Serialize pizza
+    os << *order.getPizza();
+    os << order.getType() << "\n";
+    os << order.getSize() << "\n";
     return os;
+}
+
+std::istream& operator>>(std::istream &is, pizza_data &pizzaData)
+{
+    // Deserialize pizza
+    is >> pizzaData.name;
+    is >> pizzaData.bakeTime;
+    is >> pizzaData.nbrIngredient;
+    std::vector<std::string> ings;
+    std::string tmp;
+    for (int i = 0; i < pizzaData.nbrIngredient; i++) {
+        is >> tmp;
+        ings.push_back(tmp);
+    }
+    pizzaData.ingredients = ings;
+
+    // Deserialize others
+    is >> pizzaData.type;
+    is >> pizzaData.size;
+    return is;
 }
