@@ -29,6 +29,7 @@ namespace Plazza {
             void parseEnum();
             void splitInput(std::string &line);
             void create_kitchen();
+            void display_status();
 
         protected:
         private:

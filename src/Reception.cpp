@@ -15,12 +15,34 @@ Plazza::Reception::~Reception()
 {
 }
 
+void print_ingredient(std::unordered_map<std::string, std::size_t> _ingredient)
+{
+    std::vector<std::string> ingredient = { "dough", "tomato", "gruyere", "ham", "mushrooms", "steak", "eggplant", "goatCheese", "chiefLove" };
+
+    for (auto element : ingredient)
+        std::cout << element << " : " << _ingredient[element] << std::endl;
+}
+
+void Plazza::Reception::display_status()
+{
+    int i = 0;
+
+    for (auto kitchen : _kitchens) {
+        std::cout << "Kitchen [" << i << "]:" << std::endl;
+        std::cout << "Occupancy : " << kitchen.getAvailableCooks() << "/" << _data.getNbCooks() << std::endl;
+        std::cout << "Ingredient : ";
+        print_ingredient(kitchen.getIngredient());
+    }
+}
+
 void Plazza::Reception::start()
 {
     std::string line;
 
     while (std::getline(std::cin, line)) {
-        if (parsingInput(line)) {
+        if (line == "status")
+            display_status();
+        else if (parsingInput(line)) {
             for (auto order : _orderList) {
                 std::cout << order << std::endl;
             }
@@ -94,6 +116,7 @@ void Plazza::Reception::splitInput(std::string &line)
     std::istringstream iss(line);
     std::vector<std::string> words;
     std::string word;
+
     _receiptList.clear();
     while (std::getline(iss, word, ';')) {
         std::istringstream iss1(word);

@@ -14,7 +14,7 @@ Ingredient::Ingredient(int refillTime) : _refillTime(refillTime)
     for (auto element : ingredient)
         _ingredient[element] = 5;
     _start = std::chrono::steady_clock::now();
-    std::cout << "Ingredient Filled and will be refilled by one every" << refillTime << " ms" << std::endl;
+    std::cout << "Ingredient Filled and will be refilled by one every " << refillTime << " ms" << std::endl;
 }
 
 Ingredient::~Ingredient()

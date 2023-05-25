@@ -52,6 +52,14 @@ namespace Plazza {
             bool timeOut();
 
 
+            size_t getAvailableCooks() {
+                return availableCooks - _nbCooks;
+            }
+
+            std::unordered_map<std::string, std::size_t> getIngredient() {
+                return _ingredient.get()->getIngredient();
+            }
+
         protected:
         private:
             float _mutiplier;
