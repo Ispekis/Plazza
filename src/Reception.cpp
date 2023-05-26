@@ -21,15 +21,15 @@ void Plazza::Reception::start()
     std::string line;
 
     while (std::getline(std::cin, line)) {
-        if (parsingInput(line)) {
-            // dispatchOrder();
-            // Create new kitchen if there is not
-            if (_kitchenPids.size() == 0) {
-            // if (needKitchen()) {
-                create_kitchen();
-            //     _msgQueue.push(_orderList.at(0));
+        try {
+            std::vector<std::array<std::string, 3>> stringOrder = splitInput(line);
+            for (auto str : stringOrder) {
+                Plazza::Order order = convertToOrder(str);
+                dispatchOrder(order);
             }
-            // kitchens receive orders
+            stringOrder.clear();
+        } catch (const Error &error) {
+            std::cout << error.what() << ": " << error.message() << "." << std::endl;
         }
     }
 }
@@ -66,15 +66,12 @@ static int getPizzaNumber(std::string &number)
     return std::stoi(number);
 }
 
-void Plazza::Reception::parseEnum()
+Plazza::Order Plazza::Reception::convertToOrder(std::array<std::string, 3> stringOrder)
 {
-    for (auto a : _receiptList) {
-        PizzaType type = getPizzaType(a[0]);
-        PizzaSize size = getPizzaSize(a[1]);
-        int number = getPizzaNumber(a[2]);
-        Plazza::Order new_order(type, size, number);
-        _orderList.push_back(new_order);
-    }
+    Plazza::PizzaType type = getPizzaType(stringOrder.at(0));
+    Plazza::PizzaSize size = getPizzaSize(stringOrder.at(1));
+    int number = getPizzaNumber(stringOrder.at(2));
+    return Plazza::Order(type, size, number);
 }
 
 void Plazza::Reception::create_kitchen()
@@ -100,12 +97,12 @@ void Plazza::Reception::create_kitchen()
     }
 }
 
-void Plazza::Reception::splitInput(std::string &line)
+std::vector<std::array<std::string, 3>> Plazza::Reception::splitInput(std::string &line)
 {
     std::istringstream iss(line);
     std::vector<std::string> words;
     std::string word;
-    _receiptList.clear();
+    std::vector<std::array<std::string, 3>> result;
     while (std::getline(iss, word, ';')) {
         std::istringstream iss1(word);
         while (std::getline(iss1, word, ' ')) {
@@ -114,10 +111,14 @@ void Plazza::Reception::splitInput(std::string &line)
         }
         _CheckError.checkVectorLength(3, words);
         _CheckError.checkReceiptArg(words);
-        _receiptList.push_back(words);
+        std::array<std::string, 3> tmp;
+        for (int i = 0; i < words.size(); i++) {
+            tmp[i] = words[i];
+        }
+        result.push_back(tmp);
         words.clear();
     }
-    parseEnum();
+    return result;
 }
 
 static void printVector(std::vector<std::vector<std::string>> &vector)
@@ -130,23 +131,12 @@ static void printVector(std::vector<std::vector<std::string>> &vector)
     }
 }
 
-bool Plazza::Reception::parsingInput(std::string &line)
-{
-    try {
-        splitInput(line);
-    } catch (const Error &error) {
-        std::cout << error.what() << ": " << error.message() << "." << std::endl;
-        return false;
-    }
-    return true;
-}
-
 bool Plazza::Reception::needKitchen()
 {
     return false;
 }
 
-void Plazza::Reception::dispatchOrder()
+void Plazza::Reception::dispatchOrder(Plazza::Order order)
 {
-
+    
 }

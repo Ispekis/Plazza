@@ -28,9 +28,15 @@ namespace Plazza {
             ~Reception();
 
             void start();
-            bool parsingInput(std::string &line);
-            void parseEnum();
-            void splitInput(std::string &line);
+            Plazza::Order convertToOrder(std::array<std::string, 3> stringOrder);
+
+            /**
+             * @brief Seprate orders
+             *
+             * @param line
+             * @return std::vector<std::array<std::string, 3>>
+             */
+            std::vector<std::array<std::string, 3>> splitInput(std::string &line);
             void create_kitchen();
 
         protected:
@@ -47,12 +53,10 @@ namespace Plazza {
              * @brief dispatch orders
              *
              */
-            void dispatchOrder();
+            void dispatchOrder(Plazza::Order order);
 
             Parsing _data;
             ErrorHandling _CheckError;
-            std::vector<std::vector<std::string>> _receiptList;
-            std::vector<Order> _orderList;
             pid_t _receptionPid = 0;
             MessageQueue _msgQueue;
             std::vector<int> _kitchenPids;
