@@ -85,16 +85,5 @@ void Factory::storeConfigToMap(float cook)
             _pizzaInfo[name] = std::make_pair(ingredients, cookTime);
         }
     }
-    std::cout << "PRINT NOW" << std::endl;
-    for (const auto& entry : _pizzaInfo) {
-        std::cout << "Pizza: " << entry.first << std::endl;
-        std::cout << "Ingredients: ";
-        for (const auto& ingredient : entry.second.first) {
-            std::cout << ingredient << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "Time: " << entry.second.second << std::endl;
-        std::cout << std::endl;
-    }
 }
 
