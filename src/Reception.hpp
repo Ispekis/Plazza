@@ -35,6 +35,20 @@ namespace Plazza {
 
         protected:
         private:
+            /**
+             * @brief Check if the reception needs more kitchen
+             *
+             * @return true
+             * @return false
+             */
+            bool needKitchen();
+
+            /**
+             * @brief dispatch orders
+             *
+             */
+            void dispatchOrder();
+
             Parsing _data;
             ErrorHandling _CheckError;
             std::vector<std::vector<std::string>> _receiptList;

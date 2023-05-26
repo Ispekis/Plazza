@@ -16,6 +16,7 @@
     #include "Cook.hpp"
     #include <array>
     #include "SafeQueue.hpp"
+    #include "MessageQueue.hpp"
 
 namespace Plazza {
     class Kitchen {
@@ -58,6 +59,7 @@ namespace Plazza {
             int _nbCooks;
             size_t availableCooks;
             size_t _orderCapacity;
+            MessageQueue _msgQueue;
 
             std::vector<std::shared_ptr<Plazza::Cook>> _cooks;
             std::shared_ptr<Ingredient> _ingredient;

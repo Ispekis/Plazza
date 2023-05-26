@@ -11,76 +11,92 @@
     #include <sys/msg.h>
     #include "plazza.hpp"
     #include <iostream>
+    #include <sstream>
     #include "Order.hpp"
+    #include <cstring>
+    #define ORDER_KEY 65
+    #define CAPACITY_KEY 66
+    #define CLOSURE_KEY 67
 
 namespace Plazza {
     class MessageQueue {
         public:
-            MessageQueue() {};
-            ~MessageQueue() {};
+            MessageQueue();
+            ~MessageQueue();
 
-            void push(Order order, int id) {
-                int msgid;
-                pizza_data pizdata;
+            /**
+             * @brief Send the order data to the messsage queue
+             *
+             * @param order
+             * @param id
+             */
+            void sendOrder(Order order, int id);
 
-                // Init struct
-                pizdata.mesg_type = id;
+            /**
+             * @brief Receive the order data from the message queue
+             *
+             * @param id
+             * @return Plazza::Order
+             */
+            Plazza::Order recvOrder(int id);
 
-                // serialize data
-                std::stringstream serializedStream;
-                serializedStream << order;
-                std::string serializedString = serializedStream.str();
+            /**
+             * @brief Send the capacity left in the kitchen
+             *
+             * @param nbr
+             * @param id
+             */
+            void sendCapacity(int nbr, int id);
 
-                // Deserialize data to struct
-                std::stringstream deserializedStream(serializedString);
-                deserializedStream >> pizdata;
+            /**
+             * @brief Receive the capacity left in the kitchen
+             *
+             * @param id
+             * @return int
+             */
+            int recvCapacity(int id);
 
-                // std::cout << pizdata.name << std::endl;
-                // std::cout << pizdata.bakeTime << std::endl;
-                // std::cout << pizdata.nbrIngredient << std::endl;
-                // for (int i = 0; i < pizdata.nbrIngredient; i++) {
-                //     std::cout << pizdata.ingredients[i] << std::endl;
-                // }
-                // std::cout << pizdata.type << std::endl;
-                // std::cout << pizdata.size << std::endl;
+            /**
+             * @brief Send the value of closure of a kitchen
+             *
+             * @param value
+             * @param id
+             */
+            void sendClosure(int value, int id);
 
-                // Send data to queue
-                // msgid = msgget(IPC_PRIVATE, 0666 | IPC_CREAT);
-                // if (msgid == -1) {
-                //     std::cout << "msgget error" << std::endl;
-                // } else {
-                //     std::cout << "msg success" << std::endl;
-                // }
-                // if (msgsnd(msgid, &pizdata, sizeof(pizdata), 0) != -1) {
-                //     std::cout << "message send" << std::endl;
-                // } else {
-                //     std::cout << "message not send" << std::endl;
-                //     perror("");
-                // }
-            };
-
-            void pop(int id) {
-                int msgid;
-                pizza_data rcvPizza;
-
-                // Receive queue
-                msgid = msgget(IPC_PRIVATE, 0666 | IPC_CREAT);
-                if (msgrcv(msgid, &rcvPizza, sizeof(rcvPizza), id, IPC_NOWAIT) != -1) {
-                    std::cout << "ok2" << std::endl;
-
-                    std::cout << rcvPizza.name << std::endl;
-                    std::cout << rcvPizza.bakeTime << std::endl;
-                    std::cout << rcvPizza.nbrIngredient << std::endl;
-                    for (int i = 0; i < rcvPizza.nbrIngredient; i++) {
-                        std::cout << rcvPizza.ingredients[i] << std::endl;
-                    }
-                    std::cout << rcvPizza.type << std::endl;
-                    std::cout << rcvPizza.size << std::endl;
-                }
-            }
+            /**
+             * @brief Receive the closure boolean of the kitchen, return 0 if the kitchen is closed, 1 if its open, -1 if its not received by the reception
+             *
+             * @param id
+             * @return true
+             * @return false
+             */
+            int recvClosure(int id);
 
         protected:
         private:
+
+            /**
+             * @brief Send one data in queue
+             *
+             * @param value
+             * @param id
+             * @param key
+             */
+            void sendOneInfo(int value, int id, key_t key);
+
+            /**
+             * @brief Receive one data from queue
+             *
+             * @param value
+             * @param id
+             * @param key
+             */
+            int recvOneInfo(int id, key_t key);
+
+            key_t _msgKey;
+            key_t _capKey;
+            key_t _closureKey;
     };
 }
 
