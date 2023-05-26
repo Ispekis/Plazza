@@ -35,6 +35,12 @@ namespace Plazza {
             void manageKitchen();
             void closeKitchen();
 
+            void userInput();
+
+            int getCapacityLeft(int pid);
+
+            void sendPizzaToKitchen(int pid);
+
         protected:
         private:
             /**

@@ -47,7 +47,7 @@ namespace Plazza {
              * @return true
              * @return false
              */
-
+            void getMessage();
             void stopCooks();
             bool isStaturated();
             bool timeOut();

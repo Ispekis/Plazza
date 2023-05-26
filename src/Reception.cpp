@@ -16,32 +16,50 @@ Plazza::Reception::~Reception()
 {
 }
 
-void Plazza::Reception::start()
+void Plazza::Reception::userInput()
 {
     std::string line;
-
-    while (std::getline(std::cin, line)) {
+    while (std::getline(std::cin, line))
+    {
         if (parsingInput(line)) {
             // dispatchOrder();
             // Create new kitchen if there is not
-            std::cout << "Kitchen size:" << _kitchenPids.size() << std::endl;
             manageKitchen();
             // kitchens receive orders
-            std::cout << "Kitchen size:" << _kitchenPids.size() << std::endl;
+            // std::cout << "Kitchen size:" << _kitchenPids.size() << std::endl;
         }
-        closeKitchen();
     }
+}
+
+void Plazza::Reception::start()
+{
+    auto closingKitchen = std::thread(&Plazza::Reception::closeKitchen, std::ref(*this));
+    userInput();
+    closingKitchen.join();
 }
 
 void Plazza::Reception::closeKitchen()
 {
+    while (1) {
     auto closedPid = _msgQueue.recvClosure(0);
-    std::cout << closedPid << std::endl;
     for (std::size_t i = 0; i != _kitchenPids.size(); i++)
         if (_kitchenPids[i] == closedPid) {
             _kitchenPids.erase(_kitchenPids.begin() + i);
             break;
         }
+    }
+}
+
+int Plazza::Reception::getCapacityLeft(int pid)
+{
+    _msgQueue.sendCapacity(0 , pid);
+    // std::cout << "Capacity left" << _msgQueue.recvCapacity((int)getpid()) << " pid :" << pid << std::endl;
+    return _msgQueue.recvCapacity((int)getpid());
+}
+
+void Plazza::Reception::sendPizzaToKitchen(int pid)
+{
+
 }
 
 void Plazza::Reception::manageKitchen()
@@ -49,6 +67,14 @@ void Plazza::Reception::manageKitchen()
     if (_kitchenPids.size() == 0)
     {
         create_kitchen();
+    }
+    while (_orderList.size() != 0) {
+        for (int i = 0; i != _kitchenPids.size(); i++) {
+        int Capacity = getCapacityLeft(_kitchenPids[i]);
+        if (Capacity != 0)
+            sendPizzaToKitchen(Capacity);
+        }
+        break;
     }
 }
 
@@ -109,7 +135,8 @@ void Plazza::Reception::create_kitchen()
     }
     else { // Parent
         _kitchenPids.push_back(pid);
-        std::cout << "Kitchen Created added :" << pid << std::endl;
+        std::cout << "Parent Pid :" << pid << std::endl;
+        // std::cout << "Parent Pid :" << getpid() << std::endl;
     }
 }
 

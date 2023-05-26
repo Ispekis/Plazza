@@ -115,12 +115,12 @@ void Plazza::MessageQueue::sendOneInfo(int value, int id, key_t key)
     // Send data to queue
     msgid = msgget(key, 0666 | IPC_CREAT);
     if (msgid == -1) {
-        std::cout << "msgget error" << std::endl;
-        perror("");
+        // std::cout << "msgget error" << std::endl;
+        // perror("");
     }
 
     if (msgsnd(msgid, &data, sizeof(data) - sizeof(long), 0) == -1) {
-        std::cout << "message not send " << id << std::endl;
+        // std::cout << "message not send " << id << std::endl;
     }
     //  else {
     //     std::cout << "send" << std::endl;
@@ -143,11 +143,12 @@ int Plazza::MessageQueue::recvOneInfo(int id, key_t key)
         // std::cout << data.nbr << std::endl;
         // Delete message from queue
         msgctl(msgid, IPC_RMID, NULL);
-        std::cout << "Message read" << std::endl;
+        // std::cout << "Message read" << std::endl;
         return data.value;
     } else {
         // TODO : implement throw
-        perror("");
-        std::cout << "No message queue" << std::endl;
+        // perror("");
+        // std::cout << "No message queue" << std::endl;
+        return -1;
     }
 }

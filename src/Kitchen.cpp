@@ -16,10 +16,6 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
     _nbCooks = nbCooks;
     availableCooks = _nbCooks;
     _orderCapacity = _nbCooks * 2;
-    // for (int i = 0; i < _nbCooks; i++) {
-    //     _cooks.push_back(Plazza::Cook(_ingredient, _order));
-    // }
-    // std::cout << _msgQueue.recvOrder(getpid()).getPizza().get()->getName() << std::endl;
     run();
 }
 
@@ -40,13 +36,28 @@ bool Plazza::Kitchen::timeOut()
     return false;
 }
 
+void Plazza::Kitchen::getMessage()
+{
+    int pid = getpid();
+
+    if (_msgQueue.recvCapacity(pid) == 0)
+    {
+        // std::cout << "Capacity send pid:" << (int)getpid() << std::endl;
+        _msgQueue.sendCapacity((int)this->_orderCapacity, _rPid);
+    }
+    // if (_msgQueue.recvOrder(pid))
+    //     ;
+}
+
 void Plazza::Kitchen::kitchenLoop()
 {
     _start = std::chrono::steady_clock::now();
     while (true) {
+        getMessage();
         _ingredient->refillIngredient();
         if (timeOut())
             break;
+
     }
 }
 
