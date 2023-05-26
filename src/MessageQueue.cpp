@@ -91,6 +91,7 @@ int Plazza::MessageQueue::recvCapacity(int id)
 
 void Plazza::MessageQueue::sendClosure(int value, int id)
 {
+    std::cout << "Kitchen id:" << value << " closed" <<  std::endl;
     sendOneInfo(value, id, _closureKey);
 }
 
@@ -142,9 +143,11 @@ int Plazza::MessageQueue::recvOneInfo(int id, key_t key)
         // std::cout << data.nbr << std::endl;
         // Delete message from queue
         msgctl(msgid, IPC_RMID, NULL);
+        std::cout << "Message read" << std::endl;
         return data.value;
     } else {
         // TODO : implement throw
         perror("");
+        std::cout << "No message queue" << std::endl;
     }
 }

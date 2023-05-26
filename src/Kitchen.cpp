@@ -7,24 +7,26 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _workDuration(5), _rPid(pid)
 {
-    std::cout << "Kitchen start" << std::endl;
+    std::cout << "Kitchen start with pid:" << getpid() << std::endl;
     _order = std::make_shared<SafeQueue<Plazza::Order>>();
     _ingredient = std::make_shared<Ingredient>(time);
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
     availableCooks = _nbCooks;
     _orderCapacity = _nbCooks * 2;
-    for (int i = 0; i < _nbCooks; i++) {
-        _cooks.push_back(Plazza::Cook(_ingredient, _order));
-    }
+    // for (int i = 0; i < _nbCooks; i++) {
+    //     _cooks.push_back(Plazza::Cook(_ingredient, _order));
+    // }
     // std::cout << _msgQueue.recvOrder(getpid()).getPizza().get()->getName() << std::endl;
     run();
 }
 
 Plazza::Kitchen::~Kitchen()
 {
+    // Envoie messageuene Pour retirer le pid kitchen dans le queue
+    _msgQueue.sendClosure(getpid(), _rPid);
     std::cout << "Kitchen closed" << std::endl;
 }
 
@@ -46,7 +48,6 @@ void Plazza::Kitchen::kitchenLoop()
         if (timeOut())
             break;
     }
-    stopCooks();
 }
 
 void Plazza::Kitchen::run()
@@ -65,11 +66,6 @@ void Plazza::Kitchen::receiveOrder(std::vector<Plazza::Order> orderList)
         } else
             break;
     }
-}
-
-void Plazza::Kitchen::stopCooks()
-{
-    _cooks.clear();
 }
 
 bool Plazza::Kitchen::isStaturated()

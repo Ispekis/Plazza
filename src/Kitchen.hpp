@@ -48,7 +48,6 @@ namespace Plazza {
              * @return false
              */
 
-
             void stopCooks();
             bool isStaturated();
             bool timeOut();
@@ -61,8 +60,8 @@ namespace Plazza {
             size_t availableCooks;
             size_t _orderCapacity;
             MessageQueue _msgQueue;
-
-            std::vector<Plazza::Cook> _cooks;
+            int _rPid;
+            // std::vector<Plazza::Cook> _cooks;
             std::shared_ptr<Ingredient> _ingredient;
             std::shared_ptr<SafeQueue<Plazza::Order>> _order;
 

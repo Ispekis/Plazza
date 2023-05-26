@@ -24,13 +24,31 @@ void Plazza::Reception::start()
         if (parsingInput(line)) {
             // dispatchOrder();
             // Create new kitchen if there is not
-            if (_kitchenPids.size() == 0) {
-            // if (needKitchen()) {
-                create_kitchen();
-            //     _msgQueue.push(_orderList.at(0));
-            }
+            std::cout << "Kitchen size:" << _kitchenPids.size() << std::endl;
+            manageKitchen();
             // kitchens receive orders
+            std::cout << "Kitchen size:" << _kitchenPids.size() << std::endl;
         }
+        closeKitchen();
+    }
+}
+
+void Plazza::Reception::closeKitchen()
+{
+    auto closedPid = _msgQueue.recvClosure(0);
+    std::cout << closedPid << std::endl;
+    for (std::size_t i = 0; i != _kitchenPids.size(); i++)
+        if (_kitchenPids[i] == closedPid) {
+            _kitchenPids.erase(_kitchenPids.begin() + i);
+            break;
+        }
+}
+
+void Plazza::Reception::manageKitchen()
+{
+    if (_kitchenPids.size() == 0)
+    {
+        create_kitchen();
     }
 }
 
@@ -82,24 +100,16 @@ void Plazza::Reception::create_kitchen()
     std::chrono::seconds workDuration(5);
     Process child;
     pid_t pid = child.spawnChildProcess();
-//
-    std::cout << "pid :" << pid << std::endl;
+
     if (pid == 0)
     { // Child
         Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
-        std::cout << "Kitchen closed" << std::endl;
-        child.~Process();
+        kitchen.~Kitchen();
         exit(0);
     }
     else { // Parent
         _kitchenPids.push_back(pid);
-        // std::cout << "from parent" << std::endl;
-        // for (auto pid : _kitchenPids) {
-        //     std::cout << pid << std::endl;
-        // }
-        // _msgQueue.sendCapacity(-1, pid);
-        // _msgQueue.sendOrder(_orderList.at(0), _kitchenPids.at(0));
-        // std::cout << "send to msg" << std::endl;
+        std::cout << "Kitchen Created added :" << pid << std::endl;
     }
 }
 

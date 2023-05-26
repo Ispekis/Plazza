@@ -9,23 +9,18 @@
 
 Process::Process()
 {
-    
+    std::cout << "---[Process] Start" << std::endl;
 }
 
 Process::~Process()
 {
-            //     if (this->_pid > 0)
-            // kill(this->_pid, SIGKILL);
-
+    std::cout << "---[Process] closed" << std::endl;
 }
 
 pid_t Process::spawnChildProcess()
 {
-    std::cout << "forked" << std::endl;
     pid_t pid = fork();
-    std::cout << pid << std::endl;
     if (pid == -1)
         throw Error("Fork", "Failed to create Process");
-    // _pid = std::copy(pid);
     return pid;
 }
