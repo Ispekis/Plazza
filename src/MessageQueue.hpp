@@ -11,92 +11,70 @@
     #include <sys/msg.h>
     #include "plazza.hpp"
     #include <iostream>
-    #include <sstream>
-    #include "Order.hpp"
     #include <cstring>
-    #define ORDER_KEY 65
-    #define CAPACITY_KEY 66
-    #define CLOSURE_KEY 67
 
 namespace Plazza {
+    template <typename T>
     class MessageQueue {
         public:
-            MessageQueue();
-            ~MessageQueue();
+            MessageQueue() {};
+            ~MessageQueue() {};
 
             /**
-             * @brief Send the order data to the messsage queue
+             * @brief Send the message data to the messsage queue
              *
              * @param order
              * @param id
              */
-            void sendOrder(Order order, int id);
+            void push(T msgData, int id, key_t key) {
+                int msgid;
+
+                // Init struct
+                msgData.mesg_type = id;
+
+                // Send data to queue
+                msgid = msgget(key, 0666 | IPC_CREAT);
+                if (msgid == -1) {
+                    std::cout << "msgget error" << std::endl;
+                    perror("");
+                    return;
+                }
+                std::cout << msgid << std::endl;
+                if (msgsnd(msgid, &msgData, sizeof(msgData) - sizeof(long), 0) == -1) {
+                    std::cout << "message not send " << id << std::endl;
+                    perror("");
+                    return;
+                }
+            }
 
             /**
-             * @brief Receive the order data from the message queue
+             * @brief Receive the message data from the message queue
              *
              * @param id
-             * @return Plazza::Order
+             * @return std::unique_ptr<Plazza::Order>
              */
-            Plazza::Order recvOrder(int id);
+            std::unique_ptr<T> pop(int id, key_t key) {
+                int msgid;
+                T rcvData;
 
-            /**
-             * @brief Send the capacity left in the kitchen
-             *
-             * @param nbr
-             * @param id
-             */
-            void sendCapacity(int nbr, int id);
+                // Remove padding
+                std::memset(&rcvData, sizeof(rcvData), 0);
 
-            /**
-             * @brief Receive the capacity left in the kitchen
-             *
-             * @param id
-             * @return int
-             */
-            int recvCapacity(int id);
+                // Receive queue
+                msgid = msgget(key, 0666 | IPC_CREAT);
 
-            /**
-             * @brief Send the value of closure of a kitchen
-             *
-             * @param value
-             * @param id
-             */
-            void sendClosure(int value, int id);
-
-            /**
-             * @brief Receive the closure boolean of the kitchen, return 0 if the kitchen is closed, 1 if its open, -1 if its not received by the reception
-             *
-             * @param id
-             * @return true
-             * @return false
-             */
-            int recvClosure(int id);
-
-        protected:
-        private:
-
-            /**
-             * @brief Send one data in queue
-             *
-             * @param value
-             * @param id
-             * @param key
-             */
-            void sendOneInfo(int value, int id, key_t key);
-
-            /**
-             * @brief Receive one data from queue
-             *
-             * @param value
-             * @param id
-             * @param key
-             */
-            int recvOneInfo(int id, key_t key);
-
-            key_t _msgKey;
-            key_t _capKey;
-            key_t _closureKey;
+                if (msgid == -1) {
+                    perror("msgid");
+                }
+                if (msgrcv(msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, IPC_NOWAIT) != -1) {
+                    // Delete message from queue
+                    msgctl(msgid, IPC_RMID, NULL);
+                    return std::make_unique<T>(rcvData);
+                }
+                // Delete message from queue
+                // msgctl(msgid, IPC_RMID, NULL);
+                return nullptr;
+            }
     };
 }
 

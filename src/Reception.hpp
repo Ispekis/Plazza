@@ -20,6 +20,7 @@
     #include <unistd.h>
     #include <chrono>
     #include "MessageQueue.hpp"
+    #include <sys/select.h>
 
 namespace Plazza {
     class Reception {
@@ -28,13 +29,26 @@ namespace Plazza {
             ~Reception();
 
             void start();
-            bool parsingInput(std::string &line);
-            void parseEnum();
-            void splitInput(std::string &line);
+            Plazza::Order convertToOrder(std::array<std::string, 3> stringOrder);
+
+            /**
+             * @brief Seprate orders
+             *
+             * @param line
+             * @return std::vector<std::array<std::string, 3>>
+             */
+            std::vector<std::array<std::string, 3>> splitInput(std::string &line);
             void create_kitchen();
 
         protected:
         private:
+
+            /**
+             * @brief Check if a restaurant has closed
+             *
+             */
+            void checkClosures();
+
             /**
              * @brief Check if the reception needs more kitchen
              *
@@ -47,15 +61,20 @@ namespace Plazza {
              * @brief dispatch orders
              *
              */
-            void dispatchOrder();
+            void dispatchOrder(Plazza::Order order);
 
             Parsing _data;
             ErrorHandling _CheckError;
-            std::vector<std::vector<std::string>> _receiptList;
-            std::vector<Order> _orderList;
             pid_t _receptionPid = 0;
-            MessageQueue _msgQueue;
             std::vector<int> _kitchenPids;
+
+            // Message Queues for ipc
+            MessageQueue<msg_data> _orderMsgQ;
+            MessageQueue<closure_data> _closureMsgQ;
+
+            // Keys for ipc
+            key_t _orderKey;
+            key_t _closureKey;
     };
 }
 #endif /* !PLAZZA_HPP_ */
