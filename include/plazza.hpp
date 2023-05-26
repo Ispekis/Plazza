@@ -17,7 +17,7 @@ typedef struct msg_data {
 
 typedef struct capacity_data {
     long mesg_type;
-    int nbr;
+    int value;
 } capacity_data;
 
 #endif /* !PLAZZA_H_ */

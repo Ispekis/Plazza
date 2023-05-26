@@ -16,128 +16,87 @@
     #include <cstring>
     #define ORDER_KEY 65
     #define CAPACITY_KEY 66
+    #define CLOSURE_KEY 67
 
 namespace Plazza {
     class MessageQueue {
         public:
-            MessageQueue() {
-                _msgKey = ftok(".", ORDER_KEY);
-                _capKey = ftok(".", CAPACITY_KEY);
-            };
-            ~MessageQueue() {};
+            MessageQueue();
+            ~MessageQueue();
 
-            void push(Order order, int id) {
-                key_t key;
-                int msgid;
-                msg_data msgData;
+            /**
+             * @brief Send the order data to the messsage queue
+             *
+             * @param order
+             * @param id
+             */
+            void sendOrder(Order order, int id);
 
-                // Remove padding
-                std::memset(&msgData, sizeof(msgData), 0);
+            /**
+             * @brief Receive the order data from the message queue
+             *
+             * @param id
+             * @return Plazza::Order
+             */
+            Plazza::Order recvOrder(int id);
 
-                // Init struct
-                msgData.mesg_type = id;
+            /**
+             * @brief Send the capacity left in the kitchen
+             *
+             * @param nbr
+             * @param id
+             */
+            void sendCapacity(int nbr, int id);
 
-                // serialize data
-                std::stringstream serializedStream;
-                serializedStream << order;
-                std::string serializedString = serializedStream.str();
+            /**
+             * @brief Receive the capacity left in the kitchen
+             *
+             * @param id
+             * @return int
+             */
+            int recvCapacity(int id);
 
-                // Deserialize data to struct
-                std::stringstream deserializedStream(serializedString);
-                deserializedStream >> msgData;
+            /**
+             * @brief Send the value of closure of a kitchen
+             *
+             * @param value
+             * @param id
+             */
+            void sendClosure(int value, int id);
 
-                // Send data to queue
-                msgid = msgget(_msgKey, 0666 | IPC_CREAT);
-                if (msgid == -1) {
-                    std::cout << "msgget error" << std::endl;
-                    perror("");
-                }
-                //  else {
-                //     std::cout << "msg success" << std::endl;
-                // }
-                if (msgsnd(msgid, &msgData, sizeof(msgData) - sizeof(long), 0) == -1) {
-                    std::cout << "message send " << id << std::endl;
-                }
-                //  else {
-                //     std::cout << "message not send" << std::endl;
-                //     perror("");
-                // }
-            };
-
-            Plazza::Order pop(int id) {
-                int msgid;
-                msg_data rcvData;
-
-                // Remove padding
-                std::memset(&rcvData, sizeof(rcvData), 0);
-
-                // Receive queue
-                msgid = msgget(_msgKey, 0666 | IPC_CREAT);
-                if (msgrcv(msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, IPC_NOWAIT) != -1) {
-                    std::cout << rcvData.type << std::endl;
-                    std::cout << rcvData.size << std::endl;
-                    std::cout << rcvData.nbr << std::endl;
-                    // Delete message from queue
-                    msgctl(msgid, IPC_RMID, NULL);
-                    return Plazza::Order((Plazza::PizzaType) rcvData.type, (Plazza::PizzaSize) rcvData.size, rcvData.nbr);
-                } else {
-                    // TODO : implement throw
-                    perror("");
-                }
-            }
-
-            void sendCapacity(int nbr, int id) {
-                key_t key;
-                int msgid;
-                capacity_data data;
-
-                // Remove padding
-                std::memset(&data, sizeof(data), 0);
-
-                // Init struct
-                data.mesg_type = id;
-                data.nbr = nbr;
-
-                // Send data to queue
-                msgid = msgget(_capKey, 0666 | IPC_CREAT);
-                if (msgid == -1) {
-                    std::cout << "msgget error" << std::endl;
-                    perror("");
-                }
-
-                if (msgsnd(msgid, &data, sizeof(data) - sizeof(long), 0) == -1) {
-                    std::cout << "message not send " << id << std::endl;
-                } else {
-                    std::cout << "send" << std::endl;
-                }
-            }
-
-            int recvCapacity(int id) {
-                int msgid;
-                capacity_data data;
-
-                // Remove padding
-                std::memset(&data, sizeof(data), 0);
-
-                // Receive queue
-                msgid = msgget(_capKey, 0666 | IPC_CREAT);
-                if (msgrcv(msgid, &data, sizeof(data) - sizeof(long), id, IPC_NOWAIT) != -1) {
-                    // std::cout << data.type << std::endl;
-                    // std::cout << data.size << std::endl;
-                    // std::cout << data.nbr << std::endl;
-                    // Delete message from queue
-                    msgctl(msgid, IPC_RMID, NULL);
-                    return data.nbr;
-                } else {
-                    // TODO : implement throw
-                    perror("");
-                }
-            }
+            /**
+             * @brief Receive the closure boolean of the kitchen, return 0 if the kitchen is closed, 1 if its open, -1 if its not received by the reception
+             *
+             * @param id
+             * @return true
+             * @return false
+             */
+            int recvClosure(int id);
 
         protected:
         private:
+
+            /**
+             * @brief Send one data in queue
+             *
+             * @param value
+             * @param id
+             * @param key
+             */
+            void sendOneInfo(int value, int id, key_t key);
+
+            /**
+             * @brief Receive one data from queue
+             *
+             * @param value
+             * @param id
+             * @param key
+             */
+            int recvOneInfo(int id, key_t key);
+
             key_t _msgKey;
             key_t _capKey;
+            key_t _closureKey;
     };
 }
 
