@@ -11,6 +11,7 @@ Plazza::Reception::Reception(Parsing &data) : _data(data)
 {
     _receptionPid = getpid();
     _orderKey = ftok(".", ORDER_KEY);
+    _closureKey = ftok(".", CLOSURE_KEY);
 }
 
 Plazza::Reception::~Reception()
@@ -49,7 +50,11 @@ void Plazza::Reception::start()
 
 void Plazza::Reception::checkClosures()
 {
-    
+    std::unique_ptr<closure_data> data = _closureMsgQ.pop(getpid(), _closureKey);
+    if (data != nullptr) {
+        _kitchenPids.erase(std::remove(_kitchenPids.begin(), _kitchenPids.end(), data->id), _kitchenPids.end());
+        std::cout << "The kitchen " << data->id << " has closed" << std::endl;
+    }
 }
 
 static Plazza::PizzaType getPizzaType(std::string &pizza)
@@ -159,14 +164,17 @@ static int getNeededKitchen(int dis, int max)
 }
 
 /**
- * @brief 
- * 
- * @param order 
- * @return msg_data 
+ * @brief Serialize the order
+ *
+ * @param order
+ * @return msg_data
  */
-static msg_data serialize(Plazza::Order order)
+static msg_data serializeOrder(Plazza::Order order)
 {
     msg_data data;
+
+    std::memset(&data, sizeof(data), 0);
+
     // serialize data
     std::stringstream serializedStream;
     serializedStream << order;
@@ -183,12 +191,8 @@ void Plazza::Reception::dispatchOrder(Plazza::Order order)
     int total_amount = order.getAmount();
     int amout_iter = 2 * _data.getNbCooks();
 
-    // if (_kitchenPids.empty())
-    //     create_kitchen();
-
     // Get the total number of kitchens and substract the existing kitchen
     int needed_kitchen = getNeededKitchen(amout_iter, total_amount) - _kitchenPids.size();
-    std::cout << needed_kitchen << std::endl;
     for (int i = 0; i < needed_kitchen; i++) {
         create_kitchen();
     }
@@ -198,13 +202,11 @@ void Plazza::Reception::dispatchOrder(Plazza::Order order)
     for (int i = 0; i < _kitchenPids.size(); i++) {
         if (tmp < amout_iter) {
             order.setAmount(tmp);
-            _msgQueue.push(serialize(order), _kitchenPids.at(i), _orderKey);
-            // std::cout << tmp << std::endl;
+            _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
         } else {
             tmp -= amout_iter;
             order.setAmount(amout_iter);
-            _msgQueue.push(serialize(order), _kitchenPids.at(i), _orderKey);
-            // std::cout << amout_iter << std::endl;
+            _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
         }
     }
 

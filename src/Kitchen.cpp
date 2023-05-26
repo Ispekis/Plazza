@@ -17,6 +17,8 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
     availableCooks = _nbCooks;
     _orderCapacity = _nbCooks * 2;
     _orderKey = ftok(".", ORDER_KEY);
+    _closureKey = ftok(".", CLOSURE_KEY);
+    _receptionPid = pid;
     // for (int i = 0; i < _nbCooks; i++) {
     //     _cooks.push_back(std::make_shared<Plazza::Cook>(_ingredient, _order));
     // }
@@ -39,11 +41,21 @@ bool Plazza::Kitchen::timeOut()
     return false;
 }
 
+void Plazza::Kitchen::closeKitchen()
+{
+    closure_data data;
+
+    std::memset(&data, sizeof(data), 0);
+
+    data.id = getpid();
+    _closureMsgQ.push(data, _receptionPid, _closureKey);
+}
+
 void Plazza::Kitchen::kitchenLoop()
 {
     _start = std::chrono::steady_clock::now();
     while (true) {
-        std::unique_ptr<msg_data> data = _orderMsgQueue.pop(getpid(), _orderKey);
+        std::unique_ptr<msg_data> data = _orderMsgQ.pop(getpid(), _orderKey);
         // Check kitchen have received a message
         if (data != nullptr) {
             // TODO : replace
@@ -54,7 +66,7 @@ void Plazza::Kitchen::kitchenLoop()
             break;
     }
     stopCooks();
-    std::cout << "Kitchen closed" << std::endl;
+    closeKitchen();
 }
 
 void Plazza::Kitchen::run()

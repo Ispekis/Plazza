@@ -23,4 +23,9 @@ typedef struct capacity_data {
     int value;
 } capacity_data;
 
+typedef struct closure_data {
+    long mesg_type;
+    int id;
+} closure_data;
+
 #endif /* !PLAZZA_H_ */

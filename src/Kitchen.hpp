@@ -55,12 +55,18 @@ namespace Plazza {
 
         protected:
         private:
+
+            /**
+             * @brief Close the kitchen
+             * 
+             */
+            void closeKitchen();
+
             float _mutiplier;
             int _nbCooks;
             size_t availableCooks;
             size_t _orderCapacity;
-            MessageQueue<msg_data> _orderMsgQueue;
-            key_t _orderKey;
+            int _receptionPid;
             SafeQueue<Plazza::Order> _order;
 
             std::vector<std::shared_ptr<Plazza::Cook>> _cooks;
@@ -68,6 +74,12 @@ namespace Plazza {
 
             std::chrono::steady_clock::time_point _start;
             std::chrono::seconds _workDuration;
+
+            // Ipc's data
+            MessageQueue<msg_data> _orderMsgQ;
+            MessageQueue<closure_data> _closureMsgQ;
+            key_t _orderKey;
+            key_t _closureKey;
 
     };
 }

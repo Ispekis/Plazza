@@ -66,9 +66,15 @@ namespace Plazza {
             Parsing _data;
             ErrorHandling _CheckError;
             pid_t _receptionPid = 0;
-            MessageQueue<msg_data> _msgQueue;
             std::vector<int> _kitchenPids;
+
+            // Message Queues for ipc
+            MessageQueue<msg_data> _orderMsgQ;
+            MessageQueue<closure_data> _closureMsgQ;
+
+            // Keys for ipc
             key_t _orderKey;
+            key_t _closureKey;
     };
 }
 #endif /* !PLAZZA_HPP_ */
