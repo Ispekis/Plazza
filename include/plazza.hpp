@@ -10,6 +10,7 @@
     #define ORDER_KEY 65
     #define CAPACITY_KEY 66
     #define CLOSURE_KEY 67
+    #define MAX_COOK_PER_KITCHEN 2
 
 typedef struct msg_data {
     long mesg_type;

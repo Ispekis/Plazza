@@ -189,7 +189,7 @@ static msg_data serializeOrder(Plazza::Order order)
 void Plazza::Reception::dispatchOrder(Plazza::Order order)
 {
     int total_amount = order.getAmount();
-    int amout_iter = 2 * _data.getNbCooks();
+    int amout_iter = MAX_COOK_PER_KITCHEN * _data.getNbCooks();
 
     // Get the total number of kitchens and substract the existing kitchen
     int needed_kitchen = getNeededKitchen(amout_iter, total_amount) - _kitchenPids.size();
