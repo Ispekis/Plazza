@@ -7,6 +7,9 @@
 
 #ifndef PLAZZA_HPP_
     #define PLAZZA_HPP_
+    #define ORDER_KEY 65
+    #define CAPACITY_KEY 66
+    #define CLOSURE_KEY 67
 
 typedef struct msg_data {
     long mesg_type;

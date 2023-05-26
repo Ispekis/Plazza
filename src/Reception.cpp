@@ -10,6 +10,7 @@
 Plazza::Reception::Reception(Parsing &data) : _data(data)
 {
     _receptionPid = getpid();
+    _orderKey = ftok(".", ORDER_KEY);
 }
 
 Plazza::Reception::~Reception()
@@ -19,19 +20,36 @@ Plazza::Reception::~Reception()
 void Plazza::Reception::start()
 {
     std::string line;
+    fd_set fds;
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
 
-    while (std::getline(std::cin, line)) {
-        try {
-            std::vector<std::array<std::string, 3>> stringOrder = splitInput(line);
-            for (auto str : stringOrder) {
-                Plazza::Order order = convertToOrder(str);
-                dispatchOrder(order);
+    while (true) {
+        FD_ZERO(&fds);
+        FD_SET(STDIN_FILENO, &fds);
+
+        int ready = select(STDIN_FILENO + 1, &fds, nullptr, nullptr, &timeout);
+        if (ready > 0) {
+            std::getline(std::cin, line);
+            try {
+                std::vector<std::array<std::string, 3>> stringOrder = splitInput(line);
+                for (auto str : stringOrder) {
+                    Plazza::Order order = convertToOrder(str);
+                    dispatchOrder(order);
+                }
+                stringOrder.clear();
+            } catch (const Error &error) {
+                std::cout << error.what() << ": " << error.message() << "." << std::endl;
             }
-            stringOrder.clear();
-        } catch (const Error &error) {
-            std::cout << error.what() << ": " << error.message() << "." << std::endl;
         }
+        checkClosures();
     }
+}
+
+void Plazza::Reception::checkClosures()
+{
+    
 }
 
 static Plazza::PizzaType getPizzaType(std::string &pizza)
@@ -140,6 +158,26 @@ static int getNeededKitchen(int dis, int max)
     return res;
 }
 
+/**
+ * @brief 
+ * 
+ * @param order 
+ * @return msg_data 
+ */
+static msg_data serialize(Plazza::Order order)
+{
+    msg_data data;
+    // serialize data
+    std::stringstream serializedStream;
+    serializedStream << order;
+    std::string serializedString = serializedStream.str();
+
+    // Deserialize data to struct
+    std::stringstream deserializedStream(serializedString);
+    deserializedStream >> data;
+    return data;
+}
+
 void Plazza::Reception::dispatchOrder(Plazza::Order order)
 {
     int total_amount = order.getAmount();
@@ -160,12 +198,12 @@ void Plazza::Reception::dispatchOrder(Plazza::Order order)
     for (int i = 0; i < _kitchenPids.size(); i++) {
         if (tmp < amout_iter) {
             order.setAmount(tmp);
-            _msgQueue.sendOrder(order, _kitchenPids.at(i));
+            _msgQueue.push(serialize(order), _kitchenPids.at(i), _orderKey);
             // std::cout << tmp << std::endl;
         } else {
             tmp -= amout_iter;
             order.setAmount(amout_iter);
-            _msgQueue.sendOrder(order, _kitchenPids.at(i));
+            _msgQueue.push(serialize(order), _kitchenPids.at(i), _orderKey);
             // std::cout << amout_iter << std::endl;
         }
     }

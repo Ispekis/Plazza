@@ -16,6 +16,7 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
     _nbCooks = nbCooks;
     availableCooks = _nbCooks;
     _orderCapacity = _nbCooks * 2;
+    _orderKey = ftok(".", ORDER_KEY);
     // for (int i = 0; i < _nbCooks; i++) {
     //     _cooks.push_back(std::make_shared<Plazza::Cook>(_ingredient, _order));
     // }
@@ -42,10 +43,11 @@ void Plazza::Kitchen::kitchenLoop()
 {
     _start = std::chrono::steady_clock::now();
     while (true) {
-        std::unique_ptr<Plazza::Order> order = _msgQueue.recvOrder(getpid());
+        std::unique_ptr<msg_data> data = _orderMsgQueue.pop(getpid(), _orderKey);
         // Check kitchen have received a message
-        if (order != nullptr) {
-            receiveOrder(*order);
+        if (data != nullptr) {
+            // TODO : replace
+            receiveOrder(Plazza::Order(static_cast<Plazza::PizzaType>(data->type), static_cast<Plazza::PizzaSize>(data->size), data->nbr));
         }
         // _ingredient->refillIngredient();
         if (timeOut())

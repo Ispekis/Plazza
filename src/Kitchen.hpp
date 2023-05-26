@@ -59,7 +59,8 @@ namespace Plazza {
             int _nbCooks;
             size_t availableCooks;
             size_t _orderCapacity;
-            MessageQueue _msgQueue;
+            MessageQueue<msg_data> _orderMsgQueue;
+            key_t _orderKey;
             SafeQueue<Plazza::Order> _order;
 
             std::vector<std::shared_ptr<Plazza::Cook>> _cooks;

@@ -20,6 +20,7 @@
     #include <unistd.h>
     #include <chrono>
     #include "MessageQueue.hpp"
+    #include <sys/select.h>
 
 namespace Plazza {
     class Reception {
@@ -41,6 +42,13 @@ namespace Plazza {
 
         protected:
         private:
+
+            /**
+             * @brief Check if a restaurant has closed
+             *
+             */
+            void checkClosures();
+
             /**
              * @brief Check if the reception needs more kitchen
              *
@@ -58,8 +66,9 @@ namespace Plazza {
             Parsing _data;
             ErrorHandling _CheckError;
             pid_t _receptionPid = 0;
-            MessageQueue _msgQueue;
+            MessageQueue<msg_data> _msgQueue;
             std::vector<int> _kitchenPids;
+            key_t _orderKey;
     };
 }
 #endif /* !PLAZZA_HPP_ */
