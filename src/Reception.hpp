@@ -43,6 +43,12 @@ namespace Plazza {
              */
             bool needKitchen();
 
+            /**
+             * @brief dispatch orders
+             *
+             */
+            void dispatchOrder();
+
             Parsing _data;
             ErrorHandling _CheckError;
             std::vector<std::vector<std::string>> _receiptList;

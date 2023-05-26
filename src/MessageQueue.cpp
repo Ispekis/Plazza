@@ -67,9 +67,9 @@ Plazza::Order Plazza::MessageQueue::recvOrder(int id)
     // Receive queue
     msgid = msgget(_msgKey, 0666 | IPC_CREAT);
     if (msgrcv(msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, IPC_NOWAIT) != -1) {
-        std::cout << rcvData.type << std::endl;
-        std::cout << rcvData.size << std::endl;
-        std::cout << rcvData.nbr << std::endl;
+        // std::cout << rcvData.type << std::endl;
+        // std::cout << rcvData.size << std::endl;
+        // std::cout << rcvData.nbr << std::endl;
         // Delete message from queue
         msgctl(msgid, IPC_RMID, NULL);
         return Plazza::Order((Plazza::PizzaType) rcvData.type, (Plazza::PizzaSize) rcvData.size, rcvData.nbr);
@@ -120,9 +120,10 @@ void Plazza::MessageQueue::sendOneInfo(int value, int id, key_t key)
 
     if (msgsnd(msgid, &data, sizeof(data) - sizeof(long), 0) == -1) {
         std::cout << "message not send " << id << std::endl;
-    } else {
-        std::cout << "send" << std::endl;
     }
+    //  else {
+    //     std::cout << "send" << std::endl;
+    // }
 }
 
 int Plazza::MessageQueue::recvOneInfo(int id, key_t key)
