@@ -43,20 +43,15 @@ void Plazza::MessageQueue::sendOrder(Order order, int id)
     if (msgid == -1) {
         std::cout << "msgget error" << std::endl;
         perror("");
+        return;
     }
-    //  else {
-    //     std::cout << "msg success" << std::endl;
-    // }
     if (msgsnd(msgid, &msgData, sizeof(msgData) - sizeof(long), 0) == -1) {
-        std::cout << "message send " << id << std::endl;
+        std::cout << "message not send " << id << std::endl;
+        return;
     }
-    //  else {
-    //     std::cout << "message not send" << std::endl;
-    //     perror("");
-    // }
 };
 
-Plazza::Order Plazza::MessageQueue::recvOrder(int id)
+std::unique_ptr<Plazza::Order> Plazza::MessageQueue::recvOrder(int id)
 {
     int msgid;
     msg_data rcvData;
@@ -66,17 +61,21 @@ Plazza::Order Plazza::MessageQueue::recvOrder(int id)
 
     // Receive queue
     msgid = msgget(_msgKey, 0666 | IPC_CREAT);
+
+    if (msgid == -1) {
+        perror("msgid");
+    }
     if (msgrcv(msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, IPC_NOWAIT) != -1) {
         // std::cout << rcvData.type << std::endl;
         // std::cout << rcvData.size << std::endl;
         // std::cout << rcvData.nbr << std::endl;
         // Delete message from queue
         msgctl(msgid, IPC_RMID, NULL);
-        return Plazza::Order((Plazza::PizzaType) rcvData.type, (Plazza::PizzaSize) rcvData.size, rcvData.nbr);
-    } else {
-        // TODO : implement throw
-        perror("");
+        return std::make_unique<Plazza::Order>((Plazza::PizzaType) rcvData.type, (Plazza::PizzaSize) rcvData.size, rcvData.nbr);
     }
+    // Delete message from queue
+    msgctl(msgid, IPC_RMID, NULL);
+    return nullptr;
 }
 
 void Plazza::MessageQueue::sendCapacity(int nbr, int id)

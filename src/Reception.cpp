@@ -81,19 +81,11 @@ void Plazza::Reception::create_kitchen()
     if (pid == -1)
         throw Error("Failed to fork", "fork");
     if (pid == 0) { // Child
-        // Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
+        Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
         // std::cout << "Kitchen closed" << std::endl;
         exit(0);
-    }
-    else { // Parent
+    } else { // Parent
         _kitchenPids.push_back(pid);
-        // std::cout << "from parent" << std::endl;
-        // for (auto pid : _kitchenPids) {
-        //     std::cout << pid << std::endl;
-        // }
-        // _msgQueue.sendCapacity(-1, pid);
-        // _msgQueue.sendOrder(_orderList.at(0), _kitchenPids.at(0));
-        // std::cout << "send to msg" << std::endl;
     }
 }
 
@@ -159,8 +151,23 @@ void Plazza::Reception::dispatchOrder(Plazza::Order order)
     // Get the total number of kitchens and substract the existing kitchen
     int needed_kitchen = getNeededKitchen(amout_iter, total_amount) - _kitchenPids.size();
     std::cout << needed_kitchen << std::endl;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < needed_kitchen; i++) {
         create_kitchen();
+    }
+
+    int tmp = total_amount;
+
+    for (int i = 0; i < _kitchenPids.size(); i++) {
+        if (tmp < amout_iter) {
+            order.setAmount(tmp);
+            _msgQueue.sendOrder(order, _kitchenPids.at(i));
+            // std::cout << tmp << std::endl;
+        } else {
+            tmp -= amout_iter;
+            order.setAmount(amout_iter);
+            _msgQueue.sendOrder(order, _kitchenPids.at(i));
+            // std::cout << amout_iter << std::endl;
+        }
     }
 
 }

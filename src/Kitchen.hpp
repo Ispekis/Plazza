@@ -37,7 +37,7 @@ namespace Plazza {
              *
              * @param orderList
              */
-            void receiveOrder(std::vector<Plazza::Order> orderList);
+            void receiveOrder(Plazza::Order order);
 
             /**
              *
@@ -60,10 +60,10 @@ namespace Plazza {
             size_t availableCooks;
             size_t _orderCapacity;
             MessageQueue _msgQueue;
+            SafeQueue<Plazza::Order> _order;
 
             std::vector<std::shared_ptr<Plazza::Cook>> _cooks;
             std::shared_ptr<Ingredient> _ingredient;
-            std::shared_ptr<SafeQueue<Plazza::Order>> _order;
 
             std::chrono::steady_clock::time_point _start;
             std::chrono::seconds _workDuration;

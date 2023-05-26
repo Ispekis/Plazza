@@ -36,9 +36,9 @@ namespace Plazza {
              * @brief Receive the order data from the message queue
              *
              * @param id
-             * @return Plazza::Order
+             * @return std::unique_ptr<Plazza::Order>
              */
-            Plazza::Order recvOrder(int id);
+            std::unique_ptr<Plazza::Order> recvOrder(int id);
 
             /**
              * @brief Send the capacity left in the kitchen
