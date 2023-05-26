@@ -17,6 +17,7 @@ SRC	=	src/Parsing.cpp			\
 		src/Error.cpp			\
 		src/Reception.cpp		\
 		src/ErrorHandling.cpp	\
+		src/Factory.cpp			\
 		src/Order.cpp			\
 		src/Kitchen.cpp			\
 		src/Ingredient.cpp			\

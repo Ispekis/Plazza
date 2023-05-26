@@ -19,6 +19,7 @@
     #include <string>
     #include <unistd.h>
     #include <chrono>
+    #include "Factory.hpp"
     #include "MessageQueue.hpp"
 
 namespace Plazza {

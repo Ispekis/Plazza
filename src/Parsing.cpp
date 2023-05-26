@@ -24,6 +24,7 @@ Parsing::Parsing(int ac, char **av)
     } catch (std::invalid_argument &e) {
         throw Error("Invalid conversion to number", "Parsing Error");
     }
+    _factory = std::make_shared<Factory>("data/Pizza.conf", _multiplier);
 }
 
 Parsing::~Parsing()

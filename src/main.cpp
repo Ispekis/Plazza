@@ -100,8 +100,9 @@ int main (int ac, char **av)
         }
 
         Parsing data(ac, av);
+        // Factory facto("data/Pizza.conf", data.getMultiplier());
         Plazza::Reception reception(data);
-        reception.start();
+        // reception.start();
     }
     catch (const Error &error) {
         std::cout << error.what() << ": " << error.message() << "." << std::endl;
