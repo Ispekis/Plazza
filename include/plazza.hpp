@@ -16,7 +16,7 @@ typedef struct msg_data {
 } msg_data;
 
 typedef struct capacity_data {
-    long type;
+    long mesg_type;
     int nbr;
 } capacity_data;
 

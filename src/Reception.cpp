@@ -26,7 +26,8 @@ void Plazza::Reception::start()
             //     std::cout << order << std::endl;
             // }
             // Create new kitchen if there is not
-            if (needKitchen()) {
+            if (_kitchenPids.size() == 0) {
+            // if (needKitchen()) {
                 create_kitchen();
             //     _msgQueue.push(_orderList.at(0));
             }
@@ -95,7 +96,8 @@ void Plazza::Reception::create_kitchen()
         // for (auto pid : _kitchenPids) {
         //     std::cout << pid << std::endl;
         // }
-        _msgQueue.push(_orderList.at(0), _kitchenPids.at(0));
+        // _msgQueue.sendCapacity(-1, pid);
+        // _msgQueue.push(_orderList.at(0), _kitchenPids.at(0));
         // std::cout << "send to msg" << std::endl;
     }
 }

@@ -14,12 +14,15 @@
     #include <sstream>
     #include "Order.hpp"
     #include <cstring>
+    #define ORDER_KEY 65
+    #define CAPACITY_KEY 66
 
 namespace Plazza {
     class MessageQueue {
         public:
             MessageQueue() {
-                _key = ftok(".", 65);
+                _msgKey = ftok(".", ORDER_KEY);
+                _capKey = ftok(".", CAPACITY_KEY);
             };
             ~MessageQueue() {};
 
@@ -44,7 +47,7 @@ namespace Plazza {
                 deserializedStream >> msgData;
 
                 // Send data to queue
-                msgid = msgget(_key, 0666 | IPC_CREAT);
+                msgid = msgget(_msgKey, 0666 | IPC_CREAT);
                 if (msgid == -1) {
                     std::cout << "msgget error" << std::endl;
                     perror("");
@@ -69,11 +72,11 @@ namespace Plazza {
                 std::memset(&rcvData, sizeof(rcvData), 0);
 
                 // Receive queue
-                msgid = msgget(_key, 0666 | IPC_CREAT);
+                msgid = msgget(_msgKey, 0666 | IPC_CREAT);
                 if (msgrcv(msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, IPC_NOWAIT) != -1) {
-                    // std::cout << rcvData.type << std::endl;
-                    // std::cout << rcvData.size << std::endl;
-                    // std::cout << rcvData.nbr << std::endl;
+                    std::cout << rcvData.type << std::endl;
+                    std::cout << rcvData.size << std::endl;
+                    std::cout << rcvData.nbr << std::endl;
                     // Delete message from queue
                     msgctl(msgid, IPC_RMID, NULL);
                     return Plazza::Order((Plazza::PizzaType) rcvData.type, (Plazza::PizzaSize) rcvData.size, rcvData.nbr);
@@ -83,7 +86,7 @@ namespace Plazza {
                 }
             }
 
-            void askCapacity(int id) {
+            void sendCapacity(int nbr, int id) {
                 key_t key;
                 int msgid;
                 capacity_data data;
@@ -92,10 +95,11 @@ namespace Plazza {
                 std::memset(&data, sizeof(data), 0);
 
                 // Init struct
-                data.type = id;
+                data.mesg_type = id;
+                data.nbr = nbr;
 
                 // Send data to queue
-                msgid = msgget(_key, 0666 | IPC_CREAT);
+                msgid = msgget(_capKey, 0666 | IPC_CREAT);
                 if (msgid == -1) {
                     std::cout << "msgget error" << std::endl;
                     perror("");
@@ -103,6 +107,8 @@ namespace Plazza {
 
                 if (msgsnd(msgid, &data, sizeof(data) - sizeof(long), 0) == -1) {
                     std::cout << "message not send " << id << std::endl;
+                } else {
+                    std::cout << "send" << std::endl;
                 }
             }
 
@@ -114,7 +120,7 @@ namespace Plazza {
                 std::memset(&data, sizeof(data), 0);
 
                 // Receive queue
-                msgid = msgget(_key, 0666 | IPC_CREAT);
+                msgid = msgget(_capKey, 0666 | IPC_CREAT);
                 if (msgrcv(msgid, &data, sizeof(data) - sizeof(long), id, IPC_NOWAIT) != -1) {
                     // std::cout << data.type << std::endl;
                     // std::cout << data.size << std::endl;
@@ -130,7 +136,8 @@ namespace Plazza {
 
         protected:
         private:
-            key_t _key;
+            key_t _msgKey;
+            key_t _capKey;
     };
 }
 
