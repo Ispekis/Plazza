@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <memory>
 #include <unordered_map>
 #include "IPizza.hpp"
 
@@ -25,7 +26,7 @@ class Ingredient {
          * @return true 
          * @return false 
          */
-        bool makePizza(Plazza::IPizza *pizza);
+        bool makePizza(std::shared_ptr<Plazza::IPizza> pizza);
 
         /**
          * @brief Check if there is enough ingredient to make the pizza
@@ -34,7 +35,7 @@ class Ingredient {
          * @return true 
          * @return false 
          */
-        bool checkEnoughIngredient(Plazza::IPizza *pizza);
+        bool checkEnoughIngredient(std::shared_ptr<Plazza::IPizza> pizza);
         /**
          * @brief Refill Ingredient every _refillTime in ms
          *

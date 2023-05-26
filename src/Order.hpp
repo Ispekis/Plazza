@@ -17,39 +17,35 @@
     #include "Pizza/Fantasia.hpp"
     #include "Pizza/Margarita.hpp"
     #include <memory>
+    #include "plazza.hpp"
 
 namespace Plazza {
     class Order {
         public:
             Order();
-            Order(Plazza::PizzaType type, Plazza::PizzaSize size);
+            Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t amount);
             ~Order();
 
             //* Getters *//
             Plazza::PizzaType getType() const;
-            std::string getName() const;
             Plazza::PizzaSize getSize() const;
+            std::size_t getAmount() const;
             std::string getSizeName() const;
             std::shared_ptr<Plazza::IPizza> getPizza() const;
 
             //* Setters *//
             void setType(Plazza::PizzaType type);
             void setSize(Plazza::PizzaSize size);
+            void setAmount(std::size_t amount);
 
         protected:
         private:
             Plazza::PizzaType _pizzaType;
             Plazza::PizzaSize _pizzaSize;
-            std::string _pizzaName;
+            std::size_t _amount;
             std::string _pizzaSizeName;
             std::shared_ptr<Plazza::IPizza> _pizzas;
             // TODO Make it generic to use
-            std::map<Plazza::PizzaType, std::string> pizzaNamesMap = {
-                {Plazza::PizzaType::Regina, "regina"},
-                {Plazza::PizzaType::Margarita, "margarita"},
-                {Plazza::PizzaType::Americana, "americana"},
-                {Plazza::PizzaType::Fantasia, "fantasia"}
-            };
             std::map<Plazza::PizzaSize, std::string> pizzaSizesMap = {
                 {Plazza::PizzaSize::S, "S"},
                 {Plazza::PizzaSize::M, "M"},
@@ -60,6 +56,23 @@ namespace Plazza {
     };
 }
 
+/**
+ * @brief Deserialize to struct
+ *
+ * @param is
+ * @param pizzaData
+ * @return std::istream&
+ */
+std::istream& operator>>(std::istream &is, msg_data &msgData);
+
+
+/**
+ * @brief Serialize order
+ *
+ * @param os
+ * @param order
+ * @return std::ostream&
+ */
 std::ostream& operator<<(std::ostream& os, const Plazza::Order& order);
 
 #endif /* !ORDER_HPP_ */

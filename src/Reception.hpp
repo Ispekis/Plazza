@@ -17,6 +17,9 @@
     #include "Kitchen.hpp"
     #include <array>
     #include <string>
+    #include <unistd.h>
+    #include <chrono>
+    #include "MessageQueue.hpp"
 
 namespace Plazza {
     class Reception {
@@ -32,12 +35,27 @@ namespace Plazza {
 
         protected:
         private:
+            /**
+             * @brief Check if the reception needs more kitchen
+             *
+             * @return true
+             * @return false
+             */
+            bool needKitchen();
+
+            /**
+             * @brief dispatch orders
+             *
+             */
+            void dispatchOrder();
+
             Parsing _data;
             ErrorHandling _CheckError;
             std::vector<std::vector<std::string>> _receiptList;
             std::vector<Order> _orderList;
-            std::vector<Kitchen> _kitchens;
-            std::vector<std::array<int, 2>> _pipefds;
+            pid_t _receptionPid = 0;
+            MessageQueue _msgQueue;
+            std::vector<int> _kitchenPids;
     };
 }
 #endif /* !PLAZZA_HPP_ */

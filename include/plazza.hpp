@@ -8,4 +8,16 @@
 #ifndef PLAZZA_HPP_
     #define PLAZZA_HPP_
 
+typedef struct msg_data {
+    long mesg_type;
+    int type;
+    int size;
+    int nbr;
+} msg_data;
+
+typedef struct capacity_data {
+    long mesg_type;
+    int value;
+} capacity_data;
+
 #endif /* !PLAZZA_H_ */

@@ -94,8 +94,7 @@ void *call_consumer(void *arg)
 int main (int ac, char **av)
 {
     try {
-        std::string av1(av[1]);
-        if (ac == 2 && av1.compare("-h") == 0) {
+        if (ac == 2 && std::string(av[1]).compare("-h") == 0) {
             Usage::display_usage(std::cout);
             return 0;
         }

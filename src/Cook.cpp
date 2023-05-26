@@ -7,30 +7,25 @@
 
 #include "Cook.hpp"
 
-Plazza::Cook::Cook()
+Plazza::Cook::Cook(std::shared_ptr<Ingredient> ingredient, std::shared_ptr<SafeQueue<Plazza::Order>> order) : _ingredient(ingredient), _order(order)
 {
-    _orderCapacity = 2;
+    // _orderCapacity = 2;
+    _cooking = false;
+    // _thread = Mythread>();
 }
 
 Plazza::Cook::~Cook()
 {
+    std::cout << "destroyed" << std::endl;
 }
 
-bool Plazza::Cook::isOverwhelmed()
-{
-    if (_orderCapacity == 0) {
-        return true;
-    }
-    return false;
-}
+// void Plazza::Cook::stopCook()
+// {
+//     std::cout << "Stop thread" << std::endl;
+//     _thread.stopThread();
+// }
 
-std::size_t Plazza::Cook::availableOrderCapacity()
+void Plazza::Cook::cookPizza()
 {
-    return _orderCapacity;
-}
 
-void Plazza::Cook::addOrder(Plazza::Order order)
-{
-    _orderList.push_back(order);
-    _orderCapacity--;
 }

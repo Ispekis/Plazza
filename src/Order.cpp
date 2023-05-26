@@ -12,10 +12,11 @@ Plazza::Order::Order()
 
 }
 
-Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size)
+Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t amount)
 {
     this->setType(type);
     this->setSize(size);
+    this->setAmount(amount);
 }
 
 Plazza::Order::~Order()
@@ -27,14 +28,14 @@ Plazza::PizzaType Plazza::Order::getType() const
     return _pizzaType;
 }
 
-std::string Plazza::Order::getName() const
-{
-    return _pizzaName;
-}
-
 Plazza::PizzaSize Plazza::Order::getSize() const
 {
     return _pizzaSize;
+}
+
+std::size_t Plazza::Order::getAmount() const
+{
+    return _amount;
 }
 
 std::string Plazza::Order::getSizeName() const
@@ -49,11 +50,6 @@ std::shared_ptr<Plazza::IPizza> Plazza::Order::getPizza() const
 void Plazza::Order::setType(Plazza::PizzaType type)
 {
     _pizzaType = type;
-    auto iter = pizzaNamesMap.find(type);
-
-    _pizzaName = iter->second;
-    // std::cout << pizzaNamesMap[type] << std::endl;
-    // _pizzaName = pizzaNamesMap[type];
 
     // set pizza class
     switch (_pizzaType) {
@@ -78,8 +74,41 @@ void Plazza::Order::setSize(Plazza::PizzaSize size)
     _pizzaSizeName = pizzaSizesMap[size];
 }
 
+void Plazza::Order::setAmount(std::size_t amount)
+{
+    _amount = amount;
+}
+
 std::ostream &operator<<(std::ostream &os, const Plazza::Order &order)
 {
-    os << "Order : | " << order.getName() << "\t | " << order.getSizeName() << " |";
+
+    // Serialize pizza
+    // os << *order.getPizza();
+    os << order.getType() << " ";
+    os << order.getSize() << " ";
+    os << order.getAmount();
     return os;
+}
+
+std::istream& operator>>(std::istream &is, msg_data &msgData)
+{
+    // Deserialize pizza
+    is >> msgData.type;
+    is >> msgData.size;
+    is >> msgData.nbr;
+    // is >> pizzaData.name;
+    // is >> pizzaData.bakeTime;
+    // is >> pizzaData.nbrIngredient;
+    // std::vector<std::string> ings;
+    // std::string tmp;
+    // for (int i = 0; i < pizzaData.nbrIngredient; i++) {
+    //     is >> tmp;
+    //     ings.push_back(tmp);
+    // }
+    // pizzaData.ingredients = ings;
+
+    // // Deserialize others
+    // is >> pizzaData.type;
+    // is >> pizzaData.size;
+    return is;
 }

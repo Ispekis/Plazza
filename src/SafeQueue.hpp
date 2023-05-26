@@ -13,19 +13,20 @@
 #include <queue>
 #include <condition_variable>
 
+template <typename T>
 class ISafeQueue {
     public :
         virtual ~ISafeQueue() = default ;
-        virtual void push(int value) = 0;
-        virtual bool tryPop(int &value) = 0;
+        virtual void push(T value) = 0;
+        virtual bool tryPop(T &value) = 0;
 };
 
 template <typename T>
-class SafeQueue : public ISafeQueue {
+class SafeQueue : public ISafeQueue<T> {
     public:
         SafeQueue(){};
         ~SafeQueue(){};
-        void push(int value) {
+        void push(T value) {
             std::lock_guard<std::mutex> lock(_mutex);
             // std::unique_lock<std::mutex> lock(_mutex, std::defer_lock);
             // lock.lock();
@@ -34,7 +35,7 @@ class SafeQueue : public ISafeQueue {
             cv.notify_one();
             // lock.unlock();
         };
-        int pop() {
+        T pop() {
             std::unique_lock<std::mutex> lock(_mutex, std::defer_lock);
             lock.lock();
             if (_queue.empty()) {
@@ -54,7 +55,7 @@ class SafeQueue : public ISafeQueue {
             else
                 return false;
         };
-        bool tryPop(int &value) {
+        bool tryPop(T &value) {
             std::unique_lock<std::mutex> lock(_mutex);
             if (!_queue.empty()) {
                 value = _queue.front();
