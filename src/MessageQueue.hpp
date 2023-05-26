@@ -78,6 +78,52 @@ namespace Plazza {
                     msgctl(msgid, IPC_RMID, NULL);
                     return Plazza::Order((Plazza::PizzaType) rcvData.type, (Plazza::PizzaSize) rcvData.size, rcvData.nbr);
                 } else {
+                    // TODO : implement throw
+                    perror("");
+                }
+            }
+
+            void askCapacity(int id) {
+                key_t key;
+                int msgid;
+                capacity_data data;
+
+                // Remove padding
+                std::memset(&data, sizeof(data), 0);
+
+                // Init struct
+                data.type = id;
+
+                // Send data to queue
+                msgid = msgget(_key, 0666 | IPC_CREAT);
+                if (msgid == -1) {
+                    std::cout << "msgget error" << std::endl;
+                    perror("");
+                }
+
+                if (msgsnd(msgid, &data, sizeof(data) - sizeof(long), 0) == -1) {
+                    std::cout << "message not send " << id << std::endl;
+                }
+            }
+
+            int recvCapacity(int id) {
+                int msgid;
+                capacity_data data;
+
+                // Remove padding
+                std::memset(&data, sizeof(data), 0);
+
+                // Receive queue
+                msgid = msgget(_key, 0666 | IPC_CREAT);
+                if (msgrcv(msgid, &data, sizeof(data) - sizeof(long), id, IPC_NOWAIT) != -1) {
+                    // std::cout << data.type << std::endl;
+                    // std::cout << data.size << std::endl;
+                    // std::cout << data.nbr << std::endl;
+                    // Delete message from queue
+                    msgctl(msgid, IPC_RMID, NULL);
+                    return data.nbr;
+                } else {
+                    // TODO : implement throw
                     perror("");
                 }
             }

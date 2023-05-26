@@ -15,4 +15,9 @@ typedef struct msg_data {
     int nbr;
 } msg_data;
 
+typedef struct capacity_data {
+    long type;
+    int nbr;
+} capacity_data;
+
 #endif /* !PLAZZA_H_ */

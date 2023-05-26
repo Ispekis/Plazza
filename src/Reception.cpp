@@ -26,7 +26,7 @@ void Plazza::Reception::start()
             //     std::cout << order << std::endl;
             // }
             // Create new kitchen if there is not
-            if (_kitchenPids.size() == 0) {
+            if (needKitchen()) {
                 create_kitchen();
             //     _msgQueue.push(_orderList.at(0));
             }
@@ -139,4 +139,9 @@ bool Plazza::Reception::parsingInput(std::string &line)
         return false;
     }
     return true;
+}
+
+bool Plazza::Reception::needKitchen()
+{
+    return false;
 }
