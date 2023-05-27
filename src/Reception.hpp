@@ -63,6 +63,7 @@ namespace Plazza {
              */
             void dispatchOrder(Plazza::Order order);
 
+            int getCapacity(int pid);
             Parsing _data;
             ErrorHandling _CheckError;
             pid_t _receptionPid = 0;
@@ -71,9 +72,11 @@ namespace Plazza {
             // Message Queues for ipc
             MessageQueue<msg_data> _orderMsgQ;
             MessageQueue<closure_data> _closureMsgQ;
+            MessageQueue<capacity_data> _capacityMsgQ;
 
             // Keys for ipc
             key_t _orderKey;
+            key_t _capacityKey;
             key_t _closureKey;
     };
 }

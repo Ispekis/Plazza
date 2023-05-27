@@ -12,6 +12,7 @@ Plazza::Reception::Reception(Parsing &data) : _data(data)
     _receptionPid = getpid();
     _orderKey = ftok(".", ORDER_KEY);
     _closureKey = ftok(".", CLOSURE_KEY);
+    _capacityKey = ftok(".", CAPACITY_KEY);
 }
 
 Plazza::Reception::~Reception()
@@ -46,6 +47,20 @@ void Plazza::Reception::start()
         }
         checkClosures();
     }
+}
+
+int Plazza::Reception::getCapacity(int pid)
+{
+    capacity_data data;
+    std::memset(&data, sizeof(data), 0);
+    _capacityMsgQ.push(data, pid, _capacityKey);
+
+    std::unique_ptr<capacity_data> a = nullptr;
+
+    while (a == nullptr)
+        a = _capacityMsgQ.pop(getpid(), _capacityKey);
+    std::cout << a->value << std::endl;
+    return a->value;
 }
 
 void Plazza::Reception::checkClosures()
@@ -199,15 +214,16 @@ void Plazza::Reception::dispatchOrder(Plazza::Order order)
 
     int tmp = total_amount;
 
-    for (int i = 0; i < _kitchenPids.size(); i++) {
-        if (tmp < amout_iter) {
-            order.setAmount(tmp);
-            _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
-        } else {
-            tmp -= amout_iter;
-            order.setAmount(amout_iter);
-            _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
-        }
-    }
-
+        getCapacity(_kitchenPids.at(0));
+    // for (int i = 0; i < _kitchenPids.size(); i++) {
+    //     if (tmp < amout_iter) {
+    //         order.setAmount(tmp);
+    //         _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
+    //     } else {
+    //         tmp -= amout_iter;
+    //         order.setAmount(amout_iter);
+    //         _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
+    //     }
+    //     // getCapacity(_kitchenPids[i]);
+    // }
 }
