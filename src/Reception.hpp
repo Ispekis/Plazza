@@ -30,27 +30,53 @@ namespace Plazza {
             Reception(Parsing &data);
             ~Reception();
 
+            /**
+             * @brief Run the Reception
+             * 
+             */
             void start();
+
+            /**
+             * @brief Convert userInput into order
+             * 
+             * @param allOrder 
+             */
             void convertToOrder(std::vector<std::array<std::string, 3>> &allOrder);
 
             /**
-             * @brief Seprate orders
-             *
-             * @param line
-             * @return std::vector<std::array<std::string, 3>>
+             * @brief Convert input into order
+             * 
+             * @param line 
+             * @return true 
+             * @return false 
              */
-
             bool parsingInput(std::string &line);
-            void splitInput(std::string &line);
-            void create_kitchen();
 
+            /**
+             * @brief Split input into parsable data
+             * 
+             * @param line 
+             */
+            void splitInput(std::string &line);
+            /**
+             * @brief Loop for user input from the std::cin
+             * 
+             */
+            void userInput();
+
+            void create_kitchen();
             void manageKitchen();
-            void parseOrder(std::vector<std::array<std::string, 3>> order);
             void sendPizzaToKitchen(int Capacity, int KitchenPid);
 
         protected:
         private:
-            int getCapacityLeft(int pid);
+            /**
+             * @brief Get the capacity left of the kitchenPid
+             * 
+             * @param pid 
+             * @return int 
+             */
+            int getCapacityLeft(int kitchenPid);
              
             /**
              * @brief Check if a restaurant has closed
@@ -58,21 +84,6 @@ namespace Plazza {
              */
             void checkClosures();
 
-            /**
-             * @brief Check if the reception needs more kitchen
-             *
-             * @return true
-             * @return false
-             */
-            bool needKitchen();
-
-            /**
-             * @brief dispatch orders
-             *
-             */
-            void dispatchOrder(Plazza::Order order);
-
-            void userInput();
 
             Parsing _data;
             ErrorHandling _CheckError;

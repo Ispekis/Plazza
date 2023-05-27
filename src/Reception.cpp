@@ -80,6 +80,19 @@ void Plazza::Reception::manageKitchen()
     }
 }
 
+void Plazza::Reception::create_kitchen()
+{
+    Process newProcess;
+    pid_t pid = newProcess.spawnChildProcess();
+    if (pid == 0) { // Child
+        Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
+        kitchen.~Kitchen();
+        exit(0);
+    } else { // Parent
+        _kitchenPids.push_back(pid);
+    }
+}
+
 bool Plazza::Reception::parsingInput(std::string &line)
 {
     try {
@@ -120,21 +133,6 @@ int Plazza::Reception::getCapacityLeft(int pid)
         a = _capacityMsgQ.pop(getpid(), _capacityKey);
     std::cout << "[Capacity pid:" << pid << "] capacity:" << a->value << std::endl;
     return a->value;
-}
-
-void Plazza::Reception::checkClosures()
-{
-    // Trying to read closure message and close Kitchen
-    while (true) {
-        auto closedPid = _closureMsgQ.pop(getpid(), _closureKey);
-        if (closedPid != nullptr)
-            for (int i = 0; i != _kitchenPids.size(); i++)
-                if (closedPid->id = _kitchenPids.at(i)) {
-                    _kitchenPids.erase(_kitchenPids.begin() + i);
-                    std::cout << RED << "Reception : Kitchen :" << closedPid->id << " Closed"<< COLOR <<std::endl;
-                    break;
-                }
-    }
 }
 
 static Plazza::PizzaType getPizzaType(std::string &pizza)
@@ -180,21 +178,6 @@ void Plazza::Reception::convertToOrder(std::vector<std::array<std::string, 3>> &
     allOrder.clear();
 }
 
-void Plazza::Reception::create_kitchen()
-{
-    
-    Process newProcess;
-    pid_t pid = newProcess.spawnChildProcess();
-    if (pid == 0) { // Child
-        Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
-        kitchen.~Kitchen();
-        // std::cout << "Kitchen closed" << std::endl;
-        exit(0);
-    } else { // Parent
-        _kitchenPids.push_back(pid);
-    }
-}
-
 void Plazza::Reception::splitInput(std::string &line)
 {
     std::istringstream iss(line);
@@ -217,33 +200,6 @@ void Plazza::Reception::splitInput(std::string &line)
         words.clear();
     }
     convertToOrder(result);
-}
-
-static void printVector(std::vector<std::vector<std::string>> &vector)
-{
-    for (auto& row : vector) {
-        for (auto& element : row) {
-            std::cout << "[ " << element << " ] ";
-        }
-        std::cout << std::endl;
-    }
-}
-
-bool Plazza::Reception::needKitchen()
-{
-    return false;
-}
-
-static int getNeededKitchen(int dis, int max)
-{
-    int res = static_cast<int>(max / dis);
-
-    double tmp = static_cast<float>(max) / dis - res;
-
-    if (tmp > 0) {
-        res++;
-    }
-    return res;
 }
 
 // void Plazza::Reception::dispatchOrder(Plazza::Order order)
@@ -272,3 +228,18 @@ static int getNeededKitchen(int dis, int max)
 //         // getCapacity(_kitchenPids[i]);
 //     }
 // }
+
+void Plazza::Reception::checkClosures()
+{
+    // Trying to read closure message and close Kitchen
+    while (true) {
+        auto closedPid = _closureMsgQ.pop(getpid(), _closureKey);
+        if (closedPid != nullptr)
+            for (int i = 0; i != _kitchenPids.size(); i++)
+                if (closedPid->id = _kitchenPids.at(i)) {
+                    _kitchenPids.erase(_kitchenPids.begin() + i);
+                    std::cout << RED << "Reception : Kitchen :" << closedPid->id << " Closed"<< COLOR <<std::endl;
+                    break;
+                }
+    }
+}
