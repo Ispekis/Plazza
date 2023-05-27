@@ -37,6 +37,20 @@ namespace Plazza {
             virtual void setIngredients(std::vector<std::string> ingredients) = 0;
 
             /**
+             * @brief Set the Name of Pizza
+             *
+             * @param name
+             */
+            virtual void setName(std::string name) = 0;
+
+            /**
+             * @brief Get the Name of the pizza
+             *
+             * @return string
+             */
+            virtual std::string getName() const = 0;
+
+            /**
              * @brief Get the Bake Time of the pizza in second
              *
              * @return float

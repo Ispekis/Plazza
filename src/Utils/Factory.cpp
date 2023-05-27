@@ -43,13 +43,60 @@ void Factory::setPizzaDefault(float mult)
     for (int i = 0; i != pizzaName.size(); i++) {
         std::shared_ptr<Plazza::IPizza> _pizza = std::make_shared<Plazza::Pizza>();
 
-        _pizza.get()->setBakeTime(cookTime[i] * mult);
-        _pizza.get()->setIngredients(pizzaIngredients[i]);
-        _pizza.get()->setType(pizzaEnum[i]);
-        _pizzaInfo[pizzaName[i]] = _pizza;
+        _pizzaList.push_back(pizzaName[i]);
+        _pizza->setBakeTime(cookTime[i] * mult);
+        _pizza->setIngredients(pizzaIngredients[i]);
+        _pizza->setType(pizzaEnum[i]);
+        _pizza->setName(pizzaName[i]);
+;        _pizzaInfo[pizzaName[i]] = _pizza;
     }
+}
+
+static std::vector<std::string> fillIngredients(std::string line)
+{
+    std::istringstream ss(line);
+    std::string tmp;
+    std::vector<std::string> res;
+
+    while (std::getline(ss, tmp, ',')) {
+        res.push_back(tmp);
+    }
+    return res;
+}
+
+void Factory::fillPizza(std::string line)
+{
+    std::stringstream ss(line);
+    std::shared_ptr<Plazza::IPizza> pizza = std::make_shared<Plazza::Pizza>();
+    std::string value;
+    std::string name;
+
+    ss >> value;
+    pizza->setType(std::stoi(value));
+    value.clear();
+
+    ss >> name;
+    pizza->setName(name);
+    _pizzaList.push_back(name);
+
+    ss >> value;
+    pizza->setIngredients(fillIngredients(value));
+    value.clear();
+
+    ss >> value;
+    pizza->setBakeTime(std::stoi(value));
+
+    _pizzaInfo[name] = pizza;
 }
 
 void Factory::setPizzaByFile(float mult)
 {
+    std::string line;
+
+    while (std::getline(_file, line)) {
+        if (!std::isdigit(line[0]))
+            _ingredients = fillIngredients(line);
+        else
+            fillPizza(line);
+    }
 }

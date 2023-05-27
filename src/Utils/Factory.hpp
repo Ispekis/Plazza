@@ -7,11 +7,11 @@
 
 #ifndef FACTORY_HPP_
 #define FACTORY_HPP_
-
     #include <fstream>
     #include <iostream>
     #include <memory>
     #include <map>
+    #include <sstream>
     #include "IPizza.hpp"
     #include "Pizza.hpp"
 
@@ -24,8 +24,10 @@ class Factory {
         void setPizzaByFile(float mult);
         void setConfigFile(std::string configFile, float mult);
 
+        void fillPizza(std::string line);
     protected:
     private:
+        std::vector<std::string> _pizzaList;
         std::ifstream _file;
         std::vector<std::string> _ingredients;
         std::string _configFile;

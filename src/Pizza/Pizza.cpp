@@ -26,6 +26,11 @@ void Plazza::Pizza::setBakeTime(float time)
     _bakeTime = time;
 }
 
+void Plazza::Pizza::setName(std::string name)
+{
+    _name = name;
+}
+
 void Plazza::Pizza::setIngredients(std::vector<std::string> ingredients)
 {
     _ingredients = ingredients;
@@ -34,6 +39,11 @@ void Plazza::Pizza::setIngredients(std::vector<std::string> ingredients)
 float Plazza::Pizza::getBakeTime() const
 {
     return _bakeTime;
+}
+
+std::string Plazza::Pizza::getName() const
+{
+    return _name;
 }
 
 std::vector<std::string> Plazza::Pizza::getIngredients() const
