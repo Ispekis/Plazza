@@ -65,6 +65,7 @@ namespace Plazza {
             float _mutiplier;
             int _nbCooks;
             size_t availableCooks;
+            size_t _orderCapacityMax;
             size_t _orderCapacity;
             int _receptionPid;
             SafeQueue<Plazza::Order> _order;

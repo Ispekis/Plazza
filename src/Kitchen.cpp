@@ -16,6 +16,7 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
     _nbCooks = nbCooks;
     availableCooks = _nbCooks;
     _orderCapacity = _nbCooks * 2;
+    _orderCapacityMax = _orderCapacity;
     _orderKey = ftok(".", ORDER_KEY);
     _closureKey = ftok(".", CLOSURE_KEY);
     _capacityKey = ftok(".", CAPACITY_KEY);
@@ -33,7 +34,11 @@ bool Plazza::Kitchen::timeOut()
 {
     auto current =  std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - _start);
-    if (elapsed >= _workDuration) {
+
+    if (_orderCapacity != _orderCapacityMax)
+        _start = current;
+    if (elapsed >= _workDuration)
+    {
         return true;
     }
     return false;
