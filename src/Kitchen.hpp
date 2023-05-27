@@ -70,7 +70,7 @@ namespace Plazza {
              * @brief Cook the pizzas
              * 
              */
-            void cookPizzas();
+            void cookPizzas(Plazza::Order order);
 
             float _mutiplier;
             int _nbCooks;
@@ -78,9 +78,7 @@ namespace Plazza {
             size_t _orderCapacity;
             int _receptionPid;
 
-            SafeQueue<Plazza::Order> _taskQueue;
-            SafeQueue<Plazza::Order> _completedQueue;
-            Plazza::ThreadPool _tp;
+            Plazza::ThreadPool _threadPool;
             std::shared_ptr<Ingredient> _ingredient;
 
             // Timer

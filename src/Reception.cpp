@@ -130,7 +130,7 @@ int Plazza::Reception::getCapacityLeft(int pid)
     std::unique_ptr<capacity_data> a = nullptr;
 
     while (a == nullptr)
-        a = _capacityMsgQ.pop(getpid(), _capacityKey);
+        a = _capacityMsgQ.pop(getpid(), _capacityKey, IPC_NOWAIT);
     std::cout << "[Capacity pid:" << pid << "] capacity:" << a->value << std::endl;
     return a->value;
 }
@@ -233,7 +233,7 @@ void Plazza::Reception::checkClosures()
 {
     // Trying to read closure message and close Kitchen
     while (true) {
-        auto closedPid = _closureMsgQ.pop(getpid(), _closureKey);
+        auto closedPid = _closureMsgQ.pop(getpid(), _closureKey, IPC_NOWAIT);
         if (closedPid != nullptr)
             for (int i = 0; i != _kitchenPids.size(); i++)
                 if (closedPid->id = _kitchenPids.at(i)) {

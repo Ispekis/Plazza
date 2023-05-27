@@ -23,8 +23,9 @@ namespace Plazza {
             /**
              * @brief Send the message data to the messsage queue
              *
-             * @param order
-             * @param id
+             * @param msgData 
+             * @param id 
+             * @param key 
              */
             void push(T msgData, int id, key_t key) {
                 int msgid;
@@ -51,9 +52,11 @@ namespace Plazza {
              * @brief Receive the message data from the message queue
              *
              * @param id
-             * @return std::unique_ptr<Plazza::Order>
+             * @param key
+             * @param flag
+             * @return std::unique_ptr<T>
              */
-            std::unique_ptr<T> pop(int id, key_t key) {
+            std::unique_ptr<T> pop(int id, key_t key, int flag) {
                 int msgid;
                 T rcvData;
 
@@ -66,7 +69,7 @@ namespace Plazza {
                 if (msgid == -1) {
                     perror("msgid");
                 }
-                if (msgrcv(msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, IPC_NOWAIT) != -1) {
+                if (msgrcv(msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, flag) != -1) {
                     // Delete message from queue
                     msgctl(msgid, IPC_RMID, NULL);
                     return std::make_unique<T>(rcvData);
