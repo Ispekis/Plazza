@@ -18,19 +18,42 @@
 namespace Plazza {
     class ThreadPool {
         public:
+            /**
+             * @brief Construct a new Thread Pool object
+             * 
+             * @param nbrWorkers 
+             */
             ThreadPool(std::size_t nbrWorkers) {
                 _nbrWorkers = nbrWorkers;
                 _pollSpaceLeft = _nbrWorkers;
                 runPool();
             }
+
+            /**
+             * @brief Destroy the Thread Pool object
+             * 
+             */
             ~ThreadPool() {};
 
+            /**
+             * @brief Get space left in the thread pool
+             * 
+             * @return std::size_t 
+             */
             std::size_t spaceLeft() {
                 if (_pollSpaceLeft < 0)
                     return 0;
                 return _pollSpaceLeft;
             }
 
+            /**
+             * @brief Queue new function
+             * 
+             * @tparam F 
+             * @tparam Args 
+             * @param f 
+             * @param args 
+             */
             template <typename F, typename... Args>
             void enqueue(F&& f, Args&&... args) {
                 _taskQueue.emplace(f);
@@ -41,6 +64,10 @@ namespace Plazza {
         protected:
         private:
 
+            /**
+             * @brief Run the pool
+             * 
+             */
             void runPool() {
                 for (int i = 0; i < _nbrWorkers; i++) {
                     _workers.emplace_back([&] {

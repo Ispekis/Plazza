@@ -81,13 +81,22 @@ void Plazza::Kitchen::kitchenLoop()
     }
 }
 
+static void orderReadyMessage(Plazza::Order order)
+{
+    std::cout << "[Cook] : The " << order.getPizza()->getName() << " " << order.getSize() << " is ready !";
+}
+
 void Plazza::Kitchen::cookPizzas(Plazza::Order order)
 {
     size_t bakeTime = order.getPizza()->getBakeTime() * _mutiplier;
     std::this_thread::sleep_for(std::chrono::milliseconds(bakeTime * 1000));
 
     // Send pizza back to reception
-    std::cout << "ok" << std::endl;
+    orderReadyMessage(order);
+    msg_data data;
+    data << order;
+    _orderMsgQ.push(data, _receptionPid, _orderKey);
+    _orderCapacity++;
 }
 
 void Plazza::Kitchen::run()

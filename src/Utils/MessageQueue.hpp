@@ -53,7 +53,7 @@ namespace Plazza {
              *
              * @param id
              * @param key
-             * @param flag
+             * @param flag 0 to block the receiver
              * @return std::unique_ptr<T>
              */
             std::unique_ptr<T> pop(int id, key_t key, int flag) {

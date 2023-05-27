@@ -17,23 +17,8 @@ Plazza::Reception::Reception(Parsing &data) : _data(data)
 
 Plazza::Reception::~Reception()
 {
-}
-
-/**
- * @brief Serialize the order
- *
- * @param order
- * @return msg_data
- */
-static msg_data serializeOrder(Plazza::Order order)
-{
-    msg_data data;
-
-    std::memset(&data, sizeof(data), 0);
-
-    // serialize data
-    data << order;
-    return data;
+    _closingKitchen.join();
+    _receiveReadyOrder.join();
 }
 
 void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
@@ -48,7 +33,11 @@ void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
     Plazza::Order orderToSend = _orderList.at(0); // Do a copy the Order that is going to be sent
     orderToSend.setAmount(pizzaToRemove);
 
-    _orderMsgQ.push(serializeOrder(orderToSend), KitchenPid, _orderKey);
+    // prepare struct data
+    msg_data data;
+    data << orderToSend;
+
+    _orderMsgQ.push(data, KitchenPid, _orderKey);
     std::cout << "Reception: " << pizzaToRemove << "Pizza sent to " << KitchenPid << std::endl;
     singleOrderList.setAmount(pizzaQty - pizzaToRemove);
     
@@ -87,6 +76,23 @@ void Plazza::Reception::create_kitchen()
     }
 }
 
+static void receiveOrderMessage(Plazza::Order order)
+{
+    std::cout << "[Reception] : I have a " << order.getPizza()->getName() << " " << order.getSize() << " ready to go !" << std::endl;
+}
+
+void Plazza::Reception::receiveReadyOrder()
+{
+    while (_isRunning) {
+        std::unique_ptr<msg_data> data = _orderMsgQ.pop(getpid(), _orderKey, 0);
+        if (data != nullptr) {
+            Plazza::Order order;
+            *data >> order;
+            receiveOrderMessage(order);
+        }
+    }
+}
+
 bool Plazza::Reception::parsingInput(std::string &line)
 {
     try {
@@ -110,9 +116,9 @@ void Plazza::Reception::userInput()
 
 void Plazza::Reception::start()
 {
-    std::thread closingKitchen = std::thread(&Plazza::Reception::checkClosures, std::ref(*this));
+    _closingKitchen = std::thread(&Plazza::Reception::checkClosures, std::ref(*this));
+    _receiveReadyOrder = std::thread(&Plazza::Reception::receiveReadyOrder, std::ref(*this));
     userInput();
-    closingKitchen.join();
 }
 
 int Plazza::Reception::getCapacityLeft(int pid)
@@ -199,7 +205,7 @@ void Plazza::Reception::splitInput(std::string &line)
 void Plazza::Reception::checkClosures()
 {
     // Trying to read closure message and close Kitchen
-    while (true) {
+    while (_isRunning) {
         auto closedPid = _closureMsgQ.pop(getpid(), _closureKey, IPC_NOWAIT);
         if (closedPid != nullptr)
             for (int i = 0; i != _kitchenPids.size(); i++)
