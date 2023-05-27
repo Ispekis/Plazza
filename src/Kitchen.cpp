@@ -24,6 +24,8 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
 
 Plazza::Kitchen::~Kitchen()
 {
+    _orderThread.join();
+    _capacityThread.join();
     closeKitchen();
     // std::cout << "--- Close Kitchen:" << getpid() << std::endl;
 }
@@ -49,32 +51,37 @@ void Plazza::Kitchen::closeKitchen()
     _closureMsgQ.push(data, _receptionPid, _closureKey);
 }
 
-void Plazza::Kitchen::messageQueueReception()
+void Plazza::Kitchen::getOrderThread()
 {
-    std::unique_ptr<msg_data> data = _orderMsgQ.pop(getpid(), _orderKey, IPC_NOWAIT);
-    std::unique_ptr<capacity_data> capacity = _capacityMsgQ.pop(getpid(), _capacityKey, IPC_NOWAIT);
-    // Check kitchen have received a message
-    if (data != nullptr)
-    {
-        // TODO : replace
-        // std::cout << "--- Kitchen " << getpid() << ": Pizza received" << std::endl;
-        Plazza::Order order;
-        *data >> order;
-        receiveOrder(order);
+    while (_isRunning) {
+        std::unique_ptr<msg_data> data = _orderMsgQ.pop(getpid(), _orderKey, 0);
+        if (data != nullptr)
+        {
+            Plazza::Order order;
+            *data >> order;
+            receiveOrder(order);
+        }
     }
-    if (capacity != nullptr) {
-        capacity_data data;
-        std::memset(&data, sizeof(data), 0);
-        data.value = _orderCapacity;
-        _capacityMsgQ.push(data, _receptionPid, _capacityKey);
+}
+
+void Plazza::Kitchen::getCapacityThread()
+{
+    while (_isRunning) {
+        std::unique_ptr<capacity_data> capacity = _capacityMsgQ.pop(getpid(), _capacityKey, 0);
+        // Check kitchen have received a message
+        if (capacity != nullptr) {
+            capacity_data data;
+            std::memset(&data, sizeof(data), 0);
+            data.value = _orderCapacity;
+            _capacityMsgQ.push(data, _receptionPid, _capacityKey);
+        }
     }
 }
 
 void Plazza::Kitchen::kitchenLoop()
 {
     _start = std::chrono::steady_clock::now();
-    while (true) {
-        messageQueueReception();
+    while (_isRunning) {
         // _ingredient->refillIngredient();
         if (timeOut())
             break;
@@ -101,6 +108,8 @@ void Plazza::Kitchen::cookPizzas(Plazza::Order order)
 
 void Plazza::Kitchen::run()
 {
+    _orderThread = std::thread(&Plazza::Kitchen::getOrderThread, std::ref(*this));
+    _capacityThread = std::thread(&Plazza::Kitchen::getCapacityThread, std::ref(*this));
     kitchenLoop();
 }
 

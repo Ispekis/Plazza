@@ -51,14 +51,20 @@ namespace Plazza {
              */
             bool timeOut();
 
-            /**
-             * @brief Receive messagequeue and handling data from messagequeue
-             * 
-             */
-            void messageQueueReception();
-
         protected:
         private:
+
+            /**
+             * @brief Get the Order Thread
+             * 
+             */
+            void getOrderThread();
+
+            /**
+             * @brief Get the Capacity Thread
+             * 
+             */
+            void getCapacityThread();
 
             /**
              * @brief Close the kitchen, send closing messagequeue to reception 
@@ -77,9 +83,14 @@ namespace Plazza {
             size_t _orderCapacityMax;
             size_t _orderCapacity;
             int _receptionPid;
+            int _isRunning = true;
 
             Plazza::ThreadPool _threadPool;
             std::shared_ptr<Ingredient> _ingredient;
+
+            // Threads
+            std::thread _orderThread;
+            std::thread _capacityThread;
 
             // Timer
             std::chrono::steady_clock::time_point _start;
