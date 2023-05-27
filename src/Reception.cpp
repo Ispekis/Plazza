@@ -128,11 +128,10 @@ void Plazza::Reception::checkClosures()
         // std::cout << "Check closed" << std::endl;
         auto closedPid = _closureMsgQ.pop(getpid(), _closureKey);
         if (closedPid != nullptr)
-
-
             for (int i = 0; i != _kitchenPids.size(); i++)
                 if (closedPid->id = _kitchenPids.at(i)) {
                     _kitchenPids.erase(_kitchenPids.begin() + i);
+                    std::cout << RED << "Reception : Kitchen :" << closedPid->id << " Closed"<< COLOR <<std::endl;
                     break;
                 }
     }
@@ -188,6 +187,7 @@ void Plazza::Reception::create_kitchen()
     pid_t pid = newProcess.spawnChildProcess();
     if (pid == 0) { // Child
         Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
+        kitchen.~Kitchen();
         // std::cout << "Kitchen closed" << std::endl;
         exit(0);
     } else { // Parent

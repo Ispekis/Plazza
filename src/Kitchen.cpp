@@ -25,7 +25,8 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
 
 Plazza::Kitchen::~Kitchen()
 {
-    std::cout << "--- Close Kitchen:" << getpid() << std::endl;
+    closeKitchen();
+    // std::cout << "--- Close Kitchen:" << getpid() << std::endl;
 }
 
 bool Plazza::Kitchen::timeOut()
@@ -77,8 +78,7 @@ void Plazza::Kitchen::kitchenLoop()
         if (timeOut())
             break;
     }
-    stopCooks();
-    closeKitchen();
+    // stopCooks();
 }
 
 void Plazza::Kitchen::run()
