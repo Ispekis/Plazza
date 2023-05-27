@@ -124,8 +124,8 @@ int Plazza::Reception::getCapacityLeft(int pid)
 
 void Plazza::Reception::checkClosures()
 {
+    // Trying to read closure message and close Kitchen
     while (true) {
-        // std::cout << "Check closed" << std::endl;
         auto closedPid = _closureMsgQ.pop(getpid(), _closureKey);
         if (closedPid != nullptr)
             for (int i = 0; i != _kitchenPids.size(); i++)

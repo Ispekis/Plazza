@@ -57,14 +57,13 @@ void Plazza::Kitchen::messageQueueReception()
     if (data != nullptr)
     {
         // TODO : replace
-        std::cout << "--- Kitchen " << getpid() << ": Pizza received" << std::endl;
+        // std::cout << "--- Kitchen " << getpid() << ": Pizza received" << std::endl;
         receiveOrder(Plazza::Order(static_cast<Plazza::PizzaType>(data->type), static_cast<Plazza::PizzaSize>(data->size), data->nbr));
     }
     if (capacity != nullptr) {
         capacity_data data;
         std::memset(&data, sizeof(data), 0);
         data.value = _orderCapacity;
-        // std::cout << "--- Kitchen " << getpid() <<": Capacity Left sent :" << _orderCapacity << std::endl;
         _capacityMsgQ.push(data, _receptionPid, _capacityKey);
     }
 }
@@ -89,8 +88,8 @@ void Plazza::Kitchen::run()
 void Plazza::Kitchen::receiveOrder(Plazza::Order order)
 {
     for (int i = 0; i < order.getAmount(); i++) {
-        order.setAmount(1);
         _order.push(order);
+        _orderCapacity--;
     }
 }
 
