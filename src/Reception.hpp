@@ -29,7 +29,7 @@ namespace Plazza {
             ~Reception();
 
             void start();
-            Plazza::Order convertToOrder(std::array<std::string, 3> stringOrder);
+            void convertToOrder(std::vector<std::array<std::string, 3>> &allOrder);
 
             /**
              * @brief Seprate orders
@@ -37,8 +37,13 @@ namespace Plazza {
              * @param line
              * @return std::vector<std::array<std::string, 3>>
              */
-            std::vector<std::array<std::string, 3>> splitInput(std::string &line);
+
+            bool parsingInput(std::string &line);
+            void splitInput(std::string &line);
             void create_kitchen();
+
+            void manageKitchen();
+            void parseOrder(std::vector<std::array<std::string, 3>> order);
 
         protected:
         private:
@@ -65,11 +70,12 @@ namespace Plazza {
             void dispatchOrder(Plazza::Order order);
 
             void userInput();
+
             Parsing _data;
             ErrorHandling _CheckError;
             pid_t _receptionPid = 0;
             std::vector<int> _kitchenPids;
-
+            std::vector<Order> _orderList;
             // Message Queues for ipc
             MessageQueue<msg_data> _orderMsgQ;
             MessageQueue<closure_data> _closureMsgQ;

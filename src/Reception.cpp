@@ -19,20 +19,28 @@ Plazza::Reception::~Reception()
 {
 }
 
+void Plazza::Reception::manageKitchen()
+{
+}
+
+bool Plazza::Reception::parsingInput(std::string &line)
+{
+    try {
+        splitInput(line);
+    }
+    catch (const Error &error) {
+        std::cout << error.what() << ": " << error.message() << "." << std::endl;
+        return false;
+    }
+    return true;
+}
+
 void Plazza::Reception::userInput()
 {
     std::string line;
     while (std::getline(std::cin, line)) {
-        try {
-            std::vector<std::array<std::string, 3>> stringOrder = splitInput(line);
-            for (auto str : stringOrder) {
-                Plazza::Order order = convertToOrder(str);
-                dispatchOrder(order);
-            }
-            stringOrder.clear();
-        } catch (const Error &error) {
-            std::cout << error.what() << ": " << error.message() << "." << std::endl;
-        }
+        if (parsingInput(line))
+            manageKitchen();
     }
 }
 
@@ -102,12 +110,15 @@ static int getPizzaNumber(std::string &number)
     return std::stoi(number);
 }
 
-Plazza::Order Plazza::Reception::convertToOrder(std::array<std::string, 3> stringOrder)
+void Plazza::Reception::convertToOrder(std::vector<std::array<std::string, 3>> &allOrder)
 {
-    Plazza::PizzaType type = getPizzaType(stringOrder.at(0));
-    Plazza::PizzaSize size = getPizzaSize(stringOrder.at(1));
-    int number = getPizzaNumber(stringOrder.at(2));
-    return Plazza::Order(type, size, number);
+    for (auto singleOrder : allOrder) {
+        Plazza::PizzaType type = getPizzaType(singleOrder.at(0));
+        Plazza::PizzaSize size = getPizzaSize(singleOrder.at(1));
+        int number = getPizzaNumber(singleOrder.at(2));
+        _orderList.push_back(Plazza::Order(type, size, number));
+    }
+    allOrder.clear();
 }
 
 void Plazza::Reception::create_kitchen()
@@ -125,7 +136,7 @@ void Plazza::Reception::create_kitchen()
     }
 }
 
-std::vector<std::array<std::string, 3>> Plazza::Reception::splitInput(std::string &line)
+void Plazza::Reception::splitInput(std::string &line)
 {
     std::istringstream iss(line);
     std::vector<std::string> words;
@@ -146,7 +157,7 @@ std::vector<std::array<std::string, 3>> Plazza::Reception::splitInput(std::strin
         result.push_back(tmp);
         words.clear();
     }
-    return result;
+    convertToOrder(result);
 }
 
 static void printVector(std::vector<std::vector<std::string>> &vector)
