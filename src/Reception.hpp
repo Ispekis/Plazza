@@ -7,6 +7,7 @@
 
 #ifndef RECEPTION_HPP_
     #define RECEPTION_HPP_
+    #include "Process.hpp"
     #include "Order.hpp"
     #include "Parsing.hpp"
     #include "ErrorHandling.hpp"
@@ -21,6 +22,7 @@
     #include <chrono>
     #include "MessageQueue.hpp"
     #include <sys/select.h>
+    
 
 namespace Plazza {
     class Reception {
@@ -44,10 +46,11 @@ namespace Plazza {
 
             void manageKitchen();
             void parseOrder(std::vector<std::array<std::string, 3>> order);
+            void sendPizzaToKitchen(int Capacity, int KitchenPid);
 
         protected:
         private:
-            int getCapacity(int pid);
+            int getCapacityLeft(int pid);
              
             /**
              * @brief Check if a restaurant has closed

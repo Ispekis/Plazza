@@ -51,7 +51,7 @@ namespace Plazza {
             void stopCooks();
             bool isStaturated();
             bool timeOut();
-
+            void messageQueueReception();
 
         protected:
         private:

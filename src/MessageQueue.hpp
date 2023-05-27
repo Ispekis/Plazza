@@ -39,7 +39,7 @@ namespace Plazza {
                     perror("");
                     return;
                 }
-                std::cout << msgid << std::endl;
+                // std::cout << msgid << std::endl;
                 if (msgsnd(msgid, &msgData, sizeof(msgData) - sizeof(long), 0) == -1) {
                     std::cout << "message not send " << id << std::endl;
                     perror("");

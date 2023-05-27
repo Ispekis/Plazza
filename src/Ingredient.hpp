@@ -8,10 +8,13 @@
 #ifndef INGREDIENT_HPP_
 #define INGREDIENT_HPP_
 
+#include "plazza.hpp"
 #include <iostream>
 #include <string>
 #include <chrono>
 #include <memory>
+#include <sys/types.h>
+#include <unistd.h>
 #include <unordered_map>
 #include "IPizza.hpp"
 

@@ -19,8 +19,65 @@ Plazza::Reception::~Reception()
 {
 }
 
+/**
+ * @brief Serialize the order
+ *
+ * @param order
+ * @return msg_data
+ */
+static msg_data serializeOrder(Plazza::Order order)
+{
+    msg_data data;
+
+    std::memset(&data, sizeof(data), 0);
+
+    // serialize data
+    std::stringstream serializedStream;
+    serializedStream << order;
+    std::string serializedString = serializedStream.str();
+
+    // Deserialize data to struct
+    std::stringstream deserializedStream(serializedString);
+    deserializedStream >> data;
+    return data;
+}
+
+void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
+{
+    int pizzaToRemove = Capacity;
+    auto &singleOrderList = _orderList.at(0);
+    int pizzaQty = singleOrderList.getAmount();
+
+    // Set the Quantity of pizza that we can sent to the kitchen
+    if (Capacity >= pizzaQty)
+        pizzaToRemove = pizzaQty;
+    Plazza::Order orderToSend = _orderList.at(0); // Do a copy the Order that is going to be sent
+    orderToSend.setAmount(pizzaToRemove);
+
+    _orderMsgQ.push(serializeOrder(orderToSend), KitchenPid, _orderKey);
+    std::cout << "Reception: " << pizzaToRemove << "Pizza sent to " << KitchenPid << std::endl;
+    singleOrderList.setAmount(pizzaQty - pizzaToRemove);
+    
+    // If there is no pizza Left in the order remove the order
+    if (singleOrderList.getAmount() == 0)
+        _orderList.erase(_orderList.begin());
+}
+
 void Plazza::Reception::manageKitchen()
 {
+    while (_orderList.size() != 0) {
+        for (int i = 0; i != _kitchenPids.size(); i++) {
+            int Capacity = getCapacityLeft(_kitchenPids.at(i));
+            if (Capacity != 0) {
+                sendPizzaToKitchen(Capacity, _kitchenPids.at(i));
+            }
+            if (_orderList.size() == 0)
+                break;
+        }
+        if (_orderList.size() == 0)
+                break;
+        create_kitchen();
+    }
 }
 
 bool Plazza::Reception::parsingInput(std::string &line)
@@ -51,7 +108,7 @@ void Plazza::Reception::start()
     closingKitchen.join();
 }
 
-int Plazza::Reception::getCapacity(int pid)
+int Plazza::Reception::getCapacityLeft(int pid)
 {
     capacity_data data;
     std::memset(&data, sizeof(data), 0);
@@ -61,15 +118,18 @@ int Plazza::Reception::getCapacity(int pid)
 
     while (a == nullptr)
         a = _capacityMsgQ.pop(getpid(), _capacityKey);
-    std::cout << a->value << std::endl;
+    std::cout << "[Capacity pid:" << pid << "] capacity:" << a->value << std::endl;
     return a->value;
 }
 
 void Plazza::Reception::checkClosures()
 {
     while (true) {
+        // std::cout << "Check closed" << std::endl;
         auto closedPid = _closureMsgQ.pop(getpid(), _closureKey);
         if (closedPid != nullptr)
+
+
             for (int i = 0; i != _kitchenPids.size(); i++)
                 if (closedPid->id = _kitchenPids.at(i)) {
                     _kitchenPids.erase(_kitchenPids.begin() + i);
@@ -85,7 +145,7 @@ static Plazza::PizzaType getPizzaType(std::string &pizza)
 
     for (std::size_t i = 0; i != pizzaType.size(); i++) {
         if (toLower(pizza) == pizzaType[i]) {
-            std::cout << pizzaType[i] << " = " << i << std::endl;
+            // std::cout << pizzaType[i] << " = " << i << std::endl;
             return pizzaEnum[i];
         }
     }
@@ -123,10 +183,9 @@ void Plazza::Reception::convertToOrder(std::vector<std::array<std::string, 3>> &
 
 void Plazza::Reception::create_kitchen()
 {
-    pid_t pid = fork();
-
-    if (pid == -1)
-        throw Error("Failed to fork", "fork");
+    
+    Process newProcess;
+    pid_t pid = newProcess.spawnChildProcess();
     if (pid == 0) { // Child
         Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
         // std::cout << "Kitchen closed" << std::endl;
@@ -187,29 +246,6 @@ static int getNeededKitchen(int dis, int max)
     return res;
 }
 
-/**
- * @brief Serialize the order
- *
- * @param order
- * @return msg_data
- */
-static msg_data serializeOrder(Plazza::Order order)
-{
-    msg_data data;
-
-    std::memset(&data, sizeof(data), 0);
-
-    // serialize data
-    std::stringstream serializedStream;
-    serializedStream << order;
-    std::string serializedString = serializedStream.str();
-
-    // Deserialize data to struct
-    std::stringstream deserializedStream(serializedString);
-    deserializedStream >> data;
-    return data;
-}
-
 void Plazza::Reception::dispatchOrder(Plazza::Order order)
 {
     int total_amount = order.getAmount();
@@ -223,16 +259,16 @@ void Plazza::Reception::dispatchOrder(Plazza::Order order)
 
     int tmp = total_amount;
 
-        getCapacity(_kitchenPids.at(0));
-    // for (int i = 0; i < _kitchenPids.size(); i++) {
-    //     if (tmp < amout_iter) {
-    //         order.setAmount(tmp);
-    //         _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
-    //     } else {
-    //         tmp -= amout_iter;
-    //         order.setAmount(amout_iter);
-    //         _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
-    //     }
-    //     // getCapacity(_kitchenPids[i]);
-    // }
+        getCapacityLeft(_kitchenPids.at(0));
+    for (int i = 0; i < _kitchenPids.size(); i++) {
+        if (tmp < amout_iter) {
+            order.setAmount(tmp);
+            _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
+        } else {
+            tmp -= amout_iter;
+            order.setAmount(amout_iter);
+            _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
+        }
+        // getCapacity(_kitchenPids[i]);
+    }
 }
