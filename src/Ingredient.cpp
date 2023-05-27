@@ -14,7 +14,7 @@ Ingredient::Ingredient(int refillTime) : _refillTime(refillTime)
     for (auto element : ingredient)
         _ingredient[element] = 5;
     _start = std::chrono::steady_clock::now();
-    std::cout << "Ingredient Filled and will be refilled by one every" << refillTime << " ms" << std::endl;
+    // std::cout << "Ingredient Filled and will be refilled by one every" << refillTime << " ms" << std::endl;
 }
 
 Ingredient::~Ingredient()
@@ -36,13 +36,15 @@ bool Ingredient::makePizza(std::shared_ptr<Plazza::IPizza> pizza)
 
 void Ingredient::refillIngredient()
 {
-    auto current =  std::chrono::steady_clock::now();
+    auto current = std::chrono::steady_clock::now();
 
-    if (current - _start >= _refillTime) {
-        for (auto &element : _ingredient)
+    if (current - _start >= _refillTime)
+    {
+        for (auto &element : _ingredient) {
             element.second++;
+        }
         _start = current;
-        std::cout << "[Refill] All Ingredient have been refilled by one" << std::endl;
+        std::cout << MAGENTA << "[Refill " << getpid() << "] All Ingredient have been refilled by one" << COLOR << std::endl;
     }
 }
 

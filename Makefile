@@ -21,6 +21,7 @@ SRC	=	src/Parsing.cpp			\
 		src/Kitchen.cpp			\
 		src/Ingredient.cpp			\
 		src/Mythread.cpp			\
+		src/Process.cpp			\
 		src/Cook.cpp				\
 
 SRC +=	src/Pizza/Pizza.cpp			\
