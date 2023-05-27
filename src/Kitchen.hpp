@@ -13,7 +13,6 @@
     #include "Error.hpp"
     #include <iostream>
     #include "Order.hpp"
-    #include "Cook.hpp"
     #include <array>
     #include "SafeQueue.hpp"
     #include "MessageQueue.hpp"
@@ -30,6 +29,10 @@ namespace Plazza {
              */
             void run();
 
+            /**
+             * @brief Main Loop for the kitchen
+             * 
+             */
             void kitchenLoop();
 
             /**
@@ -37,36 +40,51 @@ namespace Plazza {
              *
              * @param orderList
              */
-            void receiveOrder(std::vector<Plazza::Order> orderList);
+            void receiveOrder(Plazza::Order order);
 
             /**
-             *
-             * @brief check if the kitchen is saturated
-             *
-             * @return true
-             * @return false
+             * @brief Check if the itchen has been running for 5 seconds 
+             * 
+             * @return true 
+             * @return false 
              */
-
-
-            void stopCooks();
-            bool isStaturated();
             bool timeOut();
 
+            /**
+             * @brief Receive messagequeue and handling data from messagequeue
+             * 
+             */
+            void messageQueueReception();
 
         protected:
         private:
+
+            /**
+             * @brief Close the kitchen, send closing messagequeue to reception 
+             * 
+             */
+            void closeKitchen();
+
             float _mutiplier;
             int _nbCooks;
-            size_t availableCooks;
+            size_t _orderCapacityMax;
             size_t _orderCapacity;
-            MessageQueue _msgQueue;
+            int _receptionPid;
 
-            std::vector<std::shared_ptr<Plazza::Cook>> _cooks;
+            SafeQueue<Plazza::Order> _order;
             std::shared_ptr<Ingredient> _ingredient;
-            std::shared_ptr<SafeQueue<Plazza::Order>> _order;
 
+            // Timer
             std::chrono::steady_clock::time_point _start;
             std::chrono::seconds _workDuration;
+
+            // Ipc's data
+            MessageQueue<msg_data> _orderMsgQ;
+            MessageQueue<closure_data> _closureMsgQ;
+            MessageQueue<capacity_data> _capacityMsgQ;
+            key_t _orderKey;
+            key_t _capacityKey;
+            key_t _closureKey;
 
     };
 }

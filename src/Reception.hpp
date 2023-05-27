@@ -7,6 +7,7 @@
 
 #ifndef RECEPTION_HPP_
     #define RECEPTION_HPP_
+    #include "Process.hpp"
     #include "Order.hpp"
     #include "Parsing.hpp"
     #include "ErrorHandling.hpp"
@@ -20,6 +21,8 @@
     #include <unistd.h>
     #include <chrono>
     #include "MessageQueue.hpp"
+    #include <sys/select.h>
+    
 
 namespace Plazza {
     class Reception {
@@ -27,35 +30,75 @@ namespace Plazza {
             Reception(Parsing &data);
             ~Reception();
 
+            /**
+             * @brief Run the Reception
+             * 
+             */
             void start();
+
+            /**
+             * @brief Convert userInput into order
+             * 
+             * @param allOrder 
+             */
+            void convertToOrder(std::vector<std::array<std::string, 3>> &allOrder);
+
+            /**
+             * @brief Convert input into order
+             * 
+             * @param line 
+             * @return true 
+             * @return false 
+             */
             bool parsingInput(std::string &line);
-            void parseEnum();
+
+            /**
+             * @brief Split input into parsable data
+             * 
+             * @param line 
+             */
             void splitInput(std::string &line);
+            /**
+             * @brief Loop for user input from the std::cin
+             * 
+             */
+            void userInput();
+
             void create_kitchen();
+            void manageKitchen();
+            void sendPizzaToKitchen(int Capacity, int KitchenPid);
 
         protected:
         private:
             /**
-             * @brief Check if the reception needs more kitchen
-             *
-             * @return true
-             * @return false
+             * @brief Get the capacity left of the kitchenPid
+             * 
+             * @param pid 
+             * @return int 
              */
-            bool needKitchen();
-
+            int getCapacityLeft(int kitchenPid);
+             
             /**
-             * @brief dispatch orders
+             * @brief Check if a restaurant has closed
              *
              */
-            void dispatchOrder();
+            void checkClosures();
+
 
             Parsing _data;
             ErrorHandling _CheckError;
-            std::vector<std::vector<std::string>> _receiptList;
-            std::vector<Order> _orderList;
             pid_t _receptionPid = 0;
-            MessageQueue _msgQueue;
             std::vector<int> _kitchenPids;
+            std::vector<Order> _orderList;
+            // Message Queues for ipc
+            MessageQueue<msg_data> _orderMsgQ;
+            MessageQueue<closure_data> _closureMsgQ;
+            MessageQueue<capacity_data> _capacityMsgQ;
+
+            // Keys for ipc
+            key_t _orderKey;
+            key_t _capacityKey;
+            key_t _closureKey;
     };
 }
 #endif /* !PLAZZA_HPP_ */

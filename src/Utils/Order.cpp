@@ -19,6 +19,14 @@ Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t
     this->setAmount(amount);
 }
 
+Plazza::Order::Order(const Plazza::Order &other)
+{
+    this->_amount = other._amount;
+    this->_pizzas = other._pizzas;
+    this->_pizzaSize = other._pizzaSize;
+    this->_pizzaType = other._pizzaType;
+}
+
 Plazza::Order::~Order()
 {
 }
@@ -38,10 +46,6 @@ std::size_t Plazza::Order::getAmount() const
     return _amount;
 }
 
-std::string Plazza::Order::getSizeName() const
-{
-    return _pizzaSizeName;
-}
 std::shared_ptr<Plazza::IPizza> Plazza::Order::getPizza() const
 {
     return _pizzas;
@@ -71,7 +75,6 @@ void Plazza::Order::setType(Plazza::PizzaType type)
 void Plazza::Order::setSize(Plazza::PizzaSize size)
 {
     _pizzaSize = size;
-    _pizzaSizeName = pizzaSizesMap[size];
 }
 
 void Plazza::Order::setAmount(std::size_t amount)

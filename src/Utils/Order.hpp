@@ -12,25 +12,49 @@
     #include <map>
     #include "PizzaEnum.hpp"
     #include "IPizza.hpp"
-    #include "Pizza/Regina.hpp"
-    #include "Pizza/Americana.hpp"
-    #include "Pizza/Fantasia.hpp"
-    #include "Pizza/Margarita.hpp"
+    #include "Regina.hpp"
+    #include "Americana.hpp"
+    #include "Fantasia.hpp"
+    #include "Margarita.hpp"
     #include <memory>
     #include "plazza.hpp"
 
 namespace Plazza {
     class Order {
         public:
+
+            /**
+             * @brief Construct a new Order object
+             * 
+             */
             Order();
+
+            /**
+             * @brief Construct a new Order object
+             * 
+             * @param type 
+             * @param size 
+             * @param amount 
+             */
             Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t amount);
+
+            /**
+             * @brief Copy construct a new Order
+             * 
+             * @param other 
+             */
+            Order(const Plazza::Order &other);
+
+            /**
+             * @brief Destroy the Order object
+             *
+             */
             ~Order();
 
             //* Getters *//
             Plazza::PizzaType getType() const;
             Plazza::PizzaSize getSize() const;
             std::size_t getAmount() const;
-            std::string getSizeName() const;
             std::shared_ptr<Plazza::IPizza> getPizza() const;
 
             //* Setters *//
@@ -43,16 +67,7 @@ namespace Plazza {
             Plazza::PizzaType _pizzaType;
             Plazza::PizzaSize _pizzaSize;
             std::size_t _amount;
-            std::string _pizzaSizeName;
             std::shared_ptr<Plazza::IPizza> _pizzas;
-            // TODO Make it generic to use
-            std::map<Plazza::PizzaSize, std::string> pizzaSizesMap = {
-                {Plazza::PizzaSize::S, "S"},
-                {Plazza::PizzaSize::M, "M"},
-                {Plazza::PizzaSize::L, "L"},
-                {Plazza::PizzaSize::XL, "XL"},
-                {Plazza::PizzaSize::XXL, "XXL"}
-            };
     };
 }
 

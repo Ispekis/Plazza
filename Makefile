@@ -13,22 +13,28 @@ TEST_NAME = unit_tests
 
 MAIN_SRC = src/main.cpp
 
-SRC	=	src/Parsing.cpp			\
-		src/Error.cpp			\
-		src/Reception.cpp		\
-		src/ErrorHandling.cpp	\
-		src/Order.cpp			\
-		src/Kitchen.cpp			\
-		src/Ingredient.cpp			\
-		src/Mythread.cpp			\
-		src/Cook.cpp				\
-		src/MessageQueue.cpp
+ERROR = Error/
 
-SRC +=	src/Pizza/Pizza.cpp			\
-		src/Pizza/Regina.cpp		\
-		src/Pizza/Americana.cpp		\
-		src/Pizza/Fantasia.cpp		\
-		src/Pizza/Margarita.cpp		\
+PARSING = Parsing/
+
+UTILS = Utils/
+
+PIZZA = Pizza/
+
+SRC	=	src/$(PARSING)Parsing.cpp		\
+		src/$(ERROR)Error.cpp			\
+		src/$(ERROR)ErrorHandling.cpp	\
+		src/$(UTILS)Order.cpp			\
+		src/$(UTILS)Ingredient.cpp		\
+		src/$(UTILS)Process.cpp			\
+		src/Kitchen.cpp					\
+		src/Reception.cpp				\
+
+SRC +=	src/$(PIZZA)/Pizza.cpp			\
+		src/$(PIZZA)/Regina.cpp		\
+		src/$(PIZZA)/Americana.cpp		\
+		src/$(PIZZA)/Fantasia.cpp		\
+		src/$(PIZZA)/Margarita.cpp		\
 
 ALL_SRC += $(SRC)
 
@@ -39,6 +45,12 @@ OBJ	= $(ALL_SRC:.cpp=.o)
 CFLAGS += -Wall -Wextra
 
 CPPFLAGS += -I./include/
+
+CPPFLAGS += -I./src/$(ERROR)
+CPPFLAGS += -I./src/$(PARSING)
+CPPFLAGS += -I./src/$(UTILS)
+CPPFLAGS += -I./src/$(PIZZA)
+
 
 LDFLAGS += -lpthread
 
@@ -61,7 +73,7 @@ clean:
 
 fclean: clean
 	$(RM) -f $(NAME)
-
+	$(RM) -f $(TEST_NAME)
 re: fclean all
 
 debug: CPPFLAGS += -g3
