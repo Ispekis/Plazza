@@ -7,7 +7,7 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _workDuration(5), _tp(nbCooks)
 {
     std::cout << GREEN << "--- Start Kitchen " << getpid() << COLOR << std::endl;
     _ingredient = std::make_shared<Ingredient>(time);
@@ -59,6 +59,7 @@ void Plazza::Kitchen::messageQueueReception()
         // TODO : replace
         // std::cout << "--- Kitchen " << getpid() << ": Pizza received" << std::endl;
         receiveOrder(Plazza::Order(static_cast<Plazza::PizzaType>(data->type), static_cast<Plazza::PizzaSize>(data->size), data->nbr));
+        cookPizzas();
     }
     if (capacity != nullptr) {
         capacity_data data;
@@ -79,6 +80,11 @@ void Plazza::Kitchen::kitchenLoop()
     }
 }
 
+void Plazza::Kitchen::cookPizzas()
+{
+    _tp.newTask([this] {std::cout << "okdz" << std::endl;});
+}
+
 void Plazza::Kitchen::run()
 {
     kitchenLoop();
@@ -86,8 +92,10 @@ void Plazza::Kitchen::run()
 
 void Plazza::Kitchen::receiveOrder(Plazza::Order order)
 {
-    for (int i = 0; i < order.getAmount(); i++) {
-        _order.push(order);
+    int totalOrder = order.getAmount();
+    order.setAmount(1);
+    for (int i = 0; i < totalOrder; i++) {
+        _taskQueue.push(order);
         _orderCapacity--;
     }
 }

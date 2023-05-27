@@ -16,6 +16,7 @@
     #include <array>
     #include "SafeQueue.hpp"
     #include "MessageQueue.hpp"
+    #include "ThreadPool.hpp"
 
 namespace Plazza {
     class Kitchen {
@@ -65,13 +66,21 @@ namespace Plazza {
              */
             void closeKitchen();
 
+            /**
+             * @brief Cook the pizzas
+             * 
+             */
+            void cookPizzas();
+
             float _mutiplier;
             int _nbCooks;
             size_t _orderCapacityMax;
             size_t _orderCapacity;
             int _receptionPid;
 
-            SafeQueue<Plazza::Order> _order;
+            SafeQueue<Plazza::Order> _taskQueue;
+            SafeQueue<Plazza::Order> _completedQueue;
+            Plazza::ThreadPool _tp;
             std::shared_ptr<Ingredient> _ingredient;
 
             // Timer
