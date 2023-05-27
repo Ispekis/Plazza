@@ -9,7 +9,6 @@
 
 Plazza::ReginaPizza::ReginaPizza()
 {
-    _name = "regina";
     _ingredients = {"dough", "tomato", "gruyere"};
     _bakeTime = 1;
 }

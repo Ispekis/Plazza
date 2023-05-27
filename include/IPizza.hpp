@@ -16,18 +16,18 @@ namespace Plazza {
             virtual ~IPizza() = default;
 
             /**
-             * @brief Set the Name of the pizza
+             * @brief Set the type
              *
-             * @param name
+             * @param type
              */
-            virtual void setName(std::string name) = 0;
+            virtual void setType(int type) = 0;
 
             /**
              * @brief Set the Bake Time in second
              *
              * @param time
              */
-            virtual void setBakeTime(int time) = 0;
+            virtual void setBakeTime(float time) = 0;
 
             /**
              * @brief Set the Ingredients
@@ -39,9 +39,9 @@ namespace Plazza {
             /**
              * @brief Get the Bake Time of the pizza in second
              *
-             * @return int
+             * @return float
              */
-            virtual int getBakeTime() const = 0;
+            virtual float getBakeTime() const = 0;
 
             /**
              * @brief Get the Ingredients of pizza
@@ -51,12 +51,11 @@ namespace Plazza {
             virtual std::vector<std::string> getIngredients() const = 0;
 
             /**
-             * @brief Get the Pizza's name
+             * @brief Get the type of pizza
              *
-             * @return std::string
+             * @return int
              */
-            virtual std::string getName() const = 0;
-
+            virtual int getPizzaType() const = 0;
             // /**
             //  * @brief Serialize data
             //  *

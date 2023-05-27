@@ -9,6 +9,7 @@
 #define PARSING_HPP_
 
 #include "Error.hpp"
+#include "Factory.hpp"
 
 class Parsing {
     public:
@@ -21,6 +22,7 @@ class Parsing {
 
     protected:
     private:
+        std::shared_ptr<Factory> _factory;
         float _multiplier;
         int _nbCooks;
         int _refillTimer;

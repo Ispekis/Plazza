@@ -17,17 +17,18 @@ namespace Plazza {
 
             // void setBakeTime(int time);
             // void setIngredients(std::vector<std::string> ingredients);
-            void setName(std::string name);
-            void setBakeTime(int time);
+            void setBakeTime(float time);
             void setIngredients(std::vector<std::string> ingredients);
-            int getBakeTime() const;
+            void setType(int type);
+
+            int getPizzaType() const;
+            float getBakeTime() const;
             std::vector<std::string> getIngredients() const;
-            std::string getName() const;
 
         protected:
-            std::string _name = "pizza";
+            int _type;
             std::vector<std::string> _ingredients;
-            int _bakeTime = 0;
+            float _bakeTime = 0;
         private:
     };
 }

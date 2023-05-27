@@ -9,7 +9,6 @@
 
 Plazza::FantasiaPizza::FantasiaPizza()
 {
-    _name = "fantasia";
     _ingredients = {"dough", "tomato", "gruyere", "steak"};
     _bakeTime = 2;
 }
