@@ -29,8 +29,8 @@ int main (int ac, char **av)
         }
 
         Parsing data(ac, av);
-        // Plazza::Reception reception(data);
-        // reception.start();
+        Plazza::Reception reception(data);
+        reception.start();
     }
     catch (const Error &error) {
         std::cout << error.what() << ": " << error.message() << "." << std::endl;
