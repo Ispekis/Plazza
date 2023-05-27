@@ -58,8 +58,8 @@ void Plazza::Kitchen::messageQueueReception()
     {
         // TODO : replace
         // std::cout << "--- Kitchen " << getpid() << ": Pizza received" << std::endl;
-        Plazza::Order order = Plazza::Order(static_cast<Plazza::PizzaType>(data->type), static_cast<Plazza::PizzaSize>(data->size), data->nbr);
-        std::cout << order.getPizza()->getBakeTime() << std::endl;
+        Plazza::Order order;
+        *data >> order;
         receiveOrder(order);
     }
     if (capacity != nullptr) {
@@ -97,7 +97,6 @@ void Plazza::Kitchen::run()
 
 void Plazza::Kitchen::receiveOrder(Plazza::Order order)
 {
-    std::cout << order.getPizza()->getBakeTime() << std::endl;
     int totalOrder = order.getAmount();
     order.setAmount(1);
     for (int i = 0; i < totalOrder; i++) {
