@@ -71,23 +71,23 @@ namespace Plazza {
     };
 }
 
-/**
- * @brief Deserialize to struct
- *
- * @param is
- * @param pizzaData
- * @return std::istream&
- */
-std::istream& operator>>(std::istream &is, msg_data &msgData);
-
 
 /**
  * @brief Serialize order
  *
- * @param os
+ * @param data
  * @param order
- * @return std::ostream&
+ * @return msg_data&
  */
-std::ostream& operator<<(std::ostream& os, const Plazza::Order& order);
+msg_data &operator<<(msg_data &data, Plazza::Order &order);
+
+/**
+ * @brief Deserialize to struct
+ *
+ * @param order
+ * @param data
+ * @return Plazza::Order&
+ */
+Plazza::Order &operator>>(msg_data &data, Plazza::Order &order);
 
 #endif /* !ORDER_HPP_ */

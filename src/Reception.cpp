@@ -32,13 +32,7 @@ static msg_data serializeOrder(Plazza::Order order)
     std::memset(&data, sizeof(data), 0);
 
     // serialize data
-    std::stringstream serializedStream;
-    serializedStream << order;
-    std::string serializedString = serializedStream.str();
-
-    // Deserialize data to struct
-    std::stringstream deserializedStream(serializedString);
-    deserializedStream >> data;
+    data << order;
     return data;
 }
 
@@ -130,7 +124,7 @@ int Plazza::Reception::getCapacityLeft(int pid)
     std::unique_ptr<capacity_data> a = nullptr;
 
     while (a == nullptr)
-        a = _capacityMsgQ.pop(getpid(), _capacityKey);
+        a = _capacityMsgQ.pop(getpid(), _capacityKey, IPC_NOWAIT);
     std::cout << "[Capacity pid:" << pid << "] capacity:" << a->value << std::endl;
     return a->value;
 }
@@ -202,38 +196,11 @@ void Plazza::Reception::splitInput(std::string &line)
     convertToOrder(result);
 }
 
-// void Plazza::Reception::dispatchOrder(Plazza::Order order)
-// {
-//     int total_amount = order.getAmount();
-//     int amout_iter = MAX_COOK_PER_KITCHEN * _data.getNbCooks();
-
-//     // Get the total number of kitchens and substract the existing kitchen
-//     int needed_kitchen = getNeededKitchen(amout_iter, total_amount) - _kitchenPids.size();
-//     for (int i = 0; i < needed_kitchen; i++) {
-//         create_kitchen();
-//     }
-
-//     int tmp = total_amount;
-
-//         getCapacityLeft(_kitchenPids.at(0));
-//     for (int i = 0; i < _kitchenPids.size(); i++) {
-//         if (tmp < amout_iter) {
-//             order.setAmount(tmp);
-//             _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
-//         } else {
-//             tmp -= amout_iter;
-//             order.setAmount(amout_iter);
-//             _orderMsgQ.push(serializeOrder(order), _kitchenPids.at(i), _orderKey);
-//         }
-//         // getCapacity(_kitchenPids[i]);
-//     }
-// }
-
 void Plazza::Reception::checkClosures()
 {
     // Trying to read closure message and close Kitchen
     while (true) {
-        auto closedPid = _closureMsgQ.pop(getpid(), _closureKey);
+        auto closedPid = _closureMsgQ.pop(getpid(), _closureKey, IPC_NOWAIT);
         if (closedPid != nullptr)
             for (int i = 0; i != _kitchenPids.size(); i++)
                 if (closedPid->id = _kitchenPids.at(i)) {
