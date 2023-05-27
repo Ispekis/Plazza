@@ -30,6 +30,10 @@ namespace Plazza {
              */
             void run();
 
+            /**
+             * @brief Main Loop for the kitchen
+             * 
+             */
             void kitchenLoop();
 
             /**
@@ -40,24 +44,24 @@ namespace Plazza {
             void receiveOrder(Plazza::Order order);
 
             /**
-             *
-             * @brief check if the kitchen is saturated
-             *
-             * @return true
-             * @return false
+             * @brief Check if the itchen has been running for 5 seconds 
+             * 
+             * @return true 
+             * @return false 
              */
-
-
-            void stopCooks();
-            bool isStaturated();
             bool timeOut();
+
+            /**
+             * @brief Receive messagequeue and handling data from messagequeue
+             * 
+             */
             void messageQueueReception();
 
         protected:
         private:
 
             /**
-             * @brief Close the kitchen
+             * @brief Close the kitchen, send closing messagequeue to reception 
              * 
              */
             void closeKitchen();

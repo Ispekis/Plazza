@@ -38,16 +38,13 @@ bool Plazza::Kitchen::timeOut()
     if (_orderCapacity != _orderCapacityMax)
         _start = current;
     if (elapsed >= _workDuration)
-    {
         return true;
-    }
     return false;
 }
 
 void Plazza::Kitchen::closeKitchen()
 {
     closure_data data;
-
     std::memset(&data, sizeof(data), 0);
 
     data.id = getpid();
@@ -82,7 +79,6 @@ void Plazza::Kitchen::kitchenLoop()
         if (timeOut())
             break;
     }
-    // stopCooks();
 }
 
 void Plazza::Kitchen::run()
@@ -96,16 +92,4 @@ void Plazza::Kitchen::receiveOrder(Plazza::Order order)
         _order.push(order);
         _orderCapacity--;
     }
-}
-
-void Plazza::Kitchen::stopCooks()
-{
-    _cooks.clear();
-}
-
-bool Plazza::Kitchen::isStaturated()
-{
-    if (_orderCapacity == 0)
-        return true;
-    return false;
 }
