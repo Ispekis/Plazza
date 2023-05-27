@@ -19,34 +19,28 @@ Plazza::Reception::~Reception()
 {
 }
 
-void Plazza::Reception::start()
+void Plazza::Reception::userInput()
 {
     std::string line;
-    fd_set fds;
-    struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-
-    while (true) {
-        FD_ZERO(&fds);
-        FD_SET(STDIN_FILENO, &fds);
-
-        int ready = select(STDIN_FILENO + 1, &fds, nullptr, nullptr, &timeout);
-        if (ready > 0) {
-            std::getline(std::cin, line);
-            try {
-                std::vector<std::array<std::string, 3>> stringOrder = splitInput(line);
-                for (auto str : stringOrder) {
-                    Plazza::Order order = convertToOrder(str);
-                    dispatchOrder(order);
-                }
-                stringOrder.clear();
-            } catch (const Error &error) {
-                std::cout << error.what() << ": " << error.message() << "." << std::endl;
+    while (std::getline(std::cin, line)) {
+        try {
+            std::vector<std::array<std::string, 3>> stringOrder = splitInput(line);
+            for (auto str : stringOrder) {
+                Plazza::Order order = convertToOrder(str);
+                dispatchOrder(order);
             }
+            stringOrder.clear();
+        } catch (const Error &error) {
+            std::cout << error.what() << ": " << error.message() << "." << std::endl;
         }
-        checkClosures();
     }
+}
+
+void Plazza::Reception::start()
+{
+    std::thread closingKitchen = std::thread(&Plazza::Reception::checkClosures, std::ref(*this));
+    userInput();
+    closingKitchen.join();
 }
 
 int Plazza::Reception::getCapacity(int pid)
@@ -65,10 +59,14 @@ int Plazza::Reception::getCapacity(int pid)
 
 void Plazza::Reception::checkClosures()
 {
-    std::unique_ptr<closure_data> data = _closureMsgQ.pop(getpid(), _closureKey);
-    if (data != nullptr) {
-        _kitchenPids.erase(std::remove(_kitchenPids.begin(), _kitchenPids.end(), data->id), _kitchenPids.end());
-        std::cout << "The kitchen " << data->id << " has closed" << std::endl;
+    while (true) {
+        auto closedPid = _closureMsgQ.pop(getpid(), _closureKey);
+        if (closedPid != nullptr)
+            for (int i = 0; i != _kitchenPids.size(); i++)
+                if (closedPid->id = _kitchenPids.at(i)) {
+                    _kitchenPids.erase(_kitchenPids.begin() + i);
+                    break;
+                }
     }
 }
 

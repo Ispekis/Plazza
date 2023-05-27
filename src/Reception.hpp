@@ -42,7 +42,8 @@ namespace Plazza {
 
         protected:
         private:
-
+            int getCapacity(int pid);
+             
             /**
              * @brief Check if a restaurant has closed
              *
@@ -63,7 +64,7 @@ namespace Plazza {
              */
             void dispatchOrder(Plazza::Order order);
 
-            int getCapacity(int pid);
+            void userInput();
             Parsing _data;
             ErrorHandling _CheckError;
             pid_t _receptionPid = 0;
