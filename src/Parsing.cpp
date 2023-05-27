@@ -46,3 +46,7 @@ int Parsing::getRefillTime()
     return _refillTimer;
 }
 
+std::map<std::string, std::shared_ptr<Plazza::IPizza>> Parsing::getFactory()
+{
+    return _factory.get()->getConfigData();
+}

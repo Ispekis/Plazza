@@ -20,6 +20,7 @@ class Parsing {
         int getNbCooks();
         float getMultiplier();
         int getRefillTime();
+        std::map<std::string, std::shared_ptr<Plazza::IPizza>> getFactory();
 
     protected:
     private:

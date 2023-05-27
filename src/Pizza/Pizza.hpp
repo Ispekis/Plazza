@@ -21,16 +21,20 @@ namespace Plazza {
             void setBakeTime(int time);
             void setIngredients(std::vector<std::string> ingredients);
             void setNbrIngredient(int nbr);
+            void setType(PizzaType type);
+
             int getBakeTime() const;
             std::vector<std::string> getIngredients() const;
             std::string getName() const;
             int getNbrIngredient() const;
+            PizzaType getPizzaType() const;
 
         protected:
             std::string _name = "pizza";
             std::vector<std::string> _ingredients;
             int _bakeTime = 0;
             int _nbrIngredient = 0;
+            PizzaType _type;
         private:
     };
 }

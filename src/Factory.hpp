@@ -13,6 +13,8 @@
     #include <sstream>
     #include <map>
     #include <vector>
+    #include <memory>
+    #include "Pizza.hpp"
 
 class Factory {
     public:
@@ -22,7 +24,7 @@ class Factory {
         void setConfigFile(std::string configFile, float cook);
         void setDefaultFile(float cook);
 
-        std::map<std::string, std::pair<std::vector<std::string>, int>> getConfigData();
+        std::map<std::string, std::shared_ptr<Plazza::IPizza>> getConfigData();
 
         class ConfHandlerError : public std::exception {
             public:
@@ -40,7 +42,7 @@ class Factory {
         void storeConfigToMap(float cook);
         std::string _configFile;
         std::ifstream _file;
-        std::map<std::string, std::pair<std::vector<std::string>, int>> _pizzaInfo;
+        std::map<std::string, std::shared_ptr<Plazza::IPizza>> _pizzaInfo;
 };
 
 #endif /* !CONFHANDLER_HPP_ */

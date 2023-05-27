@@ -36,6 +36,11 @@ void Plazza::Pizza::setNbrIngredient(int nbr)
     _nbrIngredient = nbr;
 }
 
+void Plazza::Pizza::setType(PizzaType type)
+{
+    _type = type;
+}
+
 int Plazza::Pizza::getBakeTime() const
 {
     return _bakeTime;
@@ -54,6 +59,11 @@ std::string Plazza::Pizza::getName() const
 int Plazza::Pizza::getNbrIngredient() const
 {
     return _nbrIngredient;
+}
+
+Plazza::PizzaType Plazza::Pizza::getPizzaType() const
+{
+    return _type;
 }
 
 // std::ostream& operator<<(std::ostream &os, const pizza_data &pizzaData)

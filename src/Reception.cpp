@@ -35,17 +35,11 @@ void Plazza::Reception::start()
     }
 }
 
-static Plazza::PizzaType getPizzaType(std::string &pizza)
+static Plazza::PizzaType getPizzaType(std::string &pizza, std::map<std::string, std::shared_ptr<Plazza::IPizza>>_factory)
 {
-    std::vector<std::string> pizzaType = {"margarita", "regina", "americana", "fantasia"};
-    std::vector<Plazza::PizzaType> pizzaEnum = { Plazza::PizzaType::Margarita, Plazza::PizzaType::Regina, Plazza::PizzaType::Americana, Plazza::PizzaType::Fantasia};
-
-    for (std::size_t i = 0; i != pizzaType.size(); i++) {
-        if (toLower(pizza) == pizzaType[i]) {
-            std::cout << pizzaType[i] << " = " << i << std::endl;
-            return pizzaEnum[i];
-        }
-    }
+    for (auto factory : _factory)
+        if (toLower(pizza) == factory.first)
+            return factory.second.get()->getType();
     throw Error("Pizza Enum Not Found", pizza);
 }
 
@@ -70,7 +64,7 @@ static int getPizzaNumber(std::string &number)
 void Plazza::Reception::parseEnum()
 {
     for (auto a : _receiptList) {
-        PizzaType type = getPizzaType(a[0]);
+        PizzaType type = getPizzaType(a[0], _data.getFactory());
         PizzaSize size = getPizzaSize(a[1]);
         int number = getPizzaNumber(a[2]);
         for (int i = 0; i < number; i++) {

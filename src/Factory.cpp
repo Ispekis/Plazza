@@ -17,7 +17,7 @@ Factory::~Factory()
     _file.close();
 }
 
-std::map<std::string, std::pair<std::vector<std::string>, int>> Factory::Factory::getConfigData()
+std::map<std::string, std::shared_ptr<Plazza::IPizza>>Factory::Factory::getConfigData()
 {
     return _pizzaInfo;
 }
@@ -51,12 +51,19 @@ std::vector<std::string> fillIngredient(std::string line)
 
 void Factory::setDefaultFile(float cook)
 {
-    std::vector<std::string> pizzaType = {"margarita", "regina", "fantasia", "americana"};
+    std::vector<Plazza::PizzaType> pizzaEnum = { Plazza::PizzaType::Margarita, Plazza::PizzaType::Regina, Plazza::PizzaType::Americana, Plazza::PizzaType::Fantasia};
+    std::vector<std::string> pizzaName = {"margarita", "regina", "fantasia", "americana"};
     std::vector<std::vector<std::string>> pizzaIngredients = {{"dough","tomato","gruyere"}, {"dough","tomato","gruyere","ham","mushrooms"}, {"dough","tomato","eggplant","goat_cheese","chief_love"}, {"dough","tomato","gruyere","steak"}};
     std::vector<float> cookTime = {1, 2, 4, 2};
 
-    for (int i = 0; i != pizzaType.size(); i++)
-        _pizzaInfo[pizzaType[i]] = std::make_pair(pizzaIngredients[i], cookTime[i] * cook);
+    for (int i = 0; i != pizzaName.size(); i++) {
+        std::shared_ptr<Plazza::IPizza> _pizza;
+
+        _pizza.get()->setBakeTime(cookTime[i] * cook);
+        _pizza.get()->setIngredients(pizzaIngredients[i]);
+        _pizza.get()->setType(pizzaEnum[i]);
+        _pizzaInfo[pizzaName[i]] = _pizza;
+    }
 }
 
 void Factory::storeConfigToMap(float cook)
@@ -68,21 +75,24 @@ void Factory::storeConfigToMap(float cook)
             std::stringstream ss(line);
             std::string name;
             std::string ingredient_s;
-            std::vector<std::string> ingredients;
+            std::string type;
             std::string cookName;
-            float cookTime;
+            std::shared_ptr<Plazza::IPizza> _pizza;
+
+            ss >> type;
+            _pizza.get()->setType(static_cast<Plazza::PizzaType>(std::stoi(type)));
 
             // Get the name
             ss >> name;
 
             // Then the ingredient
             ss >> ingredient_s;
-            ingredients = fillIngredient(ingredient_s);
+            _pizza.get()->setIngredients(fillIngredient(ingredient_s));
 
             ss >> cookName;
-            cookTime = std::stof(cookName) * cook;
+            _pizza.get()->setBakeTime(std::stof(cookName) * cook);
 
-            _pizzaInfo[name] = std::make_pair(ingredients, cookTime);
+            _pizzaInfo[name] = _pizza;
         }
     }
 }
