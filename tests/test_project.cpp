@@ -1,5 +1,4 @@
 #include <criterion/criterion.h>
-#include "../src/Cook.hpp"
 #include "../src/Kitchen.hpp"
 
 
