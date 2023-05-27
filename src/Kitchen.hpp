@@ -13,7 +13,6 @@
     #include "Error.hpp"
     #include <iostream>
     #include "Order.hpp"
-    #include "Cook.hpp"
     #include <array>
     #include "SafeQueue.hpp"
     #include "MessageQueue.hpp"
@@ -68,15 +67,14 @@ namespace Plazza {
 
             float _mutiplier;
             int _nbCooks;
-            size_t availableCooks;
             size_t _orderCapacityMax;
             size_t _orderCapacity;
             int _receptionPid;
-            SafeQueue<Plazza::Order> _order;
 
-            std::vector<std::shared_ptr<Plazza::Cook>> _cooks;
+            SafeQueue<Plazza::Order> _order;
             std::shared_ptr<Ingredient> _ingredient;
 
+            // Timer
             std::chrono::steady_clock::time_point _start;
             std::chrono::seconds _workDuration;
 

@@ -12,10 +12,10 @@
     #include <map>
     #include "PizzaEnum.hpp"
     #include "IPizza.hpp"
-    #include "Pizza/Regina.hpp"
-    #include "Pizza/Americana.hpp"
-    #include "Pizza/Fantasia.hpp"
-    #include "Pizza/Margarita.hpp"
+    #include "Regina.hpp"
+    #include "Americana.hpp"
+    #include "Fantasia.hpp"
+    #include "Margarita.hpp"
     #include <memory>
     #include "plazza.hpp"
 

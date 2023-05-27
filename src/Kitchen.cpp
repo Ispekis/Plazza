@@ -10,11 +10,9 @@
 Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _workDuration(5)
 {
     std::cout << GREEN << "--- Start Kitchen " << getpid() << COLOR << std::endl;
-    // _order = std::make_shared<SafeQueue<Plazza::Order>>();
     _ingredient = std::make_shared<Ingredient>(time);
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
-    availableCooks = _nbCooks;
     _orderCapacity = _nbCooks * 2;
     _orderCapacityMax = _orderCapacity;
     _orderKey = ftok(".", ORDER_KEY);
