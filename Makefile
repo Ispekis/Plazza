@@ -73,7 +73,7 @@ clean:
 
 fclean: clean
 	$(RM) -f $(NAME)
-
+	$(RM) -f $(TEST_NAME)
 re: fclean all
 
 debug: CPPFLAGS += -g3
