@@ -16,6 +16,7 @@
     #include <array>
     #include "SafeQueue.hpp"
     #include "MessageQueue.hpp"
+    #include "Factory.hpp"
     #include "ThreadPool.hpp"
 
 namespace Plazza {
@@ -87,7 +88,7 @@ namespace Plazza {
 
             Plazza::ThreadPool _threadPool;
             std::shared_ptr<Ingredient> _ingredient;
-
+            Factory _factory;
             // Threads
             std::thread _orderThread;
             std::thread _capacityThread;

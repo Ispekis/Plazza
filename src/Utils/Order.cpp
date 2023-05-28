@@ -12,7 +12,7 @@ Plazza::Order::Order()
 
 }
 
-Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t amount)
+Plazza::Order::Order(int type, Plazza::PizzaSize size, std::size_t amount)
 {
     this->setType(type);
     this->setSize(size);
@@ -75,25 +75,11 @@ std::shared_ptr<Plazza::IPizza> Plazza::Order::getPizza() const
     return _pizzas;
 }
 
-void Plazza::Order::setType(Plazza::PizzaType type)
+void Plazza::Order::setType(int type)
 {
     _pizzaType = type;
 
     // set pizza class
-    switch (_pizzaType) {
-        case Regina:
-            _pizzas = std::make_shared<Plazza::ReginaPizza>();
-            break;
-        case Fantasia:
-            _pizzas = std::make_shared<Plazza::FantasiaPizza>();
-            break;
-        case Americana:
-            _pizzas = std::make_shared<Plazza::AmericanaPizza>();
-            break;
-        case Margarita:
-            _pizzas = std::make_shared<Plazza::MargaritaPizza>();
-            break;
-    }
 }
 
 void Plazza::Order::setSize(Plazza::PizzaSize size)

@@ -37,7 +37,7 @@ namespace Plazza {
              * @param size 
              * @param amount 
              */
-            Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t amount);
+            Order(int type, Plazza::PizzaSize size, std::size_t amount);
 
             /**
              * @brief Copy construct a new Order
@@ -77,19 +77,19 @@ namespace Plazza {
             static Plazza::Order unpack(msg_data data);
 
             //* Getters *//
-            Plazza::PizzaType getType() const;
+            int getType() const;
             Plazza::PizzaSize getSize() const;
             std::size_t getAmount() const;
             std::shared_ptr<Plazza::IPizza> getPizza() const;
 
             //* Setters *//
-            void setType(Plazza::PizzaType type);
+            void setType(int type);
             void setSize(Plazza::PizzaSize size);
             void setAmount(std::size_t amount);
 
         protected:
         private:
-            Plazza::PizzaType _pizzaType;
+            int _pizzaType;
             Plazza::PizzaSize _pizzaSize;
             std::size_t _amount;
             std::shared_ptr<Plazza::IPizza> _pizzas;

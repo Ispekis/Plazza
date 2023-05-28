@@ -7,7 +7,7 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid, std::vector<std::string> ingredients) : _threadPool(nbCooks), _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid, std::vector<std::string> ingredients) : _threadPool(nbCooks), _workDuration(5), _factory("data/Pizza.conf")
 {
     std::cout << GREEN << "--- Start Kitchen " << Process::getpid() << COLOR << std::endl;
     _ingredient = std::make_shared<Ingredient>(time);
@@ -103,7 +103,8 @@ static void orderReadyMessage(Plazza::Order order)
 
 void Plazza::Kitchen::cookPizzas(Plazza::Order order)
 {
-    size_t bakeTime = order.getPizza()->getBakeTime() * _mutiplier;
+    std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
+    size_t bakeTime = pizza->getBakeTime() * _mutiplier;
     std::this_thread::sleep_for(std::chrono::milliseconds(bakeTime * 1000));
 
     // Send pizza back to reception

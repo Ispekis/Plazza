@@ -137,17 +137,12 @@ int Plazza::Reception::getCapacityLeft(int pid)
     return a->value;
 }
 
-static Plazza::PizzaType getPizzaType(std::string &pizza)
+static int getPizzaType(std::string &pizza, ErrorHandling checkError)
 {
-    std::vector<std::string> pizzaType = {"margarita", "regina", "americana", "fantasia"};
-    std::vector<Plazza::PizzaType> pizzaEnum = { Plazza::PizzaType::Margarita, Plazza::PizzaType::Regina, Plazza::PizzaType::Americana, Plazza::PizzaType::Fantasia};
+    auto tmp = checkError.getFactory()->getPizzaType(pizza);
 
-    for (std::size_t i = 0; i != pizzaType.size(); i++) {
-        if (toLower(pizza) == pizzaType[i]) {
-            // std::cout << pizzaType[i] << " = " << i << std::endl;
-            return pizzaEnum[i];
-        }
-    }
+    if (tmp != -1)
+        return tmp;
     throw Error("Pizza Enum Not Found", pizza);
 }
 
@@ -172,7 +167,7 @@ static int getPizzaNumber(std::string &number)
 void Plazza::Reception::convertToOrder(std::vector<std::array<std::string, 3>> &allOrder)
 {
     for (auto singleOrder : allOrder) {
-        Plazza::PizzaType type = getPizzaType(singleOrder.at(0));
+        int type = getPizzaType(singleOrder.at(0), _CheckError);
         Plazza::PizzaSize size = getPizzaSize(singleOrder.at(1));
         int number = getPizzaNumber(singleOrder.at(2));
         _orderList.push_back(Plazza::Order(type, size, number));

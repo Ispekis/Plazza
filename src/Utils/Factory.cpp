@@ -36,7 +36,10 @@ void Factory::setPizzaDefault()
 {
     std::vector<int> pizzaEnum = { 1, 2, 8, 4};
     std::vector<std::string> pizzaName = {"margarita", "regina", "fantasia", "americana"};
-    std::vector<std::vector<std::string>> pizzaIngredients = {{"dough","tomato","gruyere"}, {"dough","tomato","gruyere","ham","mushrooms"}, {"dough","tomato","eggplant","goat_cheese","chief_love"}, {"dough","tomato","gruyere","steak"}};
+    std::vector<std::vector<std::string>> pizzaIngredients = {{"dough","tomato","gruyere"},
+        {"dough","tomato","gruyere","ham","mushrooms"},
+        {"dough","tomato","eggplant","goat_cheese","chief_love"},
+        {"dough","tomato","gruyere","steak"}};
     std::vector<float> cookTime = {1, 2, 4, 2};
 
     _ingredients = {"dough","tomato","gruyere","ham","mushrooms","steak","eggplant","goat_Cheese","chief_Love"};
@@ -48,7 +51,7 @@ void Factory::setPizzaDefault()
         _pizza->setIngredients(pizzaIngredients[i]);
         _pizza->setType(pizzaEnum[i]);
         _pizza->setName(pizzaName[i]);
-;        _pizzaInfo[pizzaName[i]] = _pizza;
+        _pizzaInfo[pizzaEnum[i]] = _pizza;
     }
 }
 
@@ -69,15 +72,19 @@ void Factory::fillPizza(std::string line)
     std::stringstream ss(line);
     std::shared_ptr<Plazza::IPizza> pizza = std::make_shared<Plazza::Pizza>();
     std::string value;
+    int type;
     std::string name;
 
     ss >> value;
+    type = std::stoi(value);
     pizza->setType(std::stoi(value));
-    value.clear();
 
     ss >> name;
     pizza->setName(name);
+    _pizzaType[name] = std::stoi(value);
     _pizzaList.push_back(name);
+    value.clear();
+
 
     ss >> value;
     pizza->setIngredients(fillIngredients(value));
@@ -86,7 +93,7 @@ void Factory::fillPizza(std::string line)
     ss >> value;
     pizza->setBakeTime(std::stoi(value));
 
-    _pizzaInfo[name] = pizza;
+    _pizzaInfo[type] = pizza;
 }
 
 void Factory::setPizzaByFile()
@@ -111,7 +118,20 @@ std::vector<std::string> Factory::getAllIngredient() const
     return _ingredients;
 }
 
-std::shared_ptr<Plazza::IPizza> Factory::getPizza(std::string pizza) const
+int Factory::getPizzaType(std::string pizza) const
 {
-    return _pizzaInfo.find(pizza)->second;
+    auto tmp = _pizzaType.find(pizza);
+
+    if (tmp != _pizzaType.end())
+        return tmp->second;
+    return -1;
+}
+
+std::shared_ptr<Plazza::IPizza> Factory::getPizza(int type) const
+{
+    auto tmp = _pizzaInfo.find(type);
+
+    if (tmp != _pizzaInfo.end())
+        return tmp->second;
+    return nullptr;
 }

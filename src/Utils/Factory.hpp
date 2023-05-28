@@ -28,14 +28,16 @@ class Factory {
 
         std::vector<std::string> getPizzaList() const;
         std::vector<std::string> getAllIngredient() const;
-        std::shared_ptr<Plazza::IPizza> getPizza(std::string pizza) const;
+        int getPizzaType(std::string pizza) const;
+        std::shared_ptr<Plazza::IPizza> getPizza(int type) const;
     protected:
     private:
         std::vector<std::string> _pizzaList;
         std::ifstream _file;
         std::vector<std::string> _ingredients;
         std::string _configFile;
-        std::map<std::string, std::shared_ptr<Plazza::IPizza>> _pizzaInfo;
+        std::map<std::string, int> _pizzaType;
+        std::map<int, std::shared_ptr<Plazza::IPizza>> _pizzaInfo;
 };
 
 #endif /* !FACTORY_HPP_ */
