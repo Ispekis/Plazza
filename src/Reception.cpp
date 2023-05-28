@@ -7,8 +7,10 @@
 
 #include "Reception.hpp"
 
-Plazza::Reception::Reception(Parsing &data) : _data(data), _factory("data/Pizza.conf")
+Plazza::Reception::Reception(Parsing &data) : _data(data), _graphic(data.getNbCooks() * 2), _factory("data/Pizza.conf")
 {
+    _kitchenPids = std::make_shared<std::vector<int>>();
+    _graphic.setKitchen(_kitchenPids);
     _receptionPid = Process::getpid();
     _orderMsgQ.createIpc(IPC::ftok(".", ORDER_KEY));
     _closureMsgQ.createIpc(IPC::ftok(".", CLOSURE_KEY));
@@ -19,6 +21,7 @@ Plazza::Reception::~Reception()
 {
     _closingKitchen.join();
     _receiveReadyOrder.join();
+    _graphicLoop.join();
 }
 
 void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
@@ -49,10 +52,10 @@ void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
 void Plazza::Reception::manageKitchen()
 {
     while (_orderList.size() != 0) {
-        for (std::size_t i = 0; i != _kitchenPids.size(); i++) {
-            int Capacity = getCapacityLeft(_kitchenPids.at(i));
+        for (std::size_t i = 0; i != _kitchenPids->size(); i++) {
+            int Capacity = getCapacityLeft(_kitchenPids->at(i));
             if (Capacity != 0) {
-                sendPizzaToKitchen(Capacity, _kitchenPids.at(i));
+                sendPizzaToKitchen(Capacity, _kitchenPids->at(i));
             }
             if (_orderList.size() == 0)
                 break;
@@ -74,7 +77,7 @@ void Plazza::Reception::create_kitchen()
         kitchen.~Kitchen();
         Platform::exit(0);
     } else { // Parent
-        _kitchenPids.push_back(pid);
+        _kitchenPids->push_back(pid);
     }
 }
 
@@ -111,8 +114,14 @@ void Plazza::Reception::userInput()
     }
 }
 
+void Plazza::Reception::displayGraphic()
+{
+    _graphic.run();
+}
+
 void Plazza::Reception::start()
 {
+    _graphicLoop = std::thread(&Plazza::Reception::displayGraphic, std::ref(*this));
     _closingKitchen = std::thread(&Plazza::Reception::checkClosures, std::ref(*this));
     _receiveReadyOrder = std::thread(&Plazza::Reception::receiveReadyOrder, std::ref(*this));
     userInput();
@@ -198,10 +207,10 @@ void Plazza::Reception::checkClosures()
     while (_isRunning) {
         auto closedPid = _closureMsgQ.pop(Process::getpid(), IPC_NOWAIT);
         if (closedPid != nullptr)
-            for (std::size_t i = 0; i != _kitchenPids.size(); i++)
-                if (closedPid->id == _kitchenPids.at(i)) {
-                    _kitchenPids.erase(_kitchenPids.begin() + i);
-                    std::cout << RED << "[Reception] : Kitchen " << closedPid->id << " has closed"<< COLOR <<std::endl;
+            for (std::size_t i = 0; i != _kitchenPids->size(); i++)
+                if (closedPid->id = _kitchenPids->at(i)) {
+                    _kitchenPids->erase(_kitchenPids->begin() + i);
+                    std::cout << RED << "Reception : Kitchen :" << closedPid->id << " Closed"<< COLOR <<std::endl;
                     break;
                 }
     }
