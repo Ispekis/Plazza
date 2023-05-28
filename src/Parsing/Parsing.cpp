@@ -19,7 +19,6 @@ Parsing::Parsing(int ac, char **av)
         _nbCooks = std::stoi(av[2]);
         _refillTimer = std::stoi(av[3]);
         if (ac == 5) {
-            std::cout << av[4] << std::endl;
             std::string tmp(av[4]);
             if (tmp.compare("-graphic") == 0)
                 _graphic = true;

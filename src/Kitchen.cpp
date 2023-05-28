@@ -75,7 +75,7 @@ void Plazza::Kitchen::getCapacityThread()
         std::unique_ptr<capacity_data> capacity = _capacityMsgQ.pop(Process::getpid(), 0);
         // Check kitchen have received a message
         if (capacity != nullptr) {
-            capacityMessage(_orderCapacity);
+            // capacityMessage(_orderCapacity);
             capacity_data data;
             std::memset(&data, 0, sizeof(data));
             data.value = _orderCapacity;
