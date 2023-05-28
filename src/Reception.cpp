@@ -215,7 +215,7 @@ void Plazza::Reception::checkClosures()
         auto closedPid = _closureMsgQ.pop(Process::getpid(), 0);
         if (closedPid != nullptr)
             for (std::size_t i = 0; i != _kitchenPids->size(); i++)
-                if (closedPid->id = _kitchenPids->at(i)) {
+                if (closedPid->id == _kitchenPids->at(i)) {
                     _kitchenPids->erase(_kitchenPids->begin() + i);
                     closeKitchenMessage(closedPid->id);
                     break;

@@ -8,7 +8,7 @@
 #include "Parsing.hpp"
 #include "Usage.hpp"
 
-Parsing::Parsing(int ac, char **av)
+Parsing::Parsing(int ac, const char **av)
 {
     if (ac != 4 && ac != 5) {
         Usage::display_usage(std::cerr);

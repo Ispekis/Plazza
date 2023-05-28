@@ -110,7 +110,7 @@ void Graphic::drawCooks(int x, int y, int sizes, int pid)
     int tmpY = y;
 
         capacity_data data;
-    std::memset(&data, sizeof(data), 0);
+    std::memset(&data, 0, sizeof(data));
     _capacityMsgQ.push(data, pid);
 
     std::unique_ptr<capacity_data> a = nullptr;

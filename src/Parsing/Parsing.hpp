@@ -13,7 +13,7 @@
 
 class Parsing {
     public:
-        Parsing(int ac, char **av);
+        Parsing(int ac, const char **av);
         ~Parsing();
 
         int getNbCooks();

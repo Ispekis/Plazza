@@ -43,7 +43,7 @@ void Factory::setPizzaDefault()
     std::vector<float> cookTime = {1, 2, 4, 2};
 
     _ingredients = {"dough","tomato","gruyere","ham","mushrooms","steak","eggplant","goat_Cheese","chief_Love"};
-    for (int i = 0; i != pizzaName.size(); i++) {
+    for (std::size_t i = 0; i != pizzaName.size(); i++) {
         std::shared_ptr<Plazza::IPizza> _pizza = std::make_shared<Plazza::Pizza>();
 
         _pizzaList.push_back(pizzaName[i]);

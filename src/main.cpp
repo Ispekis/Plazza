@@ -20,7 +20,7 @@
 #include "Reception.hpp"
 #include "Usage.hpp"
 
-int main (int ac, char **av)
+int main (int ac, const char **av)
 {
     try {
         if (ac == 2 && std::string(av[1]).compare("-h") == 0) {
