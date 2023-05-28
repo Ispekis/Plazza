@@ -7,7 +7,7 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _workDuration(5), _threadPool(nbCooks)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _threadPool(nbCooks), _workDuration(5)
 {
     std::cout << GREEN << "--- Start Kitchen " << Process::getpid() << COLOR << std::endl;
     _ingredient = std::make_shared<Ingredient>(time);
@@ -44,7 +44,7 @@ bool Plazza::Kitchen::timeOut()
 void Plazza::Kitchen::closeKitchen()
 {
     closure_data data;
-    std::memset(&data, sizeof(data), 0);
+    std::memset(&data, 0, sizeof(data));
 
     _isRunning = false;
     data.id = Process::getpid();
@@ -77,7 +77,7 @@ void Plazza::Kitchen::getCapacityThread()
         if (capacity != nullptr) {
             capacityMessage(_orderCapacity);
             capacity_data data;
-            std::memset(&data, sizeof(data), 0);
+            std::memset(&data, 0, sizeof(data));
             data.value = _orderCapacity;
             _capacityMsgQ.push(data, _receptionPid);
         }

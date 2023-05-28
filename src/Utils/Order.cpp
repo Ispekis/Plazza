@@ -31,6 +31,14 @@ Plazza::Order::~Order()
 {
 }
 
+Plazza::Order &Plazza::Order::operator=(const Plazza::Order &other)
+{
+    this->setType(other._pizzaType);
+    this->setSize(other._pizzaSize);
+    this->setAmount(other._amount);
+    return *this;
+}
+
 Plazza::PizzaType Plazza::Order::getType() const
 {
     return _pizzaType;
@@ -84,7 +92,7 @@ void Plazza::Order::setAmount(std::size_t amount)
 
 msg_data &operator<<(msg_data &data, Plazza::Order order)
 {
-    std::memset(&data, sizeof(data), 0);
+    std::memset(&data, 0, sizeof(data));
 
     data.type = order.getType();
     data.size = order.getSize();
