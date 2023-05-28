@@ -17,14 +17,18 @@
 
 class Factory {
     public:
-        Factory(std::string _file, float mult);
+        Factory(std::string _file);
         ~Factory();
 
-        void setPizzaDefault(float mult);
-        void setPizzaByFile(float mult);
-        void setConfigFile(std::string configFile, float mult);
+        void setPizzaDefault();
+        void setPizzaByFile();
+        void setConfigFile(std::string configFile);
 
         void fillPizza(std::string line);
+
+        std::vector<std::string> getPizzaList() const;
+        std::vector<std::string> getAllIngredient() const;
+        std::shared_ptr<Plazza::IPizza> getPizza(std::string pizza) const;
     protected:
     private:
         std::vector<std::string> _pizzaList;

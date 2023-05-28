@@ -11,6 +11,7 @@
 #include "Error.hpp"
 #include <algorithm>
 #include <vector>
+#include "Factory.hpp"
 
 class ErrorHandling {
     public:
@@ -19,6 +20,9 @@ class ErrorHandling {
         template<typename U>
         void checkVectorLength(std::size_t size, std::vector<U>&);
         void checkReceiptArg(std::vector<std::string> words);
+        std::shared_ptr<Factory> getFactory() const;
+    private:
+        std::shared_ptr<Factory> _factory;
 };
 
 std::string toLower(std::string &str);

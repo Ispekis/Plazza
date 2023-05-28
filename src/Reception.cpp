@@ -70,7 +70,7 @@ void Plazza::Reception::create_kitchen()
         throw Error("Failed to fork", "Reception");
     }
     if (pid == 0) { // Child
-        Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
+        Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid, _CheckError.getFactory()->getAllIngredient());
         kitchen.~Kitchen();
         Platform::exit(0);
     } else { // Parent

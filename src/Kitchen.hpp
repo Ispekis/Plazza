@@ -21,7 +21,7 @@
 namespace Plazza {
     class Kitchen {
         public:
-            Kitchen(float mutiplier, int nbCooks, int time, int pid);
+            Kitchen(float mutiplier, int nbCooks, int time, int pid, std::vector<std::string> ingredients);
             ~Kitchen();
 
             /**

@@ -7,9 +7,9 @@
 
 #include "Factory.hpp"
 
-Factory::Factory(std::string file, float mult)
+Factory::Factory(std::string file)
 {
-    setConfigFile(file, mult);
+    setConfigFile(file);
 }
 
 Factory::~Factory()
@@ -17,7 +17,7 @@ Factory::~Factory()
     _file.close();
 }
 
-void Factory::setConfigFile(std::string configFile, float mult)
+void Factory::setConfigFile(std::string configFile)
 {
     if (_file.is_open())
         _file.close();
@@ -27,12 +27,12 @@ void Factory::setConfigFile(std::string configFile, float mult)
     _file.open(_configFile);
 
     if (_file.fail()) {
-        setPizzaDefault(mult);
+        setPizzaDefault();
     }
-    setPizzaByFile(mult);
+    setPizzaByFile();
 }
 
-void Factory::setPizzaDefault(float mult)
+void Factory::setPizzaDefault()
 {
     std::vector<int> pizzaEnum = { 1, 2, 8, 4};
     std::vector<std::string> pizzaName = {"margarita", "regina", "fantasia", "americana"};
@@ -44,7 +44,7 @@ void Factory::setPizzaDefault(float mult)
         std::shared_ptr<Plazza::IPizza> _pizza = std::make_shared<Plazza::Pizza>();
 
         _pizzaList.push_back(pizzaName[i]);
-        _pizza->setBakeTime(cookTime[i] * mult);
+        _pizza->setBakeTime(cookTime[i]);
         _pizza->setIngredients(pizzaIngredients[i]);
         _pizza->setType(pizzaEnum[i]);
         _pizza->setName(pizzaName[i]);
@@ -89,7 +89,7 @@ void Factory::fillPizza(std::string line)
     _pizzaInfo[name] = pizza;
 }
 
-void Factory::setPizzaByFile(float mult)
+void Factory::setPizzaByFile()
 {
     std::string line;
 
@@ -99,4 +99,19 @@ void Factory::setPizzaByFile(float mult)
         else
             fillPizza(line);
     }
+}
+
+std::vector<std::string> Factory::getPizzaList() const
+{
+    return _pizzaList;
+}
+
+std::vector<std::string> Factory::getAllIngredient() const
+{
+    return _ingredients;
+}
+
+std::shared_ptr<Plazza::IPizza> Factory::getPizza(std::string pizza) const
+{
+    return _pizzaInfo.find(pizza)->second;
 }

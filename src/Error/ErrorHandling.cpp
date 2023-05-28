@@ -9,6 +9,7 @@
 
 ErrorHandling::ErrorHandling()
 {
+    _factory = std::make_shared<Factory>("data/Pizza.conf");
 }
 
 ErrorHandling::~ErrorHandling()
@@ -59,7 +60,7 @@ static void findNumber(std::string word)
             if (word[i] == '0' && i == 1)
                 throw Error("Invalid Number", word);
         }
-        else 
+        else
             throw Error("Invalid Number", word);
     }
 
@@ -67,12 +68,16 @@ static void findNumber(std::string word)
 
 void ErrorHandling::checkReceiptArg(std::vector<std::string> words)
 {
-    std::vector<std::string> pizza = {"regina", "margarita", "americana", "fantasia"};
     std::vector<std::string> size = {"s", "m", "l", "xl", "xxl"};
 
-    findType(words[0], pizza);
+    findType(words[0], _factory->getPizzaList());
     findSize(words[1], size);
     findNumber(words[2]);
+}
+
+std::shared_ptr<Factory> ErrorHandling::getFactory() const
+{
+    return _factory;
 }
 
 template void ErrorHandling::checkVectorLength(std::size_t size, std::vector<std::string> &vector);

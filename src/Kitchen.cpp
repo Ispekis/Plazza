@@ -7,10 +7,11 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _threadPool(nbCooks), _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid, std::vector<std::string> ingredients) : _threadPool(nbCooks), _workDuration(5)
 {
     std::cout << GREEN << "--- Start Kitchen " << Process::getpid() << COLOR << std::endl;
     _ingredient = std::make_shared<Ingredient>(time);
+    _ingredient = std::make_shared<Ingredient>(time, ingredients);
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
     _orderCapacity = _nbCooks * 2;
@@ -31,7 +32,7 @@ Plazza::Kitchen::~Kitchen()
 
 bool Plazza::Kitchen::timeOut()
 {
-    auto current =  std::chrono::steady_clock::now();
+    auto current = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - _start);
 
     if (_orderCapacity != _orderCapacityMax)
