@@ -87,6 +87,11 @@ namespace Plazza {
 
             /**** MESSAGES ****/
 
+            /**
+             * @brief reveive order message from the reception
+             * 
+             * @param order 
+             */
             void receiveOrderMessage(Plazza::Order order);
 
             void orderReadyMessage(Plazza::Order order);
