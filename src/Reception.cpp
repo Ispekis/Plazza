@@ -163,7 +163,6 @@ static int getPizzaType(std::string &pizza, Factory &factory)
 {
     int tmp = factory.getPizzaType(pizza);
 
-    // std::cout << tmp << std::endl;
     if (tmp != -1)
         return tmp;
     throw Error("Pizza Enum Not Found", pizza);

@@ -28,7 +28,6 @@ Plazza::Kitchen::~Kitchen()
     _orderThread.join();
     _capacityThread.join();
     _statusThread.join();
-    // std::cout << "--- Close Kitchen:" << Process::getpid() << std::endl;
 }
 
 bool Plazza::Kitchen::timeOut()
