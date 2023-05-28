@@ -34,6 +34,7 @@ class Graphic {
         void drawCooks(int x, int y, int sizes, int pid);
         void loadSpriteFromFile(std::string path, sf::Sprite &sprite, sf::Texture &texture);
         void setKitchen(std::shared_ptr<std::vector<int>> kitchen);
+        bool pidIsOn(int pid);
 
     protected:
     private:

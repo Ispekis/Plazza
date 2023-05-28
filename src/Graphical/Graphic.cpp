@@ -9,19 +9,7 @@
 
 Graphic::Graphic(int capacityMax) : _window(sf::VideoMode(1920, 1080), "Plazza"), _capacityMax(capacityMax)
 {
-    // const char *path[] = {"assets/four.png", "assets/background.jpg"};
-    // int size = sizeof(path) / sizeof(char *);
-    // for (int i = 0; i != size; i++) {
-    //     sf::Texture texture;
-    //     if (!texture.loadFromFile(path[i])) {
-    //         std::cout << "error load:" << path[i] << std::endl;
-    //     }
-    //     sf::Sprite sprite;
-    //     sprite.setTexture(texture);
-    //     _window.draw(sprite);
-    // }
     _capacityMsgQ.createIpc(ftok(".", CAPACITY_KEY));
-    // _capacityKey = ftok(".", CAPACITY_KEY);
     try
     {
         loadSpriteFromFile("assets/background.jpg", _backgroundS, _backgroundT);
@@ -59,11 +47,16 @@ void Graphic::drawKitchen()
     int x = 0;
     int y = 0;
     int size = _kitchen->size();
-    for (int i = 0; i != size; i++)
+    // std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    for (int i = 0; i < size; i++)
     {
+        try {
         _hovenS.setPosition(x, y);
         _window.draw(_hovenS);
         drawCooks(x, y, 100, _kitchen->at(i));
+        } catch ( ... ) {
+        i = size + 1;
+        }
         x += 100 * 2.5;
         if (x >= 1920 - 100*2.5) {
             x = 0;
@@ -99,7 +92,6 @@ void Graphic::drawCooks(int x, int y, int sizes, int pid)
     sf::RectangleShape rect(sf::Vector2f(size, size));
     int tmpX = x;
     int tmpY = y;
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
         capacity_data data;
     std::memset(&data, sizeof(data), 0);
@@ -107,8 +99,11 @@ void Graphic::drawCooks(int x, int y, int sizes, int pid)
 
     std::unique_ptr<capacity_data> a = nullptr;
 
-    while (a == nullptr)
+    while (a == nullptr) {
+        if (!pidIsOn(pid))
+            return;
         a = _capacityMsgQ.pop(getpid(), IPC_NOWAIT);
+    }
     int capacityLeft = _capacityMax - a->value;
 
     for (int i = 0; i != _capacityMax; i++)
@@ -125,5 +120,14 @@ void Graphic::drawCooks(int x, int y, int sizes, int pid)
             tmpX = x;
             tmpY += size * 2.5;
         }
+        std::cout << "lol " << std::endl;
     }
+}
+
+bool Graphic::pidIsOn(int pid)
+{
+    int count = std::count(_kitchen->begin(), _kitchen->end(), pid);
+    if (count > 0)
+        return true;
+    return false;
 }

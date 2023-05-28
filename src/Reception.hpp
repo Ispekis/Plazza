@@ -117,6 +117,7 @@ namespace Plazza {
             // Thread
             std::thread _closingKitchen;
             std::thread _receiveReadyOrder;
+            std::thread _graphicLoop;
 
             // Message Queues for ipc
             MessageQueue<msg_data> _orderMsgQ;

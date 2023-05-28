@@ -21,6 +21,7 @@ Plazza::Reception::~Reception()
 {
     _closingKitchen.join();
     _receiveReadyOrder.join();
+    _graphicLoop.join();
 }
 
 void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
@@ -120,6 +121,7 @@ void Plazza::Reception::displayGraphic()
 
 void Plazza::Reception::start()
 {
+    _graphicLoop = std::thread(&Plazza::Reception::displayGraphic, std::ref(*this));
     _closingKitchen = std::thread(&Plazza::Reception::checkClosures, std::ref(*this));
     _receiveReadyOrder = std::thread(&Plazza::Reception::receiveReadyOrder, std::ref(*this));
     userInput();
