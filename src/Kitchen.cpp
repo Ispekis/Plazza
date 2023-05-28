@@ -15,9 +15,9 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
     _nbCooks = nbCooks;
     _orderCapacity = _nbCooks * 2;
     _orderCapacityMax = _orderCapacity;
-    _orderKey = ftok(".", ORDER_KEY);
-    _closureKey = ftok(".", CLOSURE_KEY);
-    _capacityKey = ftok(".", CAPACITY_KEY);
+    _orderMsgQ.createIpc(ftok(".", ORDER_KEY));
+    _closureMsgQ.createIpc(ftok(".", CLOSURE_KEY));
+    _capacityMsgQ.createIpc(ftok(".", CAPACITY_KEY));
     _receptionPid = pid;
     run();
 }
@@ -48,13 +48,13 @@ void Plazza::Kitchen::closeKitchen()
     std::memset(&data, sizeof(data), 0);
 
     data.id = getpid();
-    _closureMsgQ.push(data, _receptionPid, _closureKey);
+    _closureMsgQ.push(data, _receptionPid);
 }
 
 void Plazza::Kitchen::getOrderThread()
 {
     while (_isRunning) {
-        std::unique_ptr<msg_data> data = _orderMsgQ.pop(getpid(), _orderKey, 0);
+        std::unique_ptr<msg_data> data = _orderMsgQ.pop(getpid(), 0);
         if (data != nullptr)
         {
             Plazza::Order order;
@@ -67,13 +67,13 @@ void Plazza::Kitchen::getOrderThread()
 void Plazza::Kitchen::getCapacityThread()
 {
     while (_isRunning) {
-        std::unique_ptr<capacity_data> capacity = _capacityMsgQ.pop(getpid(), _capacityKey, 0);
+        std::unique_ptr<capacity_data> capacity = _capacityMsgQ.pop(getpid(), 0);
         // Check kitchen have received a message
         if (capacity != nullptr) {
             capacity_data data;
             std::memset(&data, sizeof(data), 0);
             data.value = _orderCapacity;
-            _capacityMsgQ.push(data, _receptionPid, _capacityKey);
+            _capacityMsgQ.push(data, _receptionPid);
         }
     }
 }
@@ -102,7 +102,7 @@ void Plazza::Kitchen::cookPizzas(Plazza::Order order)
     orderReadyMessage(order);
     msg_data data;
     data << order;
-    _orderMsgQ.push(data, _receptionPid, _orderKey);
+    _orderMsgQ.push(data, _receptionPid);
     _orderCapacity++;
 }
 

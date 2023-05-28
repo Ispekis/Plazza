@@ -100,9 +100,6 @@ namespace Plazza {
             MessageQueue<msg_data> _orderMsgQ;
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
-            key_t _orderKey;
-            key_t _capacityKey;
-            key_t _closureKey;
 
     };
 }

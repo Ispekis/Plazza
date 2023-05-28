@@ -56,7 +56,8 @@ namespace Plazza {
              */
             template <typename F, typename... Args>
             void enqueue(F&& f, Args&&... args) {
-                _taskQueue.emplace(f);
+                std::unique_lock<std::mutex> lock(_mutex);
+                _taskQueue.emplace(std::forward<F>(f));
                 cond.notify_one();
                 _pollSpaceLeft--;
             }
@@ -70,14 +71,15 @@ namespace Plazza {
              */
             void runPool() {
                 for (int i = 0; i < _nbrWorkers; i++) {
-                    _workers.emplace_back([&] {
+                    _workers.emplace_back([this] {
                         while (_isRunning) {
-                            if (_taskQueue.empty()) {
+                            std::function<void()> task;
+                            {
                                 std::unique_lock<std::mutex> lock(_mutex);
-                                cond.wait(lock);
+                                cond.wait(lock, [this] { return !_taskQueue.empty() || !_isRunning; });
+                                task = _taskQueue.front();
+                                _taskQueue.pop();
                             }
-                            std::function<void()> task = _taskQueue.front();
-                            _taskQueue.pop();
                             task();
                             // Task finished
                             _pollSpaceLeft++;

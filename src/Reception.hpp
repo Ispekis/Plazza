@@ -112,10 +112,6 @@ namespace Plazza {
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
 
-            // Keys for ipc
-            key_t _orderKey;
-            key_t _capacityKey;
-            key_t _closureKey;
     };
 }
 #endif /* !PLAZZA_HPP_ */

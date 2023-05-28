@@ -20,28 +20,26 @@ namespace Plazza {
             MessageQueue() {};
             ~MessageQueue() {};
 
+            void createIpc(key_t key) {
+                _msgid = msgget(key, 0666 | IPC_CREAT);
+                if (_msgid == -1) {
+                    std::cout << "msgget error" << std::endl;
+                    perror("");
+                }
+            }
+
             /**
              * @brief Send the message data to the messsage queue
              *
              * @param msgData 
              * @param id 
-             * @param key 
              */
-            void push(T msgData, int id, key_t key) {
-                int msgid;
-
+            void push(T msgData, int id) {
                 // Init struct
                 msgData.mesg_type = id;
 
                 // Send data to queue
-                msgid = msgget(key, 0666 | IPC_CREAT);
-                if (msgid == -1) {
-                    std::cout << "msgget error" << std::endl;
-                    perror("");
-                    return;
-                }
-                // std::cout << msgid << std::endl;
-                if (msgsnd(msgid, &msgData, sizeof(msgData) - sizeof(long), 0) == -1) {
+                if (msgsnd(_msgid, &msgData, sizeof(msgData) - sizeof(long), 0) == -1) {
                     std::cout << "message not send " << id << std::endl;
                     perror("");
                     return;
@@ -52,32 +50,24 @@ namespace Plazza {
              * @brief Receive the message data from the message queue
              *
              * @param id
-             * @param key
              * @param flag 0 to block the receiver
              * @return std::unique_ptr<T>
              */
-            std::unique_ptr<T> pop(int id, key_t key, int flag) {
-                int msgid;
+            std::unique_ptr<T> pop(int id, int flag) {
                 T rcvData;
 
-                // Remove padding
-                std::memset(&rcvData, sizeof(rcvData), 0);
-
                 // Receive queue
-                msgid = msgget(key, 0666 | IPC_CREAT);
-
-                if (msgid == -1) {
-                    perror("msgid");
-                }
-                if (msgrcv(msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, flag) != -1) {
+                if (msgrcv(_msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, flag) != -1) {
                     // Delete message from queue
-                    msgctl(msgid, IPC_RMID, NULL);
+                    // msgctl(msgid, IPC_RMID, NULL);
                     return std::make_unique<T>(rcvData);
                 }
-                // Delete message from queue
-                // msgctl(msgid, IPC_RMID, NULL);
                 return nullptr;
             }
+
+        protected:
+        private:
+            int _msgid;
     };
 }
 
