@@ -58,3 +58,8 @@ bool Ingredient::checkEnoughIngredient(std::shared_ptr<Plazza::IPizza> pizza)
     }
     return true;
 }
+
+std::unordered_map<std::string, std::size_t> Ingredient::getIngredient()
+{
+    return _ingredient;
+}

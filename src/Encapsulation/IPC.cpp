@@ -26,3 +26,8 @@ ssize_t IPC::msgrcv(int msqid, void *msgp, size_t msgsz, long msgtyp, int msgflg
 {
     return ::msgrcv(msqid, msgp, msgsz, msgtyp, msgflg);
 }
+
+int IPC::msgctl(int msgid, int cmd, struct msqid_ds *buf)
+{
+    return ::msgctl(msgid, cmd, buf);
+}

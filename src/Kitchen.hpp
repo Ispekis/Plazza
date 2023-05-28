@@ -68,6 +68,12 @@ namespace Plazza {
             void getCapacityThread();
 
             /**
+             * @brief Print the status of kitchens
+             * 
+             */
+            void printStatusThread();
+
+            /**
              * @brief Close the kitchen, send closing messagequeue to reception 
              * 
              */
@@ -85,6 +91,8 @@ namespace Plazza {
 
             void orderReadyMessage(Plazza::Order order);
 
+            void printMessages();
+
             float _mutiplier;
             int _nbCooks;
             size_t _orderCapacityMax;
@@ -98,7 +106,9 @@ namespace Plazza {
             // Threads
             std::thread _orderThread;
             std::thread _capacityThread;
+            std::thread _statusThread;
 
+            std::mutex _mutex;
             // Timer
             std::chrono::steady_clock::time_point _start;
             std::chrono::seconds _workDuration;
@@ -107,6 +117,7 @@ namespace Plazza {
             MessageQueue<msg_data> _orderMsgQ;
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
+            MessageQueue<capacity_data> _statusMsgQ;
 
     };
 }

@@ -19,7 +19,9 @@ namespace Plazza {
     class MessageQueue {
         public:
             MessageQueue() {};
-            ~MessageQueue() {};
+            ~MessageQueue() {
+                IPC::msgctl(_msgid, IPC_RMID, nullptr);
+            };
 
             void createIpc(key_t key) {
                 _msgid = IPC::msgget(key, 0666 | IPC_CREAT);

@@ -44,6 +44,8 @@ class Ingredient {
          *
          */
         void refillIngredient();
+
+        std::unordered_map<std::string, std::size_t> getIngredient();
         ~Ingredient();
 
     protected:
