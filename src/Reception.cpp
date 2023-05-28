@@ -9,7 +9,7 @@
 
 Plazza::Reception::Reception(Parsing &data) : _data(data)
 {
-    _receptionPid = getpid();
+    _receptionPid = Process::getpid();
     _orderMsgQ.createIpc(ftok(".", ORDER_KEY));
     _closureMsgQ.createIpc(ftok(".", CLOSURE_KEY));
     _capacityMsgQ.createIpc(ftok(".", CAPACITY_KEY));
@@ -84,7 +84,7 @@ static void receiveOrderMessage(Plazza::Order order)
 void Plazza::Reception::receiveReadyOrder()
 {
     while (_isRunning) {
-        std::unique_ptr<msg_data> data = _orderMsgQ.pop(getpid(), 0);
+        std::unique_ptr<msg_data> data = _orderMsgQ.pop(Process::getpid(), 0);
         if (data != nullptr) {
             Plazza::Order order;
             *data >> order;
@@ -130,7 +130,7 @@ int Plazza::Reception::getCapacityLeft(int pid)
     std::unique_ptr<capacity_data> a = nullptr;
 
     while (a == nullptr)
-        a = _capacityMsgQ.pop(getpid(), IPC_NOWAIT);
+        a = _capacityMsgQ.pop(Process::getpid(), IPC_NOWAIT);
     std::cout << "[Reception] : Got it Kitchen " << pid << " !" << std::endl;
     return a->value;
 }
@@ -206,7 +206,7 @@ void Plazza::Reception::checkClosures()
 {
     // Trying to read closure message and close Kitchen
     while (_isRunning) {
-        auto closedPid = _closureMsgQ.pop(getpid(), IPC_NOWAIT);
+        auto closedPid = _closureMsgQ.pop(Process::getpid(), IPC_NOWAIT);
         if (closedPid != nullptr)
             for (int i = 0; i != _kitchenPids.size(); i++)
                 if (closedPid->id = _kitchenPids.at(i)) {

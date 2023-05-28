@@ -19,6 +19,9 @@ class Process {
         Process();
         pid_t spawnChildProcess();
         ~Process();
+        static int getpid() {
+            return ::getpid();
+        };
 
     protected:
     private:

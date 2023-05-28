@@ -9,7 +9,7 @@
 
 Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _workDuration(5), _threadPool(nbCooks)
 {
-    std::cout << GREEN << "--- Start Kitchen " << getpid() << COLOR << std::endl;
+    std::cout << GREEN << "--- Start Kitchen " << Process::getpid() << COLOR << std::endl;
     _ingredient = std::make_shared<Ingredient>(time);
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
@@ -26,7 +26,7 @@ Plazza::Kitchen::~Kitchen()
 {
     _orderThread.join();
     _capacityThread.join();
-    // std::cout << "--- Close Kitchen:" << getpid() << std::endl;
+    // std::cout << "--- Close Kitchen:" << Process::getpid() << std::endl;
 }
 
 bool Plazza::Kitchen::timeOut()
@@ -47,14 +47,14 @@ void Plazza::Kitchen::closeKitchen()
     std::memset(&data, sizeof(data), 0);
 
     _isRunning = false;
-    data.id = getpid();
+    data.id = Process::getpid();
     _closureMsgQ.push(data, _receptionPid);
 }
 
 void Plazza::Kitchen::getOrderThread()
 {
     while (_isRunning) {
-        std::unique_ptr<msg_data> data = _orderMsgQ.pop(getpid(), 0);
+        std::unique_ptr<msg_data> data = _orderMsgQ.pop(Process::getpid(), 0);
         if (data != nullptr)
         {
             Plazza::Order order;
@@ -66,13 +66,13 @@ void Plazza::Kitchen::getOrderThread()
 
 void capacityMessage(int capacity)
 {
-    std::cout << "[Kitchen " << getpid() << "] : I can take " << capacity << " orders !" << std::endl;
+    std::cout << "[Kitchen " << Process::getpid() << "] : I can take " << capacity << " orders !" << std::endl;
 }
 
 void Plazza::Kitchen::getCapacityThread()
 {
     while (_isRunning) {
-        std::unique_ptr<capacity_data> capacity = _capacityMsgQ.pop(getpid(), 0);
+        std::unique_ptr<capacity_data> capacity = _capacityMsgQ.pop(Process::getpid(), 0);
         // Check kitchen have received a message
         if (capacity != nullptr) {
             capacityMessage(_orderCapacity);
