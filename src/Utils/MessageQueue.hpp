@@ -12,6 +12,7 @@
     #include "plazza.hpp"
     #include <iostream>
     #include <cstring>
+    #include <memory>
 
 namespace Plazza {
     template <typename T>

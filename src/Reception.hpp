@@ -20,6 +20,7 @@
     #include <unistd.h>
     #include <chrono>
     #include "MessageQueue.hpp"
+    #include "Graphic.hpp"
     #include <sys/select.h>
 
 namespace Plazza {
@@ -79,6 +80,10 @@ namespace Plazza {
              */
             void receiveReadyOrder();
 
+            void displayGraphic();
+
+        protected:
+        private:
             /**
              * @brief Get the capacity left of the kitchenPid
              * 
@@ -104,7 +109,7 @@ namespace Plazza {
             Parsing _data;
             ErrorHandling _CheckError;
             pid_t _receptionPid = 0;
-            std::vector<int> _kitchenPids;
+            std::shared_ptr<std::vector<int>> _kitchenPids;
             std::vector<Order> _orderList;
 
             Factory _factory;
@@ -118,6 +123,15 @@ namespace Plazza {
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
 
+<<<<<<< HEAD
+=======
+            // Keys for ipc
+            key_t _orderKey;
+            key_t _capacityKey;
+            key_t _closureKey;
+
+            Graphic _graphic;
+>>>>>>> 69addd6 (#35 : feat : adding graphical part)
     };
 }
 #endif /* !PLAZZA_HPP_ */

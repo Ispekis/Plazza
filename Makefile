@@ -23,7 +23,10 @@ PIZZA = Pizza/
 
 ENCAPSULATION = Encapsulation
 
+GRAPHIC = Graphical/
+
 SRC	=	src/$(PARSING)Parsing.cpp			\
+		src/$(GRAPHIC)Graphic.cpp			\
 		src/$(ERROR)Error.cpp				\
 		src/$(ERROR)ErrorHandling.cpp		\
 		src/$(UTILS)Order.cpp				\
@@ -48,12 +51,17 @@ CFLAGS += -Wall -Wextra
 CPPFLAGS += -I./include/
 
 CPPFLAGS += -I./src/$(ERROR)
+
 CPPFLAGS += -I./src/$(PARSING)
+
 CPPFLAGS += -I./src/$(UTILS)
+
 CPPFLAGS += -I./src/$(PIZZA)
 
+CPPFLAGS += -I./src/$(GRAPHIC)
 
 LDFLAGS += -lpthread
+LDFLAGS += -lsfml-system -lsfml-window -lsfml-graphics
 
 all: $(NAME)
 
