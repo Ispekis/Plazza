@@ -71,29 +71,28 @@ void Factory::fillPizza(std::string line)
 {
     std::stringstream ss(line);
     std::shared_ptr<Plazza::IPizza> pizza = std::make_shared<Plazza::Pizza>();
-    std::string value;
     int type;
-    std::string name;
+    std::string word;
+    int time;
 
-    ss >> value;
-    type = std::stoi(value);
-    pizza->setType(std::stoi(value));
+    ss >> type;
+    pizza->setType(type);
 
-    ss >> name;
-    pizza->setName(name);
-    _pizzaType[name] = std::stoi(value);
-    _pizzaList.push_back(name);
-    value.clear();
+    ss >> word;
+    pizza->setName(word);
+    _pizzaType[word] = type;
+    _pizzaList.push_back(word);
+    word.clear();
 
+    ss >> word;
+    pizza->setIngredients(fillIngredients(word));
+    word.clear();
 
-    ss >> value;
-    pizza->setIngredients(fillIngredients(value));
-    value.clear();
-
-    ss >> value;
-    pizza->setBakeTime(std::stoi(value));
+    ss >> time;
+    pizza->setBakeTime(time);
 
     _pizzaInfo[type] = pizza;
+
 }
 
 void Factory::setPizzaByFile()
@@ -101,6 +100,8 @@ void Factory::setPizzaByFile()
     std::string line;
 
     while (std::getline(_file, line)) {
+        if (line[0] == '#')
+            continue;
         if (!std::isdigit(line[0]))
             _ingredients = fillIngredients(line);
         else

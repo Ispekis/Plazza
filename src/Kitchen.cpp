@@ -104,10 +104,10 @@ void Plazza::Kitchen::cookPizzas(Plazza::Order order)
 {
     std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
     size_t bakeTime = pizza->getBakeTime() * _mutiplier;
-    std::this_thread::sleep_for(std::chrono::milliseconds(bakeTime * 1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2 * 1000));
 
     // Send pizza back to reception
-    orderReadyMessage(order);
+    // orderReadyMessage(order);
     msg_data data;
     data = Plazza::Order::pack(order);
     _orderMsgQ.push(data, _receptionPid);

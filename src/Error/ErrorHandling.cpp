@@ -75,10 +75,5 @@ void ErrorHandling::checkReceiptArg(std::vector<std::string> words)
     findNumber(words[2]);
 }
 
-std::shared_ptr<Factory> ErrorHandling::getFactory() const
-{
-    return _factory;
-}
-
 template void ErrorHandling::checkVectorLength(std::size_t size, std::vector<std::string> &vector);
 template void ErrorHandling::checkVectorLength(std::size_t size, std::vector<int> &vector);
