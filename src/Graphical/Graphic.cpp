@@ -138,13 +138,13 @@ void Graphic::drawCooks(int x, int y, int sizes, int pid)
             tmpY += size * 2.5;
         }
     }
-    drawPizza(x, y + 250, cooks);
+    drawPizza(x, y + 250, capacityLeft);
 }
 
 void Graphic::drawPizza(int x, int y, int qty)
 {
     _pizza.setPosition(x + 60, y - 40);
-    _pizza.setString(std::to_string(qty));
+    _pizza.setString(std::to_string(qty) + " : " + std::to_string(_capacityMax) + " Max");
     _pizzaS.setPosition(x + 30, y - 20);
     rotate++;
     _pizzaS.setRotation(rotate);
