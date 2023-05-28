@@ -19,6 +19,10 @@
     #define MAGENTA "\033[35m"
     #define CYAN "\033[36m"
     #define COLOR "\033[0m"
+    #define WHITE "\033[37m"
+    #include "../src/Encapsulation/Process.hpp"
+    #include "../src/Encapsulation/IPC.hpp"
+    #include "../src/Encapsulation/Platform.hpp"
 
 typedef struct msg_data {
     long mesg_type;

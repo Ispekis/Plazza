@@ -16,6 +16,7 @@
     #include <array>
     #include "SafeQueue.hpp"
     #include "MessageQueue.hpp"
+    #include "ThreadPool.hpp"
 
 namespace Plazza {
     class Kitchen {
@@ -50,14 +51,20 @@ namespace Plazza {
              */
             bool timeOut();
 
-            /**
-             * @brief Receive messagequeue and handling data from messagequeue
-             * 
-             */
-            void messageQueueReception();
-
         protected:
         private:
+
+            /**
+             * @brief Get the Order Thread
+             * 
+             */
+            void getOrderThread();
+
+            /**
+             * @brief Get the Capacity Thread
+             * 
+             */
+            void getCapacityThread();
 
             /**
              * @brief Close the kitchen, send closing messagequeue to reception 
@@ -65,14 +72,25 @@ namespace Plazza {
              */
             void closeKitchen();
 
+            /**
+             * @brief Cook the pizzas
+             * 
+             */
+            void cookPizzas(Plazza::Order order);
+
             float _mutiplier;
             int _nbCooks;
             size_t _orderCapacityMax;
             size_t _orderCapacity;
             int _receptionPid;
+            int _isRunning = true;
 
-            SafeQueue<Plazza::Order> _order;
+            Plazza::ThreadPool _threadPool;
             std::shared_ptr<Ingredient> _ingredient;
+
+            // Threads
+            std::thread _orderThread;
+            std::thread _capacityThread;
 
             // Timer
             std::chrono::steady_clock::time_point _start;
@@ -82,9 +100,6 @@ namespace Plazza {
             MessageQueue<msg_data> _orderMsgQ;
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
-            key_t _orderKey;
-            key_t _capacityKey;
-            key_t _closureKey;
 
     };
 }

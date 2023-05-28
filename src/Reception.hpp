@@ -7,7 +7,6 @@
 
 #ifndef RECEPTION_HPP_
     #define RECEPTION_HPP_
-    #include "Process.hpp"
     #include "Order.hpp"
     #include "Parsing.hpp"
     #include "ErrorHandling.hpp"
@@ -22,7 +21,6 @@
     #include <chrono>
     #include "MessageQueue.hpp"
     #include <sys/select.h>
-    
 
 namespace Plazza {
     class Reception {
@@ -36,6 +34,8 @@ namespace Plazza {
              */
             void start();
 
+        protected:
+        private:
             /**
              * @brief Convert userInput into order
              * 
@@ -64,12 +64,21 @@ namespace Plazza {
              */
             void userInput();
 
-            void create_kitchen();
             void manageKitchen();
             void sendPizzaToKitchen(int Capacity, int KitchenPid);
 
-        protected:
-        private:
+            /**
+             * @brief Create a new kitchen
+             * 
+             */
+            void create_kitchen();
+
+            /**
+             * @brief Thread that receive the order from the cooks
+             * 
+             */
+            void receiveReadyOrder();
+
             /**
              * @brief Get the capacity left of the kitchenPid
              * 
@@ -77,28 +86,30 @@ namespace Plazza {
              * @return int 
              */
             int getCapacityLeft(int kitchenPid);
-             
+
             /**
              * @brief Check if a restaurant has closed
              *
              */
             void checkClosures();
 
+            bool _isRunning = true;
 
             Parsing _data;
             ErrorHandling _CheckError;
             pid_t _receptionPid = 0;
             std::vector<int> _kitchenPids;
             std::vector<Order> _orderList;
+
+            // Thread
+            std::thread _closingKitchen;
+            std::thread _receiveReadyOrder;
+
             // Message Queues for ipc
             MessageQueue<msg_data> _orderMsgQ;
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
 
-            // Keys for ipc
-            key_t _orderKey;
-            key_t _capacityKey;
-            key_t _closureKey;
     };
 }
 #endif /* !PLAZZA_HPP_ */

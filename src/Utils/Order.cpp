@@ -31,6 +31,14 @@ Plazza::Order::~Order()
 {
 }
 
+Plazza::Order &Plazza::Order::operator=(const Plazza::Order &other)
+{
+    this->setType(other._pizzaType);
+    this->setSize(other._pizzaSize);
+    this->setAmount(other._amount);
+    return *this;
+}
+
 Plazza::PizzaType Plazza::Order::getType() const
 {
     return _pizzaType;
@@ -82,36 +90,18 @@ void Plazza::Order::setAmount(std::size_t amount)
     _amount = amount;
 }
 
-std::ostream &operator<<(std::ostream &os, const Plazza::Order &order)
+msg_data &operator<<(msg_data &data, Plazza::Order order)
 {
+    std::memset(&data, 0, sizeof(data));
 
-    // Serialize pizza
-    // os << *order.getPizza();
-    os << order.getType() << " ";
-    os << order.getSize() << " ";
-    os << order.getAmount();
-    return os;
+    data.type = order.getType();
+    data.size = order.getSize();
+    data.nbr = order.getAmount();
+    return data;
 }
 
-std::istream& operator>>(std::istream &is, msg_data &msgData)
+Plazza::Order &operator>>(msg_data data, Plazza::Order &order)
 {
-    // Deserialize pizza
-    is >> msgData.type;
-    is >> msgData.size;
-    is >> msgData.nbr;
-    // is >> pizzaData.name;
-    // is >> pizzaData.bakeTime;
-    // is >> pizzaData.nbrIngredient;
-    // std::vector<std::string> ings;
-    // std::string tmp;
-    // for (int i = 0; i < pizzaData.nbrIngredient; i++) {
-    //     is >> tmp;
-    //     ings.push_back(tmp);
-    // }
-    // pizzaData.ingredients = ings;
-
-    // // Deserialize others
-    // is >> pizzaData.type;
-    // is >> pizzaData.size;
-    return is;
+    order = Plazza::Order(static_cast<Plazza::PizzaType>(data.type), static_cast<Plazza::PizzaSize>(data.size), data.nbr);
+    return order;
 }
