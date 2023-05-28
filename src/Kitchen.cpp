@@ -88,7 +88,7 @@ void Plazza::Kitchen::kitchenLoop()
 {
     _start = std::chrono::steady_clock::now();
     while (_isRunning) {
-        // _ingredient->refillIngredient();
+        _ingredient->refillIngredient();
         if (timeOut())
             break;
     }
@@ -100,6 +100,11 @@ void Plazza::Kitchen::cookPizzas(Plazza::Order order)
     std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
     float bakeTime = pizza->getBakeTime() * _mutiplier;
     bakeTime *= 1000;
+    bool make = _ingredient->makePizza(pizza);
+    if (!make) {
+        std::cout << "cannot make" << std::endl;
+        while (!_ingredient->checkEnoughIngredient(pizza));
+    }
     std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(bakeTime)));
 
     // Send pizza back to reception

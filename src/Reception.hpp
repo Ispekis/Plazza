@@ -104,6 +104,8 @@ namespace Plazza {
 
             void receiveOrderMessage(Plazza::Order order);
 
+            void closeKitchenMessage(int pid);
+
             bool _isRunning = true;
 
             Parsing _data;
