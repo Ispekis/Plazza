@@ -20,7 +20,8 @@ Graphic::Graphic(int capacityMax) : _window(sf::VideoMode(1920, 1080), "Plazza")
     //     sprite.setTexture(texture);
     //     _window.draw(sprite);
     // }
-    _capacityKey = ftok(".", CAPACITY_KEY);
+    _capacityMsgQ.createIpc(ftok(".", CAPACITY_KEY));
+    // _capacityKey = ftok(".", CAPACITY_KEY);
     try
     {
         loadSpriteFromFile("assets/background.jpg", _backgroundS, _backgroundT);
@@ -102,12 +103,12 @@ void Graphic::drawCooks(int x, int y, int sizes, int pid)
 
         capacity_data data;
     std::memset(&data, sizeof(data), 0);
-    _capacityMsgQ.push(data, pid, _capacityKey);
+    _capacityMsgQ.push(data, pid);
 
     std::unique_ptr<capacity_data> a = nullptr;
 
     while (a == nullptr)
-        a = _capacityMsgQ.pop(getpid(), _capacityKey, IPC_NOWAIT);
+        a = _capacityMsgQ.pop(getpid(), IPC_NOWAIT);
     int capacityLeft = _capacityMax - a->value;
 
     for (int i = 0; i != _capacityMax; i++)

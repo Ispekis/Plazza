@@ -123,15 +123,7 @@ namespace Plazza {
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
 
-<<<<<<< HEAD
-=======
-            // Keys for ipc
-            key_t _orderKey;
-            key_t _capacityKey;
-            key_t _closureKey;
-
             Graphic _graphic;
->>>>>>> 69addd6 (#35 : feat : adding graphical part)
     };
 }
 #endif /* !PLAZZA_HPP_ */
