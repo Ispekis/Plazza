@@ -106,6 +106,8 @@ namespace Plazza {
 
             void closeKitchenMessage(int pid);
 
+            void statusSend();
+
             bool _isRunning = true;
 
             Parsing _data;
@@ -125,6 +127,7 @@ namespace Plazza {
             MessageQueue<msg_data> _orderMsgQ;
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
+            MessageQueue<capacity_data> _statusMsgQ;
 
             std::shared_ptr<Graphic> _graphic;
             bool _graphicOn;

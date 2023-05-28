@@ -11,10 +11,8 @@ Ingredient::Ingredient(int refillTime, std::vector<std::string> ingredients) : _
 {
     for (auto element : ingredients) {
         _ingredient[element] = 5;
-        // std::cout << element << std::endl;
     }
     _start = std::chrono::steady_clock::now();
-    // std::cout << "Ingredient Filled and will be refilled by one every" << refillTime << " ms" << std::endl;
 }
 
 Ingredient::~Ingredient()
@@ -57,4 +55,9 @@ bool Ingredient::checkEnoughIngredient(std::shared_ptr<Plazza::IPizza> pizza)
             return false;
     }
     return true;
+}
+
+std::unordered_map<std::string, std::size_t> Ingredient::getIngredient()
+{
+    return _ingredient;
 }

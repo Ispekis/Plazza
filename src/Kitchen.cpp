@@ -18,6 +18,7 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid, std::v
     _orderMsgQ.createIpc(IPC::ftok(".", ORDER_KEY));
     _closureMsgQ.createIpc(IPC::ftok(".", CLOSURE_KEY));
     _capacityMsgQ.createIpc(IPC::ftok(".", CAPACITY_KEY));
+    _statusMsgQ.createIpc(IPC::ftok(".", STATUS_KEY));
     _receptionPid = pid;
     run();
 }
@@ -26,7 +27,7 @@ Plazza::Kitchen::~Kitchen()
 {
     _orderThread.join();
     _capacityThread.join();
-    // std::cout << "--- Close Kitchen:" << Process::getpid() << std::endl;
+    _statusThread.join();
 }
 
 bool Plazza::Kitchen::timeOut()
@@ -102,7 +103,7 @@ void Plazza::Kitchen::cookPizzas(Plazza::Order order)
     bakeTime *= 1000;
     bool make = _ingredient->makePizza(pizza);
     if (!make) {
-        std::cout << "cannot make" << std::endl;
+        std::cout << "[Kitchen "<< getpid() <<"] No enough ingredients cannot make " << pizza->getName() << std::endl;
         while (!_ingredient->checkEnoughIngredient(pizza));
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(bakeTime)));
@@ -119,7 +120,39 @@ void Plazza::Kitchen::run()
 {
     _orderThread = std::thread(&Plazza::Kitchen::getOrderThread, std::ref(*this));
     _capacityThread = std::thread(&Plazza::Kitchen::getCapacityThread, std::ref(*this));
+    _statusThread = std::thread(&Plazza::Kitchen::printStatusThread, std::ref(*this));
     kitchenLoop();
+}
+
+std::string convIngredientToSting(std::unordered_map<std::string, size_t> ingredients)
+{
+    std::ostringstream oss;
+
+    for (const auto& tmp : ingredients) {
+        oss << tmp.first << " : " << tmp.second << "/5" << '\n';
+    }
+    return oss.str();
+}
+
+void Plazza::Kitchen::printStatusThread()
+{
+    while (_isRunning) {
+        std::unique_ptr<capacity_data> status = _statusMsgQ.pop(Process::getpid(), 0);
+        // Check kitchen have received a message
+        if (status != nullptr) {
+            std::lock_guard<std::mutex> lock(_mutex);
+
+            std::ostringstream oss;
+            oss << YELLOW << "[Kitchen " << getpid() << "]" << COLOR << std::endl;
+            oss << YELLOW << "Occupancy left : " << _orderCapacity << "/" << _orderCapacityMax << COLOR << std::endl;
+                oss << YELLOW << "Ingredients left : " << std::endl;
+            for (auto ingredient : _ingredient->getIngredient()) {
+                oss << "\t" << ingredient.first << " : " << ingredient.second << std::endl;
+            }
+
+            std::cout << oss.str() << COLOR;
+        }
+    }
 }
 
 void Plazza::Kitchen::receiveOrder(Plazza::Order order)
@@ -135,6 +168,7 @@ void Plazza::Kitchen::receiveOrder(Plazza::Order order)
 
 void Plazza::Kitchen::orderReadyMessage(Plazza::Order order)
 {
+    std::lock_guard<std::mutex> lock(_mutex);
     std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
     std::cout << "[Cook] : The " << pizza->getName() << " " << _factory.getSizeName(order.getSize()) << " is ready !" << std::endl;
 }
