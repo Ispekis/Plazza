@@ -10,9 +10,9 @@
 Plazza::Reception::Reception(Parsing &data) : _data(data)
 {
     _receptionPid = Process::getpid();
-    _orderMsgQ.createIpc(ftok(".", ORDER_KEY));
-    _closureMsgQ.createIpc(ftok(".", CLOSURE_KEY));
-    _capacityMsgQ.createIpc(ftok(".", CAPACITY_KEY));
+    _orderMsgQ.createIpc(IPC::ftok(".", ORDER_KEY));
+    _closureMsgQ.createIpc(IPC::ftok(".", CLOSURE_KEY));
+    _capacityMsgQ.createIpc(IPC::ftok(".", CAPACITY_KEY));
 }
 
 Plazza::Reception::~Reception()
@@ -72,7 +72,7 @@ void Plazza::Reception::create_kitchen()
     if (pid == 0) { // Child
         Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
         kitchen.~Kitchen();
-        exit(0);
+        Platform::exit(0);
     } else { // Parent
         _kitchenPids.push_back(pid);
     }

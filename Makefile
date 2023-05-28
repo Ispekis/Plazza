@@ -38,7 +38,8 @@ SRC +=	src/$(PIZZA)/Pizza.cpp				\
 		src/$(PIZZA)/Margarita.cpp			\
 
 SRC +=	src/$(ENCAPSULATION)/Process.cpp	\
-		src/$(ENCAPSULATION)/IPC.cpp
+		src/$(ENCAPSULATION)/IPC.cpp		\
+		src/$(ENCAPSULATION)/Platform.cpp
 
 ALL_SRC += $(SRC)
 

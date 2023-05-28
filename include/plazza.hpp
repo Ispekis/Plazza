@@ -22,6 +22,7 @@
     #define WHITE "\033[37m"
     #include "../src/Encapsulation/Process.hpp"
     #include "../src/Encapsulation/IPC.hpp"
+    #include "../src/Encapsulation/Platform.hpp"
 
 typedef struct msg_data {
     long mesg_type;

@@ -15,9 +15,9 @@ Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _wor
     _nbCooks = nbCooks;
     _orderCapacity = _nbCooks * 2;
     _orderCapacityMax = _orderCapacity;
-    _orderMsgQ.createIpc(ftok(".", ORDER_KEY));
-    _closureMsgQ.createIpc(ftok(".", CLOSURE_KEY));
-    _capacityMsgQ.createIpc(ftok(".", CAPACITY_KEY));
+    _orderMsgQ.createIpc(IPC::ftok(".", ORDER_KEY));
+    _closureMsgQ.createIpc(IPC::ftok(".", CLOSURE_KEY));
+    _capacityMsgQ.createIpc(IPC::ftok(".", CAPACITY_KEY));
     _receptionPid = pid;
     run();
 }
