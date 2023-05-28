@@ -10,7 +10,7 @@
 
 Parsing::Parsing(int ac, char **av)
 {
-    if (ac != 4) {
+    if (ac != 4 && ac != 5) {
         Usage::display_usage(std::cerr);
         throw Error("Incorrect number of arguments", "Parsing Error");
     }
@@ -18,7 +18,19 @@ Parsing::Parsing(int ac, char **av)
         _multiplier = std::stof(av[1]);
         _nbCooks = std::stoi(av[2]);
         _refillTimer = std::stoi(av[3]);
-        if (_multiplier < 0 || _nbCooks < 0 || _refillTimer < 0) {
+        if (ac == 5) {
+            std::cout << av[4] << std::endl;
+            std::string tmp(av[4]);
+            if (tmp.compare("-graphic") == 0)
+                _graphic = true;
+            else
+                throw Error("Invalid arguments", "4th should be -graphic");
+        }
+        else
+            _graphic = false;
+
+        if (_multiplier < 0 || _nbCooks < 0 || _refillTimer < 0)
+        {
             throw Error("Number must be >= 0", "Parsing Error");
         }
     } catch (std::invalid_argument &e) {

@@ -29,7 +29,7 @@ int main (int ac, char **av)
         }
 
         Parsing data(ac, av);
-        Plazza::Reception reception(data);
+        Plazza::Reception reception(data, data._graphic);
         reception.start();
     }
     catch (const Error &error) {

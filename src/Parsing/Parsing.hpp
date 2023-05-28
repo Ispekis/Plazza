@@ -19,7 +19,7 @@ class Parsing {
         int getNbCooks();
         float getMultiplier();
         int getRefillTime();
-
+        bool _graphic;
     protected:
     private:
         std::shared_ptr<Factory> _factory;

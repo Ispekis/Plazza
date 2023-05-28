@@ -13,29 +13,28 @@ static void loadFontFromFile(std::string path, sf::Font &font)
         throw Error("Error Load Font", path);
 }
 
-Graphic::Graphic(int capacityMax) : _window(sf::VideoMode(1920, 1080), "Plazza"), _capacityMax(capacityMax)
+Graphic::Graphic(int capacityMax, bool graphic) : _window(sf::VideoMode(1920, 1080), "Plazza"), _capacityMax(capacityMax)
 {
-    _capacityMsgQ.createIpc(ftok(".", CAPACITY_KEY));
-    try
-    {
-        loadFontFromFile("assets/font/Raleway-Regular.ttf", _font);
-        _pizza.setFont(_font);
-        _pizza.setCharacterSize(24);
-        _pizza.setFillColor(sf::Color(128, 128, 128));
-        loadSpriteFromFile("assets/background.jpg", _backgroundS, _backgroundT);
-        loadSpriteFromFile("assets/four.png", _hovenS, _hovenT);
-        loadSpriteFromFile("assets/pizza.png", _pizzaS, _pizzaT);
-        _backgroundS.setScale(3.f, 3.f);
-        _hovenS.setScale(2.5f, 2.5f);
-        rotate = 0;
-        auto width = _pizzaS.getGlobalBounds().width / 2;
-        auto height = _pizzaS.getGlobalBounds().height / 2;
-        _pizzaS.setOrigin(width, height);
-        _pizzaS.setScale(0.1f, 0.1f);
-    }
-    catch (const Error &e)
-    {
-    std::cout << e.what() << ":" << e.message() << std::endl;
+    if (graphic) {
+        _capacityMsgQ.createIpc(ftok(".", CAPACITY_KEY));
+        try {
+            loadFontFromFile("assets/font/Raleway-Regular.ttf", _font);
+            _pizza.setFont(_font);
+            _pizza.setCharacterSize(24);
+            _pizza.setFillColor(sf::Color(128, 128, 128));
+            loadSpriteFromFile("assets/background.jpg", _backgroundS, _backgroundT);
+            loadSpriteFromFile("assets/four.png", _hovenS, _hovenT);
+            loadSpriteFromFile("assets/pizza.png", _pizzaS, _pizzaT);
+            _backgroundS.setScale(3.f, 3.f);
+            _hovenS.setScale(2.5f, 2.5f);
+            rotate = 0;
+            auto width = _pizzaS.getGlobalBounds().width / 2;
+            auto height = _pizzaS.getGlobalBounds().height / 2;
+            _pizzaS.setOrigin(width, height);
+            _pizzaS.setScale(0.1f, 0.1f);
+        } catch (const Error &e) {
+        std::cout << e.what() << ":" << e.message() << std::endl;
+        }
     }
 }
 
@@ -63,7 +62,6 @@ void Graphic::drawKitchen()
     int x = 0;
     int y = 0;
     int size = _kitchen->size();
-    // std::this_thread::sleep_for(std::chrono::milliseconds(500));
     for (int i = 0; i < size; i++)
     {
         try {
