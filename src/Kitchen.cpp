@@ -58,7 +58,7 @@ void Plazza::Kitchen::getOrderThread()
         if (data != nullptr)
         {
             Plazza::Order order;
-            *data >> order;
+            order = Plazza::Order::unpack(*data);
             receiveOrder(order);
         }
     }
@@ -108,7 +108,7 @@ void Plazza::Kitchen::cookPizzas(Plazza::Order order)
     // Send pizza back to reception
     orderReadyMessage(order);
     msg_data data;
-    data << order;
+    data = Plazza::Order::pack(order);
     _orderMsgQ.push(data, _receptionPid);
     _orderCapacity++;
 }

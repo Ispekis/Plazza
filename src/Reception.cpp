@@ -35,7 +35,7 @@ void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
 
     // prepare struct data
     msg_data data;
-    data << orderToSend;
+    data = Plazza::Order::pack(orderToSend);
 
     _orderMsgQ.push(data, KitchenPid);
     std::cout << "[Reception] : Kitchen " << KitchenPid << ", make me " << pizzaToRemove << " " << orderToSend.getPizza()->getName() << " " << orderToSend.getSize() << "." << std::endl;
@@ -89,7 +89,7 @@ void Plazza::Reception::receiveReadyOrder()
         std::unique_ptr<msg_data> data = _orderMsgQ.pop(Process::getpid(), 0);
         if (data != nullptr) {
             Plazza::Order order;
-            *data >> order;
+            order = Plazza::Order::unpack(*data);
             receiveOrderMessage(order);
         }
     }
