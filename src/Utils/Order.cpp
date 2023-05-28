@@ -55,7 +55,7 @@ Plazza::Order Plazza::Order::unpack(msg_data data)
     return Plazza::Order(static_cast<Plazza::PizzaType>(data.type), static_cast<Plazza::PizzaSize>(data.size), data.nbr);
 }
 
-Plazza::PizzaType Plazza::Order::getType() const
+int Plazza::Order::getType() const
 {
     return _pizzaType;
 }
