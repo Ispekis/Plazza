@@ -141,8 +141,16 @@ void Plazza::Kitchen::printStatusThread()
         // Check kitchen have received a message
         if (status != nullptr) {
             std::lock_guard<std::mutex> lock(_mutex);
-            std::cout << YELLOW << "[Kitchen " << getpid() << "]" << COLOR << std::endl;
-            std::cout << YELLOW << "Occupancy left : " << _orderCapacity << "/" << _orderCapacityMax << COLOR << std::endl;
+
+            std::ostringstream oss;
+            oss << YELLOW << "[Kitchen " << getpid() << "]" << COLOR << std::endl;
+            oss << YELLOW << "Occupancy left : " << _orderCapacity << "/" << _orderCapacityMax << COLOR << std::endl;
+                oss << YELLOW << "Ingredients left : " << std::endl;
+            for (auto ingredient : _ingredient->getIngredient()) {
+                oss << "\t" << ingredient.first << " : " << ingredient.second << std::endl;
+            }
+
+            std::cout << oss.str() << COLOR;
         }
     }
 }
@@ -160,6 +168,7 @@ void Plazza::Kitchen::receiveOrder(Plazza::Order order)
 
 void Plazza::Kitchen::orderReadyMessage(Plazza::Order order)
 {
+    std::lock_guard<std::mutex> lock(_mutex);
     std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
     std::cout << "[Cook] : The " << pizza->getName() << " " << _factory.getSizeName(order.getSize()) << " is ready !" << std::endl;
 }
