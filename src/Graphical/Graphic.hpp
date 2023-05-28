@@ -41,9 +41,6 @@ class Graphic {
 
     protected:
     private:
-        // std::map<int, sf::Sprite> _sprites;
-        // std::map<int, sf::Texture> _texture;
-
         sf::Texture _hovenT;
         sf::Texture _backgroundT;
         sf::Texture _pizzaT;

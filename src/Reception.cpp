@@ -14,6 +14,7 @@ Plazza::Reception::Reception(Parsing &data, bool graphic) : _data(data), _factor
     _orderMsgQ.createIpc(IPC::ftok(".", ORDER_KEY));
     _closureMsgQ.createIpc(IPC::ftok(".", CLOSURE_KEY));
     _capacityMsgQ.createIpc(IPC::ftok(".", CAPACITY_KEY));
+    _statusMsgQ.createIpc(IPC::ftok(".", STATUS_KEY));
     _graphicOn = graphic;
     if (_graphicOn)
         _graphic = std::make_shared<Graphic>(data.getNbCooks() * 2, graphic);
@@ -111,11 +112,21 @@ bool Plazza::Reception::parsingInput(std::string &line)
     return true;
 }
 
+void Plazza::Reception::statusSend()
+{
+    capacity_data data;
+    std::memset(&data, 0, sizeof(data));
+    for (int i = 0; i != _kitchenPids->size(); i++)
+        _statusMsgQ.push(data, _kitchenPids->at(i));
+}
+
 void Plazza::Reception::userInput()
 {
     std::string line;
     while (std::getline(std::cin, line)) {
-        if (parsingInput(line))
+        if (line == "status") {
+            statusSend();
+        } else if (parsingInput(line))
             manageKitchen();
     }
 }
@@ -152,7 +163,6 @@ static int getPizzaType(std::string &pizza, Factory &factory)
 {
     int tmp = factory.getPizzaType(pizza);
 
-    // std::cout << tmp << std::endl;
     if (tmp != -1)
         return tmp;
     throw Error("Pizza Enum Not Found", pizza);

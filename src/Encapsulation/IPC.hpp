@@ -58,6 +58,15 @@ class IPC {
          */
         static ssize_t msgrcv(int msqid, void *msgp, size_t msgsz, long msgtyp, int msgflg);
 
+        /**
+         * @brief 
+         * 
+         * @param msgid 
+         * @param cmd 
+         * @param buf 
+         * @return int 
+         */
+        static int msgctl(int msgid, int cmd, struct msqid_ds *buf);
     protected:
     private:
 };

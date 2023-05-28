@@ -10,6 +10,7 @@
     #define ORDER_KEY 65
     #define CAPACITY_KEY 66
     #define CLOSURE_KEY 67
+    #define STATUS_KEY 68
     #define MAX_COOK_PER_KITCHEN 2
 
     #define RED "\033[31m"

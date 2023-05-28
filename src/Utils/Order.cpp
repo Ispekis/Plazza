@@ -72,8 +72,6 @@ std::size_t Plazza::Order::getAmount() const
 void Plazza::Order::setType(int type)
 {
     _pizzaType = type;
-
-    // set pizza class
 }
 
 void Plazza::Order::setSize(Plazza::PizzaSize size)

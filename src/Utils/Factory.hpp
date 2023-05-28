@@ -21,16 +21,68 @@ class Factory {
         Factory(std::string _file);
         ~Factory();
 
+        /**
+         * @brief Set the Pizza Default object
+         * 
+         */
         void setPizzaDefault();
+
+        /**
+         * @brief Set the Pizza By File object
+         * 
+         */
         void setPizzaByFile();
+
+        /**
+         * @brief Set the Config File object
+         * 
+         * @param configFile 
+         */
         void setConfigFile(std::string configFile);
 
+        /**
+         * @brief Fill the pizza with the the file value
+         * 
+         * @param line 
+         */
         void fillPizza(std::string line);
 
+        /**
+         * @brief Get the Pizza List object
+         * 
+         * @return std::vector<std::string> 
+         */
         std::vector<std::string> getPizzaList() const;
+
+        /**
+         * @brief Get the All Ingredient object
+         * 
+         * @return std::vector<std::string> 
+         */
         std::vector<std::string> getAllIngredient() const;
+
+        /**
+         * @brief Get the Pizza Type object
+         * 
+         * @param pizza 
+         * @return int 
+         */
         int getPizzaType(std::string pizza) const;
+
+        /**
+         * @brief Get the Pizza object
+         * 
+         * @param type 
+         * @return std::shared_ptr<Plazza::IPizza> 
+         */
         std::shared_ptr<Plazza::IPizza> getPizza(int type) const;
+
+        /**
+         * @brief Get the Size Name object
+         * 
+         * @param size 
+         * @return std::string 
+         */
         std::string getSizeName(Plazza::PizzaSize size) const;
     protected:
     private:
