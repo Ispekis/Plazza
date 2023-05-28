@@ -77,6 +77,9 @@ namespace Plazza {
                             {
                                 std::unique_lock<std::mutex> lock(_mutex);
                                 cond.wait(lock, [this] { return !_taskQueue.empty() || !_isRunning; });
+                                if (!_isRunning) {
+                                    return;
+                                }
                                 task = _taskQueue.front();
                                 _taskQueue.pop();
                             }

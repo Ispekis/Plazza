@@ -38,9 +38,9 @@ void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
     data << orderToSend;
 
     _orderMsgQ.push(data, KitchenPid);
-    std::cout << "Reception: " << pizzaToRemove << "Pizza sent to " << KitchenPid << std::endl;
+    std::cout << "[Reception] : Kitchen " << KitchenPid << ", make me " << pizzaToRemove << " " << orderToSend.getPizza()->getName() << " " << orderToSend.getSize() << "." << std::endl;
     singleOrderList.setAmount(pizzaQty - pizzaToRemove);
-    
+
     // If there is no pizza Left in the order remove the order
     if (singleOrderList.getAmount() == 0)
         _orderList.erase(_orderList.begin());
@@ -131,7 +131,7 @@ int Plazza::Reception::getCapacityLeft(int pid)
 
     while (a == nullptr)
         a = _capacityMsgQ.pop(getpid(), IPC_NOWAIT);
-    std::cout << "[Capacity pid:" << pid << "] capacity:" << a->value << std::endl;
+    std::cout << "[Reception] : Got it Kitchen " << pid << " !" << std::endl;
     return a->value;
 }
 
@@ -211,7 +211,7 @@ void Plazza::Reception::checkClosures()
             for (int i = 0; i != _kitchenPids.size(); i++)
                 if (closedPid->id = _kitchenPids.at(i)) {
                     _kitchenPids.erase(_kitchenPids.begin() + i);
-                    std::cout << RED << "Reception : Kitchen :" << closedPid->id << " Closed"<< COLOR <<std::endl;
+                    std::cout << RED << "[Reception] : Kitchen " << closedPid->id << " has closed"<< COLOR <<std::endl;
                     break;
                 }
     }

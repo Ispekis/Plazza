@@ -26,7 +26,6 @@ Plazza::Kitchen::~Kitchen()
 {
     _orderThread.join();
     _capacityThread.join();
-    closeKitchen();
     // std::cout << "--- Close Kitchen:" << getpid() << std::endl;
 }
 
@@ -47,6 +46,7 @@ void Plazza::Kitchen::closeKitchen()
     closure_data data;
     std::memset(&data, sizeof(data), 0);
 
+    _isRunning = false;
     data.id = getpid();
     _closureMsgQ.push(data, _receptionPid);
 }
@@ -64,12 +64,18 @@ void Plazza::Kitchen::getOrderThread()
     }
 }
 
+void capacityMessage(int capacity)
+{
+    std::cout << "[Kitchen " << getpid() << "] : I can take " << capacity << " orders !" << std::endl;
+}
+
 void Plazza::Kitchen::getCapacityThread()
 {
     while (_isRunning) {
         std::unique_ptr<capacity_data> capacity = _capacityMsgQ.pop(getpid(), 0);
         // Check kitchen have received a message
         if (capacity != nullptr) {
+            capacityMessage(_orderCapacity);
             capacity_data data;
             std::memset(&data, sizeof(data), 0);
             data.value = _orderCapacity;
@@ -86,6 +92,7 @@ void Plazza::Kitchen::kitchenLoop()
         if (timeOut())
             break;
     }
+    closeKitchen();
 }
 
 static void orderReadyMessage(Plazza::Order order)
