@@ -35,6 +35,7 @@ class Graphic {
         void loadSpriteFromFile(std::string path, sf::Sprite &sprite, sf::Texture &texture);
         void setKitchen(std::shared_ptr<std::vector<int>> kitchen);
         bool pidIsOn(int pid);
+        void drawPizza(int x, int y, int qty);
 
     protected:
     private:
@@ -43,8 +44,13 @@ class Graphic {
 
         sf::Texture _hovenT;
         sf::Texture _backgroundT;
+        sf::Texture _pizzaT;
         sf::Sprite _backgroundS;
         sf::Sprite _hovenS;
+        sf::Sprite _pizzaS;
+        float rotate;
+        sf::Font _font;
+        sf::Text _pizza;
         sf::RenderWindow _window;
         sf::Event _event;
         std::shared_ptr<std::vector<int>> _kitchen;

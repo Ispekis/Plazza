@@ -7,15 +7,31 @@
 
 #include "Graphic.hpp"
 
+static void loadFontFromFile(std::string path, sf::Font &font)
+{
+    if (!font.loadFromFile(path))
+        throw Error("Error Load Font", path);
+}
+
 Graphic::Graphic(int capacityMax) : _window(sf::VideoMode(1920, 1080), "Plazza"), _capacityMax(capacityMax)
 {
     _capacityMsgQ.createIpc(ftok(".", CAPACITY_KEY));
     try
     {
+        loadFontFromFile("assets/font/Raleway-Regular.ttf", _font);
+        _pizza.setFont(_font);
+        _pizza.setCharacterSize(24);
+        _pizza.setFillColor(sf::Color(128, 128, 128));
         loadSpriteFromFile("assets/background.jpg", _backgroundS, _backgroundT);
         loadSpriteFromFile("assets/four.png", _hovenS, _hovenT);
+        loadSpriteFromFile("assets/pizza.png", _pizzaS, _pizzaT);
         _backgroundS.setScale(3.f, 3.f);
         _hovenS.setScale(2.5f, 2.5f);
+        rotate = 0;
+        auto width = _pizzaS.getGlobalBounds().width / 2;
+        auto height = _pizzaS.getGlobalBounds().height / 2;
+        _pizzaS.setOrigin(width, height);
+        _pizzaS.setScale(0.1f, 0.1f);
     }
     catch (const Error &e)
     {
@@ -105,11 +121,12 @@ void Graphic::drawCooks(int x, int y, int sizes, int pid)
         a = _capacityMsgQ.pop(getpid(), IPC_NOWAIT);
     }
     int capacityLeft = _capacityMax - a->value;
-
-    for (int i = 0; i != _capacityMax; i++)
+    int cooks = _capacityMax / 2;
+    for (int i = 0; i != cooks; i++)
     {
         rect.setPosition(tmpX + size * 2.5, tmpY+ size * 2.5);
-
+        rect.setOutlineColor(sf::Color(128,128,128));
+        rect.setOutlineThickness(4);
         if (i < capacityLeft)
             rect.setFillColor(sf::Color::Red);
         else 
@@ -120,8 +137,19 @@ void Graphic::drawCooks(int x, int y, int sizes, int pid)
             tmpX = x;
             tmpY += size * 2.5;
         }
-        std::cout << "lol " << std::endl;
     }
+    drawPizza(x, y + 250, cooks);
+}
+
+void Graphic::drawPizza(int x, int y, int qty)
+{
+    _pizza.setPosition(x + 60, y - 40);
+    _pizza.setString(std::to_string(qty));
+    _pizzaS.setPosition(x + 30, y - 20);
+    rotate++;
+    _pizzaS.setRotation(rotate);
+    _window.draw(_pizzaS);
+    _window.draw(_pizza);
 }
 
 bool Graphic::pidIsOn(int pid)
