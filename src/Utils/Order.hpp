@@ -18,6 +18,7 @@
     #include "Margarita.hpp"
     #include <memory>
     #include "plazza.hpp"
+    #include <cstring>
 
 namespace Plazza {
     class Order {
@@ -79,7 +80,7 @@ namespace Plazza {
  * @param order
  * @return msg_data&
  */
-msg_data &operator<<(msg_data &data, Plazza::Order &order);
+msg_data &operator<<(msg_data &data, Plazza::Order order);
 
 /**
  * @brief Deserialize to struct
@@ -88,6 +89,6 @@ msg_data &operator<<(msg_data &data, Plazza::Order &order);
  * @param data
  * @return Plazza::Order&
  */
-Plazza::Order &operator>>(msg_data &data, Plazza::Order &order);
+Plazza::Order &operator>>(msg_data data, Plazza::Order &order);
 
 #endif /* !ORDER_HPP_ */

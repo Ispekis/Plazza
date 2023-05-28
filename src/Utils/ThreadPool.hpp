@@ -18,22 +18,46 @@
 namespace Plazza {
     class ThreadPool {
         public:
+            /**
+             * @brief Construct a new Thread Pool object
+             * 
+             * @param nbrWorkers 
+             */
             ThreadPool(std::size_t nbrWorkers) {
                 _nbrWorkers = nbrWorkers;
                 _pollSpaceLeft = _nbrWorkers;
                 runPool();
             }
+
+            /**
+             * @brief Destroy the Thread Pool object
+             * 
+             */
             ~ThreadPool() {};
 
+            /**
+             * @brief Get space left in the thread pool
+             * 
+             * @return std::size_t 
+             */
             std::size_t spaceLeft() {
                 if (_pollSpaceLeft < 0)
                     return 0;
                 return _pollSpaceLeft;
             }
 
+            /**
+             * @brief Queue new function
+             * 
+             * @tparam F 
+             * @tparam Args 
+             * @param f 
+             * @param args 
+             */
             template <typename F, typename... Args>
             void enqueue(F&& f, Args&&... args) {
-                _taskQueue.emplace(f);
+                std::unique_lock<std::mutex> lock(_mutex);
+                _taskQueue.emplace(std::forward<F>(f));
                 cond.notify_one();
                 _pollSpaceLeft--;
             }
@@ -41,16 +65,24 @@ namespace Plazza {
         protected:
         private:
 
+            /**
+             * @brief Run the pool
+             * 
+             */
             void runPool() {
                 for (int i = 0; i < _nbrWorkers; i++) {
-                    _workers.emplace_back([&] {
+                    _workers.emplace_back([this] {
                         while (_isRunning) {
-                            if (_taskQueue.empty()) {
+                            std::function<void()> task;
+                            {
                                 std::unique_lock<std::mutex> lock(_mutex);
-                                cond.wait(lock);
+                                cond.wait(lock, [this] { return !_taskQueue.empty() || !_isRunning; });
+                                if (!_isRunning) {
+                                    return;
+                                }
+                                task = _taskQueue.front();
+                                _taskQueue.pop();
                             }
-                            std::function<void()> task = _taskQueue.front();
-                            _taskQueue.pop();
                             task();
                             // Task finished
                             _pollSpaceLeft++;

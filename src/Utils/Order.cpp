@@ -82,15 +82,17 @@ void Plazza::Order::setAmount(std::size_t amount)
     _amount = amount;
 }
 
-msg_data &operator<<(msg_data &data, Plazza::Order &order)
+msg_data &operator<<(msg_data &data, Plazza::Order order)
 {
+    std::memset(&data, sizeof(data), 0);
+
     data.type = order.getType();
     data.size = order.getSize();
     data.nbr = order.getAmount();
     return data;
 }
 
-Plazza::Order &operator>>(msg_data &data, Plazza::Order &order)
+Plazza::Order &operator>>(msg_data data, Plazza::Order &order)
 {
     order = Plazza::Order(static_cast<Plazza::PizzaType>(data.type), static_cast<Plazza::PizzaSize>(data.size), data.nbr);
     return order;
