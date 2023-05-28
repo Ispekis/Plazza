@@ -97,7 +97,7 @@ void Plazza::Kitchen::kitchenLoop()
 
 static void orderReadyMessage(Plazza::Order order)
 {
-    std::cout << "[Cook] : The " << order.getPizza()->getName() << " " << order.getSize() << " is ready !";
+    // std::cout << "[Cook] : The " << order.getPizza()->getName() << " " << order.getSize() << " is ready !";
 }
 
 void Plazza::Kitchen::cookPizzas(Plazza::Order order)

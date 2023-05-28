@@ -15,21 +15,22 @@ namespace Plazza {
             Pizza();
             ~Pizza();
 
-            // void setBakeTime(int time);
-            // void setIngredients(std::vector<std::string> ingredients);
             void setName(std::string name);
             void setBakeTime(float time);
             void setIngredients(std::vector<std::string> ingredients);
             void setType(int type);
+            void setSize(Plazza::PizzaSize size);
 
             int getPizzaType() const;
             float getBakeTime() const;
+            Plazza::PizzaSize getSize() const;
             std::string getName() const;
             std::vector<std::string> getIngredients() const;
 
         protected:
             std::string _name;
             int _type;
+            Plazza::PizzaSize _size;
             std::vector<std::string> _ingredients;
             float _bakeTime = 0;
         private:

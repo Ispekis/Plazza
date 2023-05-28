@@ -31,12 +31,7 @@ SRC	=	src/$(PARSING)Parsing.cpp			\
 		src/$(UTILS)Factory.cpp				\
 		src/Kitchen.cpp						\
 		src/Reception.cpp					\
-
-SRC +=	src/$(PIZZA)/Pizza.cpp				\
-		src/$(PIZZA)/Regina.cpp				\
-		src/$(PIZZA)/Americana.cpp			\
-		src/$(PIZZA)/Fantasia.cpp			\
-		src/$(PIZZA)/Margarita.cpp			\
+		src/$(PIZZA)/Pizza.cpp				\
 
 SRC +=	src/$(ENCAPSULATION)/Process.cpp	\
 		src/$(ENCAPSULATION)/IPC.cpp		\

@@ -9,6 +9,7 @@
     #define IPIZZA_HPP_
     #include <vector>
     #include <string>
+    #include "PizzaEnum.hpp"
 
 namespace Plazza {
     class IPizza {
@@ -28,6 +29,13 @@ namespace Plazza {
              * @param time
              */
             virtual void setBakeTime(float time) = 0;
+
+            /**
+             * @brief Set the Size of pizza
+             * 
+             * @param size 
+             */
+            virtual void setSize(Plazza::PizzaSize size) = 0;
 
             /**
              * @brief Set the Ingredients
@@ -58,6 +66,13 @@ namespace Plazza {
             virtual float getBakeTime() const = 0;
 
             /**
+             * @brief Get the Size pizza
+             * 
+             * @return Plazza::PizzaSize 
+             */
+            virtual Plazza::PizzaSize getSize() const = 0;
+
+            /**
              * @brief Get the Ingredients of pizza
              *
              * @return std::vector<std::string>
@@ -70,20 +85,6 @@ namespace Plazza {
              * @return int
              */
             virtual int getPizzaType() const = 0;
-            // /**
-            //  * @brief Serialize data
-            //  *
-            //  * @return pizza_data
-            //  */
-            // virtual pizza_data pack() = 0;
-
-            // /**
-            //  * @brief Unserialize data
-            //  *
-            //  * @param data
-            //  */
-            // virtual void unpack(pizza_data data) = 0;
-
         protected:
         private:
     };

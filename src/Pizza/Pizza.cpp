@@ -21,6 +21,11 @@ void Plazza::Pizza::setType(int type)
     _type = type;
 }
 
+void Plazza::Pizza::setSize(Plazza::PizzaSize size)
+{
+    _size = size;
+}
+
 void Plazza::Pizza::setBakeTime(float time)
 {
     _bakeTime = time;
@@ -56,28 +61,7 @@ int Plazza::Pizza::getPizzaType() const
     return _type;
 }
 
-// std::ostream& operator<<(std::ostream &os, const pizza_data &pizzaData)
-// {
-//     pizza_data pd;
-
-//     return os;
-// }
-
-// std::ostream& operator<<(std::ostream &os, const Plazza::IPizza &pizza)
-// {
-//     os << pizza.getName() << "\n";
-//     os << pizza.getBakeTime() << "\n";
-//     os << pizza.getNbrIngredient() << "\n";
-//     for (auto ingredient : pizza.getIngredients()) {
-//         os << ingredient << "\n";
-//     }
-//     return os;
-// }
-
-// std::istream& operator>>(std::istream &is, Plazza::IPizza &pizza)
-// {
-//     std::string name;
-//     is >> name;
-//     pizza.setName(name);
-//     return is;
-// }
+Plazza::PizzaSize Plazza::Pizza::getSize() const
+{
+    return _size;
+}

@@ -12,10 +12,6 @@
     #include <map>
     #include "PizzaEnum.hpp"
     #include "IPizza.hpp"
-    #include "Regina.hpp"
-    #include "Americana.hpp"
-    #include "Fantasia.hpp"
-    #include "Margarita.hpp"
     #include <memory>
     #include "plazza.hpp"
     #include <cstring>
@@ -80,7 +76,6 @@ namespace Plazza {
             int getType() const;
             Plazza::PizzaSize getSize() const;
             std::size_t getAmount() const;
-            std::shared_ptr<Plazza::IPizza> getPizza() const;
 
             //* Setters *//
             void setType(int type);
@@ -92,7 +87,6 @@ namespace Plazza {
             int _pizzaType;
             Plazza::PizzaSize _pizzaSize;
             std::size_t _amount;
-            std::shared_ptr<Plazza::IPizza> _pizzas;
     };
 }
 
