@@ -65,8 +65,10 @@ void Plazza::Reception::manageKitchen()
 
 void Plazza::Reception::create_kitchen()
 {
-    Process newProcess;
-    pid_t pid = newProcess.spawnChildProcess();
+    pid_t pid = Process::fork();
+    if (pid == -1) {
+        throw Error("Failed to fork", "Reception");
+    }
     if (pid == 0) { // Child
         Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
         kitchen.~Kitchen();

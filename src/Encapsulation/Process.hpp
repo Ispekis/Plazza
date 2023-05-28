@@ -5,10 +5,6 @@
 ** Process
 */
 
-#include "Error.hpp"
-#include "signal.h"
-#include <iostream>
-#include <sys/types.h>
 #include <unistd.h>
 
 #ifndef PROCESS_HPP_
@@ -16,12 +12,8 @@
 
 class Process {
     public:
-        Process();
-        pid_t spawnChildProcess();
-        ~Process();
-        static int getpid() {
-            return ::getpid();
-        };
+        static pid_t fork();
+        static pid_t getpid();
 
     protected:
     private:
