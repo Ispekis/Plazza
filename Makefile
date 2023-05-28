@@ -23,19 +23,18 @@ PIZZA = Pizza/
 
 ENCAPSULATION = Encapsulation
 
+GRAPHIC = Graphical/
+
 SRC	=	src/$(PARSING)Parsing.cpp			\
+		src/$(GRAPHIC)Graphic.cpp			\
 		src/$(ERROR)Error.cpp				\
 		src/$(ERROR)ErrorHandling.cpp		\
 		src/$(UTILS)Order.cpp				\
 		src/$(UTILS)Ingredient.cpp			\
+		src/$(UTILS)Factory.cpp				\
 		src/Kitchen.cpp						\
 		src/Reception.cpp					\
-
-SRC +=	src/$(PIZZA)/Pizza.cpp				\
-		src/$(PIZZA)/Regina.cpp				\
-		src/$(PIZZA)/Americana.cpp			\
-		src/$(PIZZA)/Fantasia.cpp			\
-		src/$(PIZZA)/Margarita.cpp			\
+		src/$(PIZZA)/Pizza.cpp				\
 
 SRC +=	src/$(ENCAPSULATION)/Process.cpp	\
 		src/$(ENCAPSULATION)/IPC.cpp		\
@@ -52,12 +51,17 @@ CFLAGS += -Wall -Wextra
 CPPFLAGS += -I./include/
 
 CPPFLAGS += -I./src/$(ERROR)
+
 CPPFLAGS += -I./src/$(PARSING)
+
 CPPFLAGS += -I./src/$(UTILS)
+
 CPPFLAGS += -I./src/$(PIZZA)
 
+CPPFLAGS += -I./src/$(GRAPHIC)
 
 LDFLAGS += -lpthread
+LDFLAGS += -lsfml-system -lsfml-window -lsfml-graphics
 
 all: $(NAME)
 

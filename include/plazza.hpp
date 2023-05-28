@@ -23,6 +23,9 @@
     #include "../src/Encapsulation/Process.hpp"
     #include "../src/Encapsulation/IPC.hpp"
     #include "../src/Encapsulation/Platform.hpp"
+    #include <array>
+    #include "PizzaEnum.hpp"
+    #include <string>
 
 typedef struct msg_data {
     long mesg_type;
@@ -40,5 +43,16 @@ typedef struct closure_data {
     long mesg_type;
     int id;
 } closure_data;
+
+namespace CONSTANT {
+    const std::array<std::string, 5> PIZZA_SIZE_LIST = {"s", "m", "l", "xl", "xxl"};
+    const std::array<Plazza::PizzaSize, 5> PIZA_SIZE_ENUM_LIST = {
+        Plazza::PizzaSize::S,
+        Plazza::PizzaSize::M,
+        Plazza::PizzaSize::L,
+        Plazza::PizzaSize::XL,
+        Plazza::PizzaSize::XXL
+    };
+}
 
 #endif /* !PLAZZA_H_ */

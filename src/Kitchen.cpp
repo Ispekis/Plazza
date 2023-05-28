@@ -7,10 +7,10 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _threadPool(nbCooks), _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid, std::vector<std::string> ingredients) : _threadPool(nbCooks), _factory("data/Pizza.conf"), _workDuration(5)
 {
     std::cout << GREEN << "--- Start Kitchen " << Process::getpid() << COLOR << std::endl;
-    _ingredient = std::make_shared<Ingredient>(time);
+    _ingredient = std::make_shared<Ingredient>(time, ingredients);
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
     _orderCapacity = _nbCooks * 2;
@@ -31,7 +31,7 @@ Plazza::Kitchen::~Kitchen()
 
 bool Plazza::Kitchen::timeOut()
 {
-    auto current =  std::chrono::steady_clock::now();
+    auto current = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - _start);
 
     if (_orderCapacity != _orderCapacityMax)
@@ -58,7 +58,7 @@ void Plazza::Kitchen::getOrderThread()
         if (data != nullptr)
         {
             Plazza::Order order;
-            *data >> order;
+            order = Plazza::Order::unpack(*data);
             receiveOrder(order);
         }
     }
@@ -75,7 +75,7 @@ void Plazza::Kitchen::getCapacityThread()
         std::unique_ptr<capacity_data> capacity = _capacityMsgQ.pop(Process::getpid(), 0);
         // Check kitchen have received a message
         if (capacity != nullptr) {
-            capacityMessage(_orderCapacity);
+            // capacityMessage(_orderCapacity);
             capacity_data data;
             std::memset(&data, 0, sizeof(data));
             data.value = _orderCapacity;
@@ -88,27 +88,29 @@ void Plazza::Kitchen::kitchenLoop()
 {
     _start = std::chrono::steady_clock::now();
     while (_isRunning) {
-        // _ingredient->refillIngredient();
+        _ingredient->refillIngredient();
         if (timeOut())
             break;
     }
     closeKitchen();
 }
 
-static void orderReadyMessage(Plazza::Order order)
-{
-    std::cout << "[Cook] : The " << order.getPizza()->getName() << " " << order.getSize() << " is ready !";
-}
-
 void Plazza::Kitchen::cookPizzas(Plazza::Order order)
 {
-    size_t bakeTime = order.getPizza()->getBakeTime() * _mutiplier;
-    std::this_thread::sleep_for(std::chrono::milliseconds(bakeTime * 1000));
+    std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
+    float bakeTime = pizza->getBakeTime() * _mutiplier;
+    bakeTime *= 1000;
+    bool make = _ingredient->makePizza(pizza);
+    if (!make) {
+        std::cout << "cannot make" << std::endl;
+        while (!_ingredient->checkEnoughIngredient(pizza));
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(bakeTime)));
 
     // Send pizza back to reception
     orderReadyMessage(order);
     msg_data data;
-    data << order;
+    data = Plazza::Order::pack(order);
     _orderMsgQ.push(data, _receptionPid);
     _orderCapacity++;
 }
@@ -122,10 +124,22 @@ void Plazza::Kitchen::run()
 
 void Plazza::Kitchen::receiveOrder(Plazza::Order order)
 {
+    receiveOrderMessage(order);
     int totalOrder = order.getAmount();
     order.setAmount(1);
     for (int i = 0; i < totalOrder; i++) {
         _threadPool.enqueue([=] {cookPizzas(order);});
         _orderCapacity--;
     }
+}
+
+void Plazza::Kitchen::orderReadyMessage(Plazza::Order order)
+{
+    std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
+    std::cout << "[Cook] : The " << pizza->getName() << " " << _factory.getSizeName(order.getSize()) << " is ready !" << std::endl;
+}
+
+void Plazza::Kitchen::receiveOrderMessage(Plazza::Order order)
+{
+    std::cout << "[Kitchen " << Process::getpid() << "] : I got " << order.getAmount() << " orders." << std::endl;
 }

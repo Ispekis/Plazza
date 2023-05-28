@@ -20,12 +20,13 @@
     #include <unistd.h>
     #include <chrono>
     #include "MessageQueue.hpp"
+    #include "Graphic.hpp"
     #include <sys/select.h>
 
 namespace Plazza {
     class Reception {
         public:
-            Reception(Parsing &data);
+            Reception(Parsing &data, bool graphic);
             ~Reception();
 
             /**
@@ -79,6 +80,10 @@ namespace Plazza {
              */
             void receiveReadyOrder();
 
+            void displayGraphic();
+
+        protected:
+        private:
             /**
              * @brief Get the capacity left of the kitchenPid
              * 
@@ -93,23 +98,36 @@ namespace Plazza {
              */
             void checkClosures();
 
+            /**** MESSAGES ****/
+
+            void sendPizzaMessage(Plazza::Order order, int kitchenPid);
+
+            void receiveOrderMessage(Plazza::Order order);
+
+            void closeKitchenMessage(int pid);
+
             bool _isRunning = true;
 
             Parsing _data;
             ErrorHandling _CheckError;
             pid_t _receptionPid = 0;
-            std::vector<int> _kitchenPids;
+            std::shared_ptr<std::vector<int>> _kitchenPids;
             std::vector<Order> _orderList;
+
+            Factory _factory;
 
             // Thread
             std::thread _closingKitchen;
             std::thread _receiveReadyOrder;
+            std::thread _graphicLoop;
 
             // Message Queues for ipc
             MessageQueue<msg_data> _orderMsgQ;
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
 
+            std::shared_ptr<Graphic> _graphic;
+            bool _graphicOn;
     };
 }
 #endif /* !PLAZZA_HPP_ */

@@ -16,12 +16,13 @@
     #include <array>
     #include "SafeQueue.hpp"
     #include "MessageQueue.hpp"
+    #include "Factory.hpp"
     #include "ThreadPool.hpp"
 
 namespace Plazza {
     class Kitchen {
         public:
-            Kitchen(float mutiplier, int nbCooks, int time, int pid);
+            Kitchen(float mutiplier, int nbCooks, int time, int pid, std::vector<std::string> ingredients);
             ~Kitchen();
 
             /**
@@ -78,6 +79,12 @@ namespace Plazza {
              */
             void cookPizzas(Plazza::Order order);
 
+            /**** MESSAGES ****/
+
+            void receiveOrderMessage(Plazza::Order order);
+
+            void orderReadyMessage(Plazza::Order order);
+
             float _mutiplier;
             int _nbCooks;
             size_t _orderCapacityMax;
@@ -87,7 +94,7 @@ namespace Plazza {
 
             Plazza::ThreadPool _threadPool;
             std::shared_ptr<Ingredient> _ingredient;
-
+            Factory _factory;
             // Threads
             std::thread _orderThread;
             std::thread _capacityThread;

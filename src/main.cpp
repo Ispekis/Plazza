@@ -20,7 +20,7 @@
 #include "Reception.hpp"
 #include "Usage.hpp"
 
-int main (int ac, char **av)
+int main (int ac, const char **av)
 {
     try {
         if (ac == 2 && std::string(av[1]).compare("-h") == 0) {
@@ -29,7 +29,7 @@ int main (int ac, char **av)
         }
 
         Parsing data(ac, av);
-        Plazza::Reception reception(data);
+        Plazza::Reception reception(data, data._graphic);
         reception.start();
     }
     catch (const Error &error) {

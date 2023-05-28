@@ -9,14 +9,6 @@
 #define PIZZAENUM_HPP_
 
 namespace Plazza {
-    enum PizzaType
-    {
-        Regina = 1,
-        Margarita = 2,
-        Americana = 4,
-        Fantasia = 8
-    };
-
     enum PizzaSize
     {
         S = 1,

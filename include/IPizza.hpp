@@ -9,6 +9,7 @@
     #define IPIZZA_HPP_
     #include <vector>
     #include <string>
+    #include "PizzaEnum.hpp"
 
 namespace Plazza {
     class IPizza {
@@ -16,18 +17,25 @@ namespace Plazza {
             virtual ~IPizza() = default;
 
             /**
-             * @brief Set the Name of the pizza
+             * @brief Set the type
              *
-             * @param name
+             * @param type
              */
-            virtual void setName(std::string name) = 0;
+            virtual void setType(int type) = 0;
 
             /**
              * @brief Set the Bake Time in second
              *
              * @param time
              */
-            virtual void setBakeTime(int time) = 0;
+            virtual void setBakeTime(float time) = 0;
+
+            /**
+             * @brief Set the Size of pizza
+             * 
+             * @param size 
+             */
+            virtual void setSize(Plazza::PizzaSize size) = 0;
 
             /**
              * @brief Set the Ingredients
@@ -37,11 +45,32 @@ namespace Plazza {
             virtual void setIngredients(std::vector<std::string> ingredients) = 0;
 
             /**
+             * @brief Set the Name of Pizza
+             *
+             * @param name
+             */
+            virtual void setName(std::string name) = 0;
+
+            /**
+             * @brief Get the Name of the pizza
+             *
+             * @return string
+             */
+            virtual std::string getName() const = 0;
+
+            /**
              * @brief Get the Bake Time of the pizza in second
              *
-             * @return int
+             * @return float
              */
-            virtual int getBakeTime() const = 0;
+            virtual float getBakeTime() const = 0;
+
+            /**
+             * @brief Get the Size pizza
+             * 
+             * @return Plazza::PizzaSize 
+             */
+            virtual Plazza::PizzaSize getSize() const = 0;
 
             /**
              * @brief Get the Ingredients of pizza
@@ -51,26 +80,11 @@ namespace Plazza {
             virtual std::vector<std::string> getIngredients() const = 0;
 
             /**
-             * @brief Get the Pizza's name
+             * @brief Get the type of pizza
              *
-             * @return std::string
+             * @return int
              */
-            virtual std::string getName() const = 0;
-
-            // /**
-            //  * @brief Serialize data
-            //  *
-            //  * @return pizza_data
-            //  */
-            // virtual pizza_data pack() = 0;
-
-            // /**
-            //  * @brief Unserialize data
-            //  *
-            //  * @param data
-            //  */
-            // virtual void unpack(pizza_data data) = 0;
-
+            virtual int getPizzaType() const = 0;
         protected:
         private:
     };

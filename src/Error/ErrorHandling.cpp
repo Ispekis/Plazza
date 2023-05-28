@@ -9,6 +9,7 @@
 
 ErrorHandling::ErrorHandling()
 {
+    _factory = std::make_shared<Factory>("data/Pizza.conf");
 }
 
 ErrorHandling::~ErrorHandling()
@@ -41,7 +42,7 @@ static void findType(std::string word, std::vector<std::string>wordList)
     throw Error("Pizza Not found", word);
 }
 
-static void findSize(std::string word, std::vector<std::string>wordList)
+static void findSize(std::string word, std::array<std::string, 5>wordList)
 {
     for (std::size_t i = 0; i != wordList.size(); i++)
         if (toLower(word) == wordList[i])
@@ -59,7 +60,7 @@ static void findNumber(std::string word)
             if (word[i] == '0' && i == 1)
                 throw Error("Invalid Number", word);
         }
-        else 
+        else
             throw Error("Invalid Number", word);
     }
 
@@ -67,11 +68,8 @@ static void findNumber(std::string word)
 
 void ErrorHandling::checkReceiptArg(std::vector<std::string> words)
 {
-    std::vector<std::string> pizza = {"regina", "margarita", "americana", "fantasia"};
-    std::vector<std::string> size = {"s", "m", "l", "xl", "xxl"};
-
-    findType(words[0], pizza);
-    findSize(words[1], size);
+    findType(words[0], _factory->getPizzaList());
+    findSize(words[1], CONSTANT::PIZZA_SIZE_LIST);
     findNumber(words[2]);
 }
 

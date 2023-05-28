@@ -12,10 +12,6 @@
     #include <map>
     #include "PizzaEnum.hpp"
     #include "IPizza.hpp"
-    #include "Regina.hpp"
-    #include "Americana.hpp"
-    #include "Fantasia.hpp"
-    #include "Margarita.hpp"
     #include <memory>
     #include "plazza.hpp"
     #include <cstring>
@@ -37,7 +33,7 @@ namespace Plazza {
              * @param size 
              * @param amount 
              */
-            Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t amount);
+            Order(int type, Plazza::PizzaSize size, std::size_t amount);
 
             /**
              * @brief Copy construct a new Order
@@ -60,42 +56,75 @@ namespace Plazza {
              */
             Plazza::Order &operator=(const Plazza::Order &other);
 
+            /**
+             * @brief Serialize the order
+             * 
+             * @param order 
+             * @return msg_data 
+             */
+            static msg_data pack(Plazza::Order order);
+
+            /**
+             * @brief Deserialize the order data
+             * 
+             * @param data 
+             * @return Plazza::Order 
+             */
+            static Plazza::Order unpack(msg_data data);
+
             //* Getters *//
-            Plazza::PizzaType getType() const;
+            int getType() const;
             Plazza::PizzaSize getSize() const;
             std::size_t getAmount() const;
-            std::shared_ptr<Plazza::IPizza> getPizza() const;
 
             //* Setters *//
-            void setType(Plazza::PizzaType type);
+            void setType(int type);
             void setSize(Plazza::PizzaSize size);
             void setAmount(std::size_t amount);
 
         protected:
         private:
-            Plazza::PizzaType _pizzaType;
+            int _pizzaType;
             Plazza::PizzaSize _pizzaSize;
             std::size_t _amount;
-            std::shared_ptr<Plazza::IPizza> _pizzas;
     };
 }
 
-/**
- * @brief Serialize order
- *
- * @param data
- * @param order
- * @return msg_data&
- */
-msg_data &operator<<(msg_data &data, Plazza::Order order);
+// /**
+//  * @brief Serialize order
+//  *
+//  * @param data
+//  * @param order
+//  * @return msg_data&
+//  */
+// msg_data &operator<<(msg_data &data, Plazza::Order order);
 
 /**
- * @brief Deserialize to struct
+//  * @brief Deserialize to struct
+//  *
+//  * @param order
+//  * @param data
+//  * @return Plazza::Order&
+//  */
+// Plazza::Order &operator>>(msg_data data, Plazza::Order &order);
+
+/**
+ * @brief Deserialize steam to order
  *
- * @param order
- * @param data
- * @return Plazza::Order&
+ * @param is
+ * @param msgData
+ * @return std::istream&
  */
-Plazza::Order &operator>>(msg_data data, Plazza::Order &order);
+std::istream& operator>>(std::istream &is, msg_data &msgData);
+
+
+/**
+ * @brief Serialize to stream
+ *
+ * @param os
+ * @param order
+ * @return std::ostream&
+ */
+std::ostream& operator<<(std::ostream& os, const Plazza::Order& order);
 
 #endif /* !ORDER_HPP_ */

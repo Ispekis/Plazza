@@ -7,18 +7,27 @@
 
 #include "Reception.hpp"
 
-Plazza::Reception::Reception(Parsing &data) : _data(data)
+Plazza::Reception::Reception(Parsing &data, bool graphic) : _data(data), _factory("data/Pizza.conf")
 {
+    _kitchenPids = std::make_shared<std::vector<int>>();
     _receptionPid = Process::getpid();
     _orderMsgQ.createIpc(IPC::ftok(".", ORDER_KEY));
     _closureMsgQ.createIpc(IPC::ftok(".", CLOSURE_KEY));
     _capacityMsgQ.createIpc(IPC::ftok(".", CAPACITY_KEY));
+    _graphicOn = graphic;
+    if (_graphicOn)
+        _graphic = std::make_shared<Graphic>(data.getNbCooks() * 2, graphic);
+    else
+        _graphic = std::make_shared<Graphic>();
+    _graphic->setKitchen(_kitchenPids);
 }
 
 Plazza::Reception::~Reception()
 {
     _closingKitchen.join();
     _receiveReadyOrder.join();
+    if (_graphicOn)
+    _graphicLoop.join();
 }
 
 void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
@@ -35,10 +44,10 @@ void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
 
     // prepare struct data
     msg_data data;
-    data << orderToSend;
+    data = Plazza::Order::pack(orderToSend);
 
     _orderMsgQ.push(data, KitchenPid);
-    std::cout << "[Reception] : Kitchen " << KitchenPid << ", make me " << pizzaToRemove << " " << orderToSend.getPizza()->getName() << " " << orderToSend.getSize() << "." << std::endl;
+    sendPizzaMessage(orderToSend, KitchenPid);
     singleOrderList.setAmount(pizzaQty - pizzaToRemove);
 
     // If there is no pizza Left in the order remove the order
@@ -49,10 +58,10 @@ void Plazza::Reception::sendPizzaToKitchen(int Capacity, int KitchenPid)
 void Plazza::Reception::manageKitchen()
 {
     while (_orderList.size() != 0) {
-        for (std::size_t i = 0; i != _kitchenPids.size(); i++) {
-            int Capacity = getCapacityLeft(_kitchenPids.at(i));
+        for (std::size_t i = 0; i != _kitchenPids->size(); i++) {
+            int Capacity = getCapacityLeft(_kitchenPids->at(i));
             if (Capacity != 0) {
-                sendPizzaToKitchen(Capacity, _kitchenPids.at(i));
+                sendPizzaToKitchen(Capacity, _kitchenPids->at(i));
             }
             if (_orderList.size() == 0)
                 break;
@@ -70,17 +79,12 @@ void Plazza::Reception::create_kitchen()
         throw Error("Failed to fork", "Reception");
     }
     if (pid == 0) { // Child
-        Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid);
+        Kitchen kitchen(_data.getMultiplier(), _data.getNbCooks(), _data.getRefillTime(), _receptionPid, _factory.getAllIngredient());
         kitchen.~Kitchen();
         Platform::exit(0);
     } else { // Parent
-        _kitchenPids.push_back(pid);
+        _kitchenPids->push_back(pid);
     }
-}
-
-static void receiveOrderMessage(Plazza::Order order)
-{
-    std::cout << "[Reception] : I have a " << order.getPizza()->getName() << " " << order.getSize() << " ready to go !" << std::endl;
 }
 
 void Plazza::Reception::receiveReadyOrder()
@@ -89,7 +93,7 @@ void Plazza::Reception::receiveReadyOrder()
         std::unique_ptr<msg_data> data = _orderMsgQ.pop(Process::getpid(), 0);
         if (data != nullptr) {
             Plazza::Order order;
-            *data >> order;
+            order = Plazza::Order::unpack(*data);
             receiveOrderMessage(order);
         }
     }
@@ -116,8 +120,15 @@ void Plazza::Reception::userInput()
     }
 }
 
+void Plazza::Reception::displayGraphic()
+{
+    _graphic->run();
+}
+
 void Plazza::Reception::start()
 {
+    if (_graphicOn)
+        _graphicLoop = std::thread(&Plazza::Reception::displayGraphic, std::ref(*this));
     _closingKitchen = std::thread(&Plazza::Reception::checkClosures, std::ref(*this));
     _receiveReadyOrder = std::thread(&Plazza::Reception::receiveReadyOrder, std::ref(*this));
     userInput();
@@ -132,33 +143,26 @@ int Plazza::Reception::getCapacityLeft(int pid)
     std::unique_ptr<capacity_data> a = nullptr;
 
     while (a == nullptr)
-        a = _capacityMsgQ.pop(Process::getpid(), IPC_NOWAIT);
+        a = _capacityMsgQ.pop(Process::getpid(), 0);
     std::cout << "[Reception] : Got it Kitchen " << pid << " !" << std::endl;
     return a->value;
 }
 
-static Plazza::PizzaType getPizzaType(std::string &pizza)
+static int getPizzaType(std::string &pizza, Factory &factory)
 {
-    std::vector<std::string> pizzaType = {"margarita", "regina", "americana", "fantasia"};
-    std::vector<Plazza::PizzaType> pizzaEnum = { Plazza::PizzaType::Margarita, Plazza::PizzaType::Regina, Plazza::PizzaType::Americana, Plazza::PizzaType::Fantasia};
+    int tmp = factory.getPizzaType(pizza);
 
-    for (std::size_t i = 0; i != pizzaType.size(); i++) {
-        if (toLower(pizza) == pizzaType[i]) {
-            // std::cout << pizzaType[i] << " = " << i << std::endl;
-            return pizzaEnum[i];
-        }
-    }
+    // std::cout << tmp << std::endl;
+    if (tmp != -1)
+        return tmp;
     throw Error("Pizza Enum Not Found", pizza);
 }
 
 static Plazza::PizzaSize getPizzaSize(std::string &size)
 {
-    std::array<std::string, 5> pizzaSize = {"s", "m", "l", "xl", "xxl"};
-    std::array<Plazza::PizzaSize, 5> sizeEnum = { Plazza::PizzaSize::S, Plazza::PizzaSize::M, Plazza::PizzaSize::L, Plazza::PizzaSize::XL, Plazza::PizzaSize::XXL};
-
-    for (std::size_t i = 0; i != pizzaSize.size(); i++) {
-        if (toLower(size) == pizzaSize[i])
-            return sizeEnum[i];
+    for (std::size_t i = 0; i != CONSTANT::PIZZA_SIZE_LIST.size(); i++) {
+        if (toLower(size) == CONSTANT::PIZZA_SIZE_LIST[i])
+            return CONSTANT::PIZA_SIZE_ENUM_LIST[i];
     }
     throw Error("Pizza Size Not Found", size);
 }
@@ -172,7 +176,7 @@ static int getPizzaNumber(std::string &number)
 void Plazza::Reception::convertToOrder(std::vector<std::array<std::string, 3>> &allOrder)
 {
     for (auto singleOrder : allOrder) {
-        Plazza::PizzaType type = getPizzaType(singleOrder.at(0));
+        int type = getPizzaType(singleOrder.at(0), _factory);
         Plazza::PizzaSize size = getPizzaSize(singleOrder.at(1));
         int number = getPizzaNumber(singleOrder.at(2));
         _orderList.push_back(Plazza::Order(type, size, number));
@@ -208,13 +212,30 @@ void Plazza::Reception::checkClosures()
 {
     // Trying to read closure message and close Kitchen
     while (_isRunning) {
-        auto closedPid = _closureMsgQ.pop(Process::getpid(), IPC_NOWAIT);
+        auto closedPid = _closureMsgQ.pop(Process::getpid(), 0);
         if (closedPid != nullptr)
-            for (std::size_t i = 0; i != _kitchenPids.size(); i++)
-                if (closedPid->id == _kitchenPids.at(i)) {
-                    _kitchenPids.erase(_kitchenPids.begin() + i);
-                    std::cout << RED << "[Reception] : Kitchen " << closedPid->id << " has closed"<< COLOR <<std::endl;
+            for (std::size_t i = 0; i != _kitchenPids->size(); i++)
+                if (closedPid->id == _kitchenPids->at(i)) {
+                    _kitchenPids->erase(_kitchenPids->begin() + i);
+                    closeKitchenMessage(closedPid->id);
                     break;
                 }
     }
+}
+
+void Plazza::Reception::closeKitchenMessage(int pid)
+{
+    std::cout << RED << "[Reception] : Kitchen " << pid << " has closed."<< COLOR <<std::endl;
+}
+
+void Plazza::Reception::receiveOrderMessage(Plazza::Order order)
+{
+    std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
+    std::cout << "[Reception] : I have a " << pizza->getName() << " " << _factory.getSizeName(order.getSize()) << " ready to go !" << std::endl;
+}
+
+void Plazza::Reception::sendPizzaMessage(Plazza::Order order, int kitchenPid)
+{
+    std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
+    std::cout << "[Reception] : Kitchen " << kitchenPid << ", make me " << order.getAmount() << " " << pizza->getName() << " " << _factory.getSizeName(order.getSize()) << "." << std::endl;
 }

@@ -12,7 +12,7 @@ Plazza::Order::Order()
 
 }
 
-Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t amount)
+Plazza::Order::Order(int type, Plazza::PizzaSize size, std::size_t amount)
 {
     this->setType(type);
     this->setSize(size);
@@ -22,7 +22,6 @@ Plazza::Order::Order(Plazza::PizzaType type, Plazza::PizzaSize size, std::size_t
 Plazza::Order::Order(const Plazza::Order &other)
 {
     this->_amount = other._amount;
-    this->_pizzas = other._pizzas;
     this->_pizzaSize = other._pizzaSize;
     this->_pizzaType = other._pizzaType;
 }
@@ -39,7 +38,23 @@ Plazza::Order &Plazza::Order::operator=(const Plazza::Order &other)
     return *this;
 }
 
-Plazza::PizzaType Plazza::Order::getType() const
+msg_data Plazza::Order::pack(Plazza::Order order)
+{
+    msg_data data;
+    std::memset(&data, 0, sizeof(data));
+
+    data.type = order.getType();
+    data.size = order.getSize();
+    data.nbr = order.getAmount();
+    return data;
+}
+
+Plazza::Order Plazza::Order::unpack(msg_data data)
+{
+    return Plazza::Order(data.type, static_cast<Plazza::PizzaSize>(data.size), data.nbr);
+}
+
+int Plazza::Order::getType() const
 {
     return _pizzaType;
 }
@@ -54,30 +69,11 @@ std::size_t Plazza::Order::getAmount() const
     return _amount;
 }
 
-std::shared_ptr<Plazza::IPizza> Plazza::Order::getPizza() const
-{
-    return _pizzas;
-}
-
-void Plazza::Order::setType(Plazza::PizzaType type)
+void Plazza::Order::setType(int type)
 {
     _pizzaType = type;
 
     // set pizza class
-    switch (_pizzaType) {
-        case Regina:
-            _pizzas = std::make_shared<Plazza::ReginaPizza>();
-            break;
-        case Fantasia:
-            _pizzas = std::make_shared<Plazza::FantasiaPizza>();
-            break;
-        case Americana:
-            _pizzas = std::make_shared<Plazza::AmericanaPizza>();
-            break;
-        case Margarita:
-            _pizzas = std::make_shared<Plazza::MargaritaPizza>();
-            break;
-    }
 }
 
 void Plazza::Order::setSize(Plazza::PizzaSize size)
@@ -90,18 +86,19 @@ void Plazza::Order::setAmount(std::size_t amount)
     _amount = amount;
 }
 
-msg_data &operator<<(msg_data &data, Plazza::Order order)
+std::ostream &operator<<(std::ostream &os, const Plazza::Order &order)
 {
-    std::memset(&data, 0, sizeof(data));
-
-    data.type = order.getType();
-    data.size = order.getSize();
-    data.nbr = order.getAmount();
-    return data;
+    os << order.getType() << " ";
+    os << order.getSize() << " ";
+    os << order.getAmount();
+    return os;
 }
 
-Plazza::Order &operator>>(msg_data data, Plazza::Order &order)
+std::istream& operator>>(std::istream &is, msg_data &msgData)
 {
-    order = Plazza::Order(static_cast<Plazza::PizzaType>(data.type), static_cast<Plazza::PizzaSize>(data.size), data.nbr);
-    return order;
+    is >> msgData.type;
+    is >> msgData.size;
+    is >> msgData.nbr;
+    return is;
 }
+

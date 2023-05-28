@@ -20,7 +20,7 @@
 
 class Ingredient {
     public:
-        Ingredient(int refillTime);
+        Ingredient(int refillTime, std::vector<std::string> ingredients);
 
         /**
          * @brief Check if we make the pizza passed as argument and remove ingredient.
