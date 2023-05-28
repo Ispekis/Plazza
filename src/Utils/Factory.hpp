@@ -14,6 +14,7 @@
     #include <sstream>
     #include "IPizza.hpp"
     #include "Pizza.hpp"
+    #include "plazza.hpp"
 
 class Factory {
     public:
@@ -30,6 +31,7 @@ class Factory {
         std::vector<std::string> getAllIngredient() const;
         int getPizzaType(std::string pizza) const;
         std::shared_ptr<Plazza::IPizza> getPizza(int type) const;
+        std::string getSizeName(Plazza::PizzaSize size) const;
     protected:
     private:
         std::vector<std::string> _pizzaList;

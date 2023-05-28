@@ -136,3 +136,13 @@ std::shared_ptr<Plazza::IPizza> Factory::getPizza(int type) const
         return tmp->second;
     return nullptr;
 }
+
+std::string Factory::getSizeName(Plazza::PizzaSize size) const
+{
+    for (size_t i = 0; i < CONSTANT::PIZA_SIZE_ENUM_LIST.size(); i++) {
+        if (size == CONSTANT::PIZA_SIZE_ENUM_LIST[i]) {
+            return CONSTANT::PIZZA_SIZE_LIST[i];
+        }
+    }
+    return "";
+}

@@ -42,7 +42,7 @@ static void findType(std::string word, std::vector<std::string>wordList)
     throw Error("Pizza Not found", word);
 }
 
-static void findSize(std::string word, std::vector<std::string>wordList)
+static void findSize(std::string word, std::array<std::string, 5>wordList)
 {
     for (std::size_t i = 0; i != wordList.size(); i++)
         if (toLower(word) == wordList[i])
@@ -68,10 +68,8 @@ static void findNumber(std::string word)
 
 void ErrorHandling::checkReceiptArg(std::vector<std::string> words)
 {
-    std::vector<std::string> size = {"s", "m", "l", "xl", "xxl"};
-
     findType(words[0], _factory->getPizzaList());
-    findSize(words[1], size);
+    findSize(words[1], CONSTANT::PIZZA_SIZE_LIST);
     findNumber(words[2]);
 }
 

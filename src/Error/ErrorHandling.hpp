@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <vector>
 #include "Factory.hpp"
+#include "plazza.hpp"
 
 class ErrorHandling {
     public:

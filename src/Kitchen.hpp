@@ -79,6 +79,12 @@ namespace Plazza {
              */
             void cookPizzas(Plazza::Order order);
 
+            /**** MESSAGES ****/
+
+            void receiveOrderMessage(Plazza::Order order);
+
+            void orderReadyMessage(Plazza::Order order);
+
             float _mutiplier;
             int _nbCooks;
             size_t _orderCapacityMax;

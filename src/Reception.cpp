@@ -144,12 +144,9 @@ static int getPizzaType(std::string &pizza, Factory &factory)
 
 static Plazza::PizzaSize getPizzaSize(std::string &size)
 {
-    std::array<std::string, 5> pizzaSize = {"s", "m", "l", "xl", "xxl"};
-    std::array<Plazza::PizzaSize, 5> sizeEnum = { Plazza::PizzaSize::S, Plazza::PizzaSize::M, Plazza::PizzaSize::L, Plazza::PizzaSize::XL, Plazza::PizzaSize::XXL};
-
-    for (std::size_t i = 0; i != pizzaSize.size(); i++) {
-        if (toLower(size) == pizzaSize[i])
-            return sizeEnum[i];
+    for (std::size_t i = 0; i != CONSTANT::PIZZA_SIZE_LIST.size(); i++) {
+        if (toLower(size) == CONSTANT::PIZZA_SIZE_LIST[i])
+            return CONSTANT::PIZA_SIZE_ENUM_LIST[i];
     }
     throw Error("Pizza Size Not Found", size);
 }
@@ -213,11 +210,11 @@ void Plazza::Reception::checkClosures()
 void Plazza::Reception::receiveOrderMessage(Plazza::Order order)
 {
     std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
-    std::cout << "[Reception] : I have a " << pizza->getName() << " " << order.getSize() << " ready to go !" << std::endl;
+    std::cout << "[Reception] : I have a " << pizza->getName() << " " << _factory.getSizeName(order.getSize()) << " ready to go !" << std::endl;
 }
 
 void Plazza::Reception::sendPizzaMessage(Plazza::Order order, int kitchenPid)
 {
     std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
-    std::cout << "[Reception] : Kitchen " << kitchenPid << ", make me " << order.getAmount() << " " << pizza->getName()  << "." << std::endl;
+    std::cout << "[Reception] : Kitchen " << kitchenPid << ", make me " << order.getAmount() << " " << pizza->getName() << " " << _factory.getSizeName(order.getSize()) << "." << std::endl;
 }

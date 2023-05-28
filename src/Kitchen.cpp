@@ -95,19 +95,15 @@ void Plazza::Kitchen::kitchenLoop()
     closeKitchen();
 }
 
-static void orderReadyMessage(Plazza::Order order)
-{
-    // std::cout << "[Cook] : The " << order.getPizza()->getName() << " " << order.getSize() << " is ready !";
-}
-
 void Plazza::Kitchen::cookPizzas(Plazza::Order order)
 {
     std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
-    size_t bakeTime = pizza->getBakeTime() * _mutiplier;
-    std::this_thread::sleep_for(std::chrono::milliseconds(2 * 1000));
+    float bakeTime = pizza->getBakeTime() * _mutiplier;
+    bakeTime *= 1000;
+    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(bakeTime)));
 
     // Send pizza back to reception
-    // orderReadyMessage(order);
+    orderReadyMessage(order);
     msg_data data;
     data = Plazza::Order::pack(order);
     _orderMsgQ.push(data, _receptionPid);
@@ -123,10 +119,22 @@ void Plazza::Kitchen::run()
 
 void Plazza::Kitchen::receiveOrder(Plazza::Order order)
 {
+    receiveOrderMessage(order);
     int totalOrder = order.getAmount();
     order.setAmount(1);
     for (int i = 0; i < totalOrder; i++) {
         _threadPool.enqueue([=] {cookPizzas(order);});
         _orderCapacity--;
     }
+}
+
+void Plazza::Kitchen::orderReadyMessage(Plazza::Order order)
+{
+    std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
+    std::cout << "[Cook] : The " << pizza->getName() << " " << _factory.getSizeName(order.getSize()) << " is ready !" << std::endl;
+}
+
+void Plazza::Kitchen::receiveOrderMessage(Plazza::Order order)
+{
+    std::cout << "[Kitchen " << Process::getpid() << "] : I got " << order.getAmount() << " orders." << std::endl;
 }
