@@ -1,6 +1,11 @@
 #include <criterion/criterion.h>
 #include "../src/Kitchen.hpp"
+#include "../src/Reception.hpp"
 
+Test(Reception, reception_run)
+{
+    
+}
 
 Test(Kitchen, kitchen_run)
 {

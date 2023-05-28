@@ -52,6 +52,14 @@ namespace Plazza {
              */
             ~Order();
 
+            /**
+             * @brief Order Assignement
+             * 
+             * @param other 
+             * @return Plazza::Order& 
+             */
+            Plazza::Order &operator=(const Plazza::Order &other);
+
             //* Getters *//
             Plazza::PizzaType getType() const;
             Plazza::PizzaSize getSize() const;
@@ -71,7 +79,6 @@ namespace Plazza {
             std::shared_ptr<Plazza::IPizza> _pizzas;
     };
 }
-
 
 /**
  * @brief Serialize order

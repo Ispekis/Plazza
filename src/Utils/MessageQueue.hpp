@@ -21,7 +21,7 @@ namespace Plazza {
             ~MessageQueue() {};
 
             void createIpc(key_t key) {
-                _msgid = msgget(key, 0666 | IPC_CREAT);
+                _msgid = IPC::msgget(key, 0666 | IPC_CREAT);
                 if (_msgid == -1) {
                     std::cout << "msgget error" << std::endl;
                     perror("");
@@ -39,7 +39,7 @@ namespace Plazza {
                 msgData.mesg_type = id;
 
                 // Send data to queue
-                if (msgsnd(_msgid, &msgData, sizeof(msgData) - sizeof(long), 0) == -1) {
+                if (IPC::msgsnd(_msgid, &msgData, sizeof(msgData) - sizeof(long), 0) == -1) {
                     std::cout << "message not send " << id << std::endl;
                     perror("");
                     return;
@@ -57,7 +57,7 @@ namespace Plazza {
                 T rcvData;
 
                 // Receive queue
-                if (msgrcv(_msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, flag) != -1) {
+                if (IPC::msgrcv(_msgid, &rcvData, sizeof(rcvData) - sizeof(long), id, flag) != -1) {
                     // Delete message from queue
                     // msgctl(msgid, IPC_RMID, NULL);
                     return std::make_unique<T>(rcvData);

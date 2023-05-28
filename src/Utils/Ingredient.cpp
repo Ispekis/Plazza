@@ -44,7 +44,7 @@ void Ingredient::refillIngredient()
             element.second++;
         }
         _start = current;
-        std::cout << MAGENTA << "[Refill " << getpid() << "] All Ingredient have been refilled by one" << COLOR << std::endl;
+        std::cout << MAGENTA << "[Refill " << Process::getpid() << "] All Ingredient have been refilled by one" << COLOR << std::endl;
     }
 }
 

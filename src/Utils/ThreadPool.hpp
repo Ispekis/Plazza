@@ -70,7 +70,7 @@ namespace Plazza {
              * 
              */
             void runPool() {
-                for (int i = 0; i < _nbrWorkers; i++) {
+                for (std::size_t i = 0; i < _nbrWorkers; i++) {
                     _workers.emplace_back([this] {
                         while (_isRunning) {
                             std::function<void()> task;

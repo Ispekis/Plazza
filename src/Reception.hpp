@@ -7,7 +7,6 @@
 
 #ifndef RECEPTION_HPP_
     #define RECEPTION_HPP_
-    #include "Process.hpp"
     #include "Order.hpp"
     #include "Parsing.hpp"
     #include "ErrorHandling.hpp"
@@ -22,7 +21,6 @@
     #include <chrono>
     #include "MessageQueue.hpp"
     #include <sys/select.h>
-    
 
 namespace Plazza {
     class Reception {

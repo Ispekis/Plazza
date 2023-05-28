@@ -21,20 +21,25 @@ UTILS = Utils/
 
 PIZZA = Pizza/
 
-SRC	=	src/$(PARSING)Parsing.cpp		\
-		src/$(ERROR)Error.cpp			\
-		src/$(ERROR)ErrorHandling.cpp	\
-		src/$(UTILS)Order.cpp			\
-		src/$(UTILS)Ingredient.cpp		\
-		src/$(UTILS)Process.cpp			\
-		src/Kitchen.cpp					\
-		src/Reception.cpp				\
+ENCAPSULATION = Encapsulation
 
-SRC +=	src/$(PIZZA)/Pizza.cpp			\
-		src/$(PIZZA)/Regina.cpp		\
-		src/$(PIZZA)/Americana.cpp		\
-		src/$(PIZZA)/Fantasia.cpp		\
-		src/$(PIZZA)/Margarita.cpp		\
+SRC	=	src/$(PARSING)Parsing.cpp			\
+		src/$(ERROR)Error.cpp				\
+		src/$(ERROR)ErrorHandling.cpp		\
+		src/$(UTILS)Order.cpp				\
+		src/$(UTILS)Ingredient.cpp			\
+		src/Kitchen.cpp						\
+		src/Reception.cpp					\
+
+SRC +=	src/$(PIZZA)/Pizza.cpp				\
+		src/$(PIZZA)/Regina.cpp				\
+		src/$(PIZZA)/Americana.cpp			\
+		src/$(PIZZA)/Fantasia.cpp			\
+		src/$(PIZZA)/Margarita.cpp			\
+
+SRC +=	src/$(ENCAPSULATION)/Process.cpp	\
+		src/$(ENCAPSULATION)/IPC.cpp		\
+		src/$(ENCAPSULATION)/Platform.cpp
 
 ALL_SRC += $(SRC)
 
