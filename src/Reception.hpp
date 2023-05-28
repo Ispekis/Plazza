@@ -26,7 +26,7 @@
 namespace Plazza {
     class Reception {
         public:
-            Reception(Parsing &data);
+            Reception(Parsing &data, bool graphic);
             ~Reception();
 
             /**
@@ -126,7 +126,8 @@ namespace Plazza {
             MessageQueue<closure_data> _closureMsgQ;
             MessageQueue<capacity_data> _capacityMsgQ;
 
-            Graphic _graphic;
+            std::shared_ptr<Graphic> _graphic;
+            bool _graphicOn;
     };
 }
 #endif /* !PLAZZA_HPP_ */

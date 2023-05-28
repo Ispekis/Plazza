@@ -7,20 +7,26 @@
 
 #include "Reception.hpp"
 
-Plazza::Reception::Reception(Parsing &data) : _data(data), _graphic(data.getNbCooks() * 2), _factory("data/Pizza.conf")
+Plazza::Reception::Reception(Parsing &data, bool graphic) : _data(data), _factory("data/Pizza.conf")
 {
     _kitchenPids = std::make_shared<std::vector<int>>();
-    _graphic.setKitchen(_kitchenPids);
     _receptionPid = Process::getpid();
     _orderMsgQ.createIpc(IPC::ftok(".", ORDER_KEY));
     _closureMsgQ.createIpc(IPC::ftok(".", CLOSURE_KEY));
     _capacityMsgQ.createIpc(IPC::ftok(".", CAPACITY_KEY));
+    _graphicOn = graphic;
+    if (_graphicOn)
+        _graphic = std::make_shared<Graphic>(data.getNbCooks() * 2, graphic);
+    else
+        _graphic = std::make_shared<Graphic>();
+    _graphic->setKitchen(_kitchenPids);
 }
 
 Plazza::Reception::~Reception()
 {
     _closingKitchen.join();
     _receiveReadyOrder.join();
+    if (_graphicOn)
     _graphicLoop.join();
 }
 
@@ -116,12 +122,13 @@ void Plazza::Reception::userInput()
 
 void Plazza::Reception::displayGraphic()
 {
-    _graphic.run();
+    _graphic->run();
 }
 
 void Plazza::Reception::start()
 {
-    _graphicLoop = std::thread(&Plazza::Reception::displayGraphic, std::ref(*this));
+    if (_graphicOn)
+        _graphicLoop = std::thread(&Plazza::Reception::displayGraphic, std::ref(*this));
     _closingKitchen = std::thread(&Plazza::Reception::checkClosures, std::ref(*this));
     _receiveReadyOrder = std::thread(&Plazza::Reception::receiveReadyOrder, std::ref(*this));
     userInput();

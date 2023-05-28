@@ -24,7 +24,9 @@
 
 class Graphic {
     public:
-        Graphic(int capacityMax);
+        Graphic(int capacityMax, bool graphic);
+        Graphic(){};
+
         ~Graphic();
 
         void run();
