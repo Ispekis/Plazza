@@ -7,10 +7,10 @@
 
 #include "Kitchen.hpp"
 
-Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid) : _threadPool(nbCooks), _workDuration(5)
+Plazza::Kitchen::Kitchen(float mutiplier, int nbCooks, int time, int pid, std::vector<std::string> ingredients) : _threadPool(nbCooks), _workDuration(5), _factory("data/Pizza.conf")
 {
     std::cout << GREEN << "--- Start Kitchen " << Process::getpid() << COLOR << std::endl;
-    _ingredient = std::make_shared<Ingredient>(time);
+    _ingredient = std::make_shared<Ingredient>(time, ingredients);
     _mutiplier = mutiplier;
     _nbCooks = nbCooks;
     _orderCapacity = _nbCooks * 2;
@@ -31,7 +31,7 @@ Plazza::Kitchen::~Kitchen()
 
 bool Plazza::Kitchen::timeOut()
 {
-    auto current =  std::chrono::steady_clock::now();
+    auto current = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(current - _start);
 
     if (_orderCapacity != _orderCapacityMax)
@@ -102,11 +102,12 @@ static void orderReadyMessage(Plazza::Order order)
 
 void Plazza::Kitchen::cookPizzas(Plazza::Order order)
 {
-    size_t bakeTime = order.getPizza()->getBakeTime() * _mutiplier;
-    std::this_thread::sleep_for(std::chrono::milliseconds(bakeTime * 1000));
+    std::shared_ptr<Plazza::IPizza> pizza = _factory.getPizza(order.getType());
+    size_t bakeTime = pizza->getBakeTime() * _mutiplier;
+    std::this_thread::sleep_for(std::chrono::milliseconds(2 * 1000));
 
     // Send pizza back to reception
-    orderReadyMessage(order);
+    // orderReadyMessage(order);
     msg_data data;
     data = Plazza::Order::pack(order);
     _orderMsgQ.push(data, _receptionPid);

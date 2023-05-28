@@ -7,12 +7,12 @@
 
 #include "Ingredient.hpp"
 
-Ingredient::Ingredient(int refillTime) : _refillTime(refillTime)
+Ingredient::Ingredient(int refillTime, std::vector<std::string> ingredients) : _refillTime(refillTime)
 {
-    std::vector<std::string> ingredient = { "dough", "tomato", "gruyere", "ham", "mushrooms", "steak", "eggplant", "goatCheese", "chiefLove" };
-
-    for (auto element : ingredient)
+    for (auto element : ingredients) {
         _ingredient[element] = 5;
+        // std::cout << element << std::endl;
+    }
     _start = std::chrono::steady_clock::now();
     // std::cout << "Ingredient Filled and will be refilled by one every" << refillTime << " ms" << std::endl;
 }

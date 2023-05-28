@@ -16,14 +16,19 @@ Plazza::Pizza::~Pizza()
 {
 }
 
+void Plazza::Pizza::setType(int type)
+{
+    _type = type;
+}
+
+void Plazza::Pizza::setBakeTime(float time)
+{
+    _bakeTime = time;
+}
+
 void Plazza::Pizza::setName(std::string name)
 {
     _name = name;
-}
-
-void Plazza::Pizza::setBakeTime(int time)
-{
-    _bakeTime = time;
 }
 
 void Plazza::Pizza::setIngredients(std::vector<std::string> ingredients)
@@ -31,9 +36,14 @@ void Plazza::Pizza::setIngredients(std::vector<std::string> ingredients)
     _ingredients = ingredients;
 }
 
-int Plazza::Pizza::getBakeTime() const
+float Plazza::Pizza::getBakeTime() const
 {
     return _bakeTime;
+}
+
+std::string Plazza::Pizza::getName() const
+{
+    return _name;
 }
 
 std::vector<std::string> Plazza::Pizza::getIngredients() const
@@ -41,9 +51,9 @@ std::vector<std::string> Plazza::Pizza::getIngredients() const
     return _ingredients;
 }
 
-std::string Plazza::Pizza::getName() const
+int Plazza::Pizza::getPizzaType() const
 {
-    return _name;
+    return _type;
 }
 
 // std::ostream& operator<<(std::ostream &os, const pizza_data &pizzaData)

@@ -93,6 +93,12 @@ namespace Plazza {
              */
             void checkClosures();
 
+            /**** MESSAGES ****/
+
+            void sendPizzaMessage(Plazza::Order order, int kitchenPid);
+
+            void receiveOrderMessage(Plazza::Order order);
+
             bool _isRunning = true;
 
             Parsing _data;
@@ -100,6 +106,8 @@ namespace Plazza {
             pid_t _receptionPid = 0;
             std::vector<int> _kitchenPids;
             std::vector<Order> _orderList;
+
+            Factory _factory;
 
             // Thread
             std::thread _closingKitchen;
